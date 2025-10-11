@@ -1,0 +1,220 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "mysql"
+  url      = env("DATABASE_URL")
+}
+
+// =======================
+// MODELOS DE USUARIO Y ROLES
+// =======================
+
+model User {
+  id        Int       @id @default(autoincrement())
+  name      String    @db.VarChar(50)
+  email     String?   @unique @db.VarChar(100)
+  avatar    String?   @default("") @db.VarChar(200)
+  lastName  String    @db.VarChar(50)
+  password  String?   @db.VarChar(200)
+  createdAt DateTime? @default(now())
+
+  roles    RoleUser[]
+  carts    ShoppingCart[]
+  replies  Reply[]
+  Message  Message[]
+  comments Comment[]
+  invoices Invoice[]      @relation("SellerInvoices")
+  sessions RefreshToken[]
+  messages Message[]      @relation("UserMessages")
+}
+
+model Role {
+  id          Int               @id @default(autoincrement())
+  name        String            @db.VarChar(50)
+  users       RoleUser[]
+  permissions RolePermissions[]
+}
+
+model RoleUser {
+  id     Int  @id @default(autoincrement())
+  user   User @relation(fields: [userId], references: [id], onDelete: Cascade)
+  role   Role @relation(fields: [roleId], references: [id], onDelete: Cascade)
+  userId Int
+  roleId Int
+}
+
+model RolePermissions {
+  id     Int    @id @default(autoincrement())
+  name   String @db.VarChar(50)
+  role   Role   @relation(fields: [roleId], references: [id], onDelete: Cascade)
+  roleId Int
+}
+
+model RefreshToken {
+  id        Int      @id @default(autoincrement())
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  token     String   @unique @db.VarChar(250)
+  userId    Int
+  createdAt DateTime @default(now())
+  expiredAt DateTime
+}
+
+// =======================
+// PRODUCTOS Y CATÁLOGOS
+// =======================
+
+model Product {
+  id          Int       @id @default(autoincrement())
+  name        String    @db.VarChar(50)
+  show        String?   @db.VarChar(50)
+  stock       Int?
+  image       String?   @db.VarChar(250)
+  price       Float?
+  catalogId   Int?
+  createdAt   DateTime? @default(now())
+  updatedAt   DateTime?
+  deletedAt   DateTime?
+  isDeleted   Boolean?  @default(false)
+  description String?   @db.VarChar(150)
+
+  // Relaciones
+  images            ImageProduct[]
+  comments          Comment[]
+  categories        Product_x_Category[]
+  shoppingCarts     ShoppingCartProduct[]
+  product_x_catalog Product_x_Catalog[]
+}
+
+model ImageProduct {
+  id        Int     @id @default(autoincrement())
+  product   Product @relation(fields: [productId], references: [id], onDelete: Cascade)
+  imageURL  String  @db.VarChar(150)
+  productId Int
+}
+
+model Catalog {
+  id                Int                 @id @default(autoincrement())
+  name              String              @db.VarChar(25)
+  updatedAt         DateTime?
+  description       String?             @db.VarChar(150)
+  product_x_catalog Product_x_Catalog[]
+}
+
+model Product_x_Catalog {
+  id        Int     @id @default(autoincrement())
+  product   Product @relation(fields: [productId], references: [id], onDelete: Cascade)
+  catalog   Catalog @relation(fields: [catalogId], references: [id], onDelete: Cascade)
+  productId Int
+  catalogId Int
+}
+
+// =======================
+// CATEGORIAS DE PRODUCTOS
+// =======================
+
+model Category {
+  id                 Int                  @id @default(autoincrement())
+  name               String               @db.VarChar(50)
+  isDeleted          Boolean?             @default(false)
+  deletedAt          DateTime?
+  Product_x_Category Product_x_Category[]
+}
+
+model Product_x_Category {
+  id         Int @id @default(autoincrement())
+  productId  Int
+  categoryId Int
+
+  product  Product  @relation(fields: [productId], references: [id], onDelete: Cascade)
+  category Category @relation(fields: [categoryId], references: [id], onDelete: Cascade)
+}
+
+// =======================
+// COMENTARIOS Y RESPUESTAS
+// =======================
+
+model Comment {
+  id        Int       @id @default(autoincrement())
+  userId    Int
+  comment   String    @db.VarChar(250)
+  productId Int
+  isDeleted Boolean?
+  deletedAt DateTime?
+
+  user    User    @relation(fields: [userId], references: [id], onDelete: Cascade)
+  product Product @relation(fields: [productId], references: [id], onDelete: Cascade)
+  replies Reply[]
+}
+
+model Reply {
+  id        Int    @id @default(autoincrement())
+  userId    Int
+  comment   String @db.VarChar(100)
+  replyId   Int?
+  commentId Int
+
+  user       User    @relation(fields: [userId], references: [id], onDelete: Cascade)
+  parent     Reply?  @relation("ReplyToReply", fields: [replyId], references: [id])
+  children   Reply[] @relation("ReplyToReply")
+  commentRef Comment @relation(fields: [commentId], references: [id], onDelete: Cascade)
+}
+
+// =======================
+// CARRITO Y FACTURAS
+// =======================
+
+model ShoppingCart {
+  id       Int                   @id @default(autoincrement())
+  user     User                  @relation(fields: [userId], references: [id], onDelete: Cascade)
+  name     String                @db.VarChar(50)
+  userId   Int
+  products ShoppingCartProduct[]
+  messages Message[]
+}
+
+model ShoppingCartProduct {
+  id             Int  @id @default(autoincrement())
+  count          Int
+  invoiceId      Int?
+  productId      Int
+  shoppingCartId Int
+
+  product      Product      @relation(fields: [productId], references: [id], onDelete: Cascade)
+  invoice      Invoice?     @relation(fields: [invoiceId], references: [id])
+  shoppingCart ShoppingCart @relation(fields: [shoppingCartId], references: [id], onDelete: Cascade)
+}
+
+model Invoice {
+  id       Int     @id @default(autoincrement())
+  rif      String? @db.VarChar(20)
+  name     String  @db.VarChar(50)
+  phone    String? @db.VarChar(50)
+  total    Float?
+  address  String? @db.VarChar(200)
+  sellerId Int
+
+  seller   User                  @relation("SellerInvoices", fields: [sellerId], references: [id], onDelete: Cascade)
+  products ShoppingCartProduct[]
+}
+
+// =======================
+// MENSAJES (CHAT)
+// =======================
+
+model Message {
+  id             Int       @id @default(autoincrement())
+  seen           Boolean?  @default(false)
+  userId         Int
+  message        String    @db.VarChar(180)
+  senderId       Int
+  isEdited       Boolean?  @default(false)
+  isDeleted      Boolean?  @default(false)
+  createdAt      DateTime? @default(now())
+  shoppingCartId Int
+
+  user         User         @relation(fields: [userId], references: [id], onDelete: Cascade)
+  sender       User         @relation("UserMessages", fields: [senderId], references: [id], onDelete: Cascade)
+  shoppingCart ShoppingCart @relation(fields: [shoppingCartId], references: [id], onDelete: Cascade)
+}
