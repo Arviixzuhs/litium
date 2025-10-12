@@ -34,6 +34,7 @@ model Role {
   id          Int               @id @default(autoincrement())
   name        String            @db.VarChar(50)
   users       RoleUser[]
+  createdAt   DateTime          @default(now())
   permissions RolePermissions[]
 }
 
@@ -88,26 +89,31 @@ model Product {
 }
 
 model ImageProduct {
-  id        Int     @id @default(autoincrement())
-  product   Product @relation(fields: [productId], references: [id], onDelete: Cascade)
-  imageURL  String  @db.VarChar(150)
+  id        Int      @id @default(autoincrement())
+  product   Product  @relation(fields: [productId], references: [id], onDelete: Cascade)
+  imageURL  String   @db.VarChar(150)
   productId Int
+  createdAt DateTime @default(now())
 }
 
 model Catalog {
   id                Int                 @id @default(autoincrement())
-  name              String              @db.VarChar(25)
+  name              String              @db.VarChar(50)
   updatedAt         DateTime?
   description       String?             @db.VarChar(150)
   product_x_catalog Product_x_Catalog[]
+  createdAt         DateTime            @default(now())
+  deletedAt         DateTime?
+  isDeleted         Boolean?            @default(false)
 }
 
 model Product_x_Catalog {
-  id        Int     @id @default(autoincrement())
-  product   Product @relation(fields: [productId], references: [id], onDelete: Cascade)
-  catalog   Catalog @relation(fields: [catalogId], references: [id], onDelete: Cascade)
+  id        Int      @id @default(autoincrement())
+  product   Product  @relation(fields: [productId], references: [id], onDelete: Cascade)
+  catalog   Catalog  @relation(fields: [catalogId], references: [id], onDelete: Cascade)
   productId Int
   catalogId Int
+  createdAt DateTime @default(now())
 }
 
 // =======================
@@ -120,6 +126,7 @@ model Category {
   isDeleted          Boolean?             @default(false)
   deletedAt          DateTime?
   Product_x_Category Product_x_Category[]
+  createdAt          DateTime             @default(now())
 }
 
 model Product_x_Category {
@@ -127,8 +134,9 @@ model Product_x_Category {
   productId  Int
   categoryId Int
 
-  product  Product  @relation(fields: [productId], references: [id], onDelete: Cascade)
-  category Category @relation(fields: [categoryId], references: [id], onDelete: Cascade)
+  product   Product  @relation(fields: [productId], references: [id], onDelete: Cascade)
+  category  Category @relation(fields: [categoryId], references: [id], onDelete: Cascade)
+  createdAt DateTime @default(now())
 }
 
 // =======================
@@ -143,9 +151,10 @@ model Comment {
   isDeleted Boolean?
   deletedAt DateTime?
 
-  user    User    @relation(fields: [userId], references: [id], onDelete: Cascade)
-  product Product @relation(fields: [productId], references: [id], onDelete: Cascade)
-  replies Reply[]
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  product   Product  @relation(fields: [productId], references: [id], onDelete: Cascade)
+  replies   Reply[]
+  createdAt DateTime @default(now())
 }
 
 model Reply {
@@ -155,28 +164,40 @@ model Reply {
   replyId   Int?
   commentId Int
 
-  user       User    @relation(fields: [userId], references: [id], onDelete: Cascade)
-  parent     Reply?  @relation("ReplyToReply", fields: [replyId], references: [id])
-  children   Reply[] @relation("ReplyToReply")
-  commentRef Comment @relation(fields: [commentId], references: [id], onDelete: Cascade)
+  user       User      @relation(fields: [userId], references: [id], onDelete: Cascade)
+  parent     Reply?    @relation("ReplyToReply", fields: [replyId], references: [id])
+  children   Reply[]   @relation("ReplyToReply")
+  commentRef Comment   @relation(fields: [commentId], references: [id], onDelete: Cascade)
+  isDeleted  Boolean?
+  deletedAt  DateTime?
+  createdAt  DateTime  @default(now())
 }
 
 // =======================
 // CARRITO Y FACTURAS
 // =======================
 
+enum ShoppingCartStatus {
+  CONFIRMED
+  EDITING
+}
+
 model ShoppingCart {
-  id       Int                   @id @default(autoincrement())
-  user     User                  @relation(fields: [userId], references: [id], onDelete: Cascade)
-  name     String                @db.VarChar(50)
-  userId   Int
-  products ShoppingCartProduct[]
-  messages Message[]
+  id        Int                   @id @default(autoincrement())
+  user      User                  @relation(fields: [userId], references: [id], onDelete: Cascade)
+  name      String                @db.VarChar(50)
+  userId    Int
+  status    ShoppingCartStatus    @default(EDITING)
+  products  ShoppingCartProduct[]
+  messages  Message[]
+  isDeleted Boolean?
+  deletedAt DateTime?
+  createdAt DateTime              @default(now())
 }
 
 model ShoppingCartProduct {
   id             Int  @id @default(autoincrement())
-  count          Int
+  quantity       Int
   invoiceId      Int?
   productId      Int
   shoppingCartId Int
@@ -184,6 +205,7 @@ model ShoppingCartProduct {
   product      Product      @relation(fields: [productId], references: [id], onDelete: Cascade)
   invoice      Invoice?     @relation(fields: [invoiceId], references: [id])
   shoppingCart ShoppingCart @relation(fields: [shoppingCartId], references: [id], onDelete: Cascade)
+  createdAt    DateTime     @default(now())
 }
 
 model Invoice {
@@ -195,8 +217,11 @@ model Invoice {
   address  String? @db.VarChar(200)
   sellerId Int
 
-  seller   User                  @relation("SellerInvoices", fields: [sellerId], references: [id], onDelete: Cascade)
-  products ShoppingCartProduct[]
+  seller    User                  @relation("SellerInvoices", fields: [sellerId], references: [id], onDelete: Cascade)
+  products  ShoppingCartProduct[]
+  isDeleted Boolean?
+  deletedAt DateTime?
+  createdAt DateTime              @default(now())
 }
 
 // =======================
@@ -211,6 +236,8 @@ model Message {
   senderId       Int
   isEdited       Boolean?  @default(false)
   isDeleted      Boolean?  @default(false)
+  deletedAt      DateTime?
+  editedAt      DateTime?
   createdAt      DateTime? @default(now())
   shoppingCartId Int
 

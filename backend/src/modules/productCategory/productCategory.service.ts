@@ -31,7 +31,7 @@ export class ProductCategoryService {
   }
 
   async assignProductToCategory(dto: AssignProductToCategoryDto) {
-    await this.productService.findOne(dto.productId)
+    await this.productService.findBy(dto.productId)
     await this.findBy(dto.categoryId)
 
     return this.prisma.product_x_Category.create({

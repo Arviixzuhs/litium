@@ -1,8 +1,9 @@
-import { Req, Get, Body, Post, Param, Delete, Controller } from '@nestjs/common'
+import { Req, Get, Body, Post, Param, Delete, Controller, Query } from '@nestjs/common'
 import { Request } from 'express'
 import { CreateCommentDto } from './dto/create-comment.dto'
 import { ProductCommentService } from './productComment.service'
 import { ApiBearerAuth, ApiOperation, ApiResponse, ApiTags } from '@nestjs/swagger'
+import { FindCommentsDto } from './dto/find-comments.dto'
 
 @ApiTags('Products Comment')
 @Controller('/comment')
@@ -24,9 +25,10 @@ export class ProductCommentController {
     return this.productCommentService.delete(commentId, req.user.userId)
   }
 
-  @Get(':productId')
-  @ApiOperation({ summary: 'Obtener comentarios de un producto' })
-  findByProductId(@Param('productId') productId: number) {
-    return this.productCommentService.findByProductId(productId)
+  @Get()
+  @ApiOperation({ summary: 'Obtener comentarios de un producto con filtros opcionales' })
+  findByProductId(@Query() query: FindCommentsDto) {
+    const { productId, page, size } = query
+    return this.productCommentService.findAll(productId, page, size)
   }
 }

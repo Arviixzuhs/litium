@@ -2,6 +2,9 @@ import { Prisma } from '@prisma/client'
 
 export class ProductSpecificationBuilder {
   private where: Prisma.ProductWhereInput = {}
+  private skip?: number
+  private take?: number
+  private orderBy?: Prisma.ProductOrderByWithRelationInput
 
   withName(name?: string) {
     if (name) {
@@ -57,6 +60,21 @@ export class ProductSpecificationBuilder {
     return this
   }
 
+  withPagination(page?: number, pageSize: number = 10) {
+    if (page !== undefined && page >= 0) {
+      this.skip = page * pageSize
+      this.take = pageSize
+    }
+    return this
+  }
+
+  withOrderBy(orderBy?: Prisma.ProductOrderByWithRelationInput) {
+    if (orderBy) {
+      this.orderBy = orderBy
+    }
+    return this
+  }
+
   withCategoryName(categoryName?: string) {
     if (categoryName) {
       this.where.categories = {
@@ -72,7 +90,17 @@ export class ProductSpecificationBuilder {
     return this
   }
 
-  build(): Prisma.ProductWhereInput {
-    return this.where
+  build(): {
+    where: Prisma.ProductWhereInput
+    skip?: number
+    take?: number
+    orderBy?: Prisma.ProductOrderByWithRelationInput
+  } {
+    return {
+      where: this.where,
+      skip: this.skip,
+      take: this.take,
+      orderBy: this.orderBy,
+    }
   }
 }

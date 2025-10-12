@@ -1,6 +1,6 @@
 import { Logger } from '@nestjs/common'
-import { ServerMode } from 'src/types/server.mode'
-import { requestStatusColor } from 'src/utils/request.status.color'
+import { ServerMode } from '@/types/server.mode'
+import { requestStatusColor } from '@/utils/request.status.color'
 import { Injectable, NestMiddleware } from '@nestjs/common'
 import { Request, Response, NextFunction } from 'express'
 

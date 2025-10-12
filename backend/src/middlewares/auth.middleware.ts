@@ -1,5 +1,5 @@
 import * as jwt from 'jsonwebtoken'
-import { User } from 'src/interfaces/user.interface'
+import { User } from '@/interfaces/user.interface'
 import { Injectable, NestMiddleware } from '@nestjs/common'
 import { Request, Response, NextFunction } from 'express'
 

@@ -24,4 +24,10 @@ export class ProductFilterDto {
 
   @ApiPropertyOptional()
   catalogId?: number
+
+  @ApiPropertyOptional()
+  page?: number
+
+  @ApiPropertyOptional()
+  size?: number
 }

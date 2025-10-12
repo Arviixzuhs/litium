@@ -39,8 +39,8 @@ export class ProductsController {
   @ApiParam({ name: 'id', type: Number, description: 'ID del producto' })
   @ApiResponse({ status: 200, description: 'Producto encontrado.' })
   @ApiResponse({ status: 404, description: 'Producto no encontrado.' })
-  findOne(@Param('id', ParseIntPipe) id: number) {
-    return this.productsService.findOne(id)
+  findBy(@Param('id', ParseIntPipe) id: number) {
+    return this.productsService.findBy(id)
   }
 
   @Patch(':id')

@@ -1,6 +1,7 @@
 import { PrismaService } from '@/prisma/prisma.service'
 import { ProductsService } from '@/modules/product/product.service'
 import { CreateCommentDto } from './dto/create-comment.dto'
+import { ProductCommentSpecificationBuilder } from './repositories/productComment.specificationBuilder'
 import { HttpException, HttpStatus, Injectable, NotFoundException } from '@nestjs/common'
 
 @Injectable()
@@ -10,22 +11,26 @@ export class ProductCommentService {
     private readonly productService: ProductsService,
   ) {}
 
-  async findByProductId(id: number) {
-    await this.productService.findOne(id)
+  private readonly productCommentSpecificationBuilder: ProductCommentSpecificationBuilder
 
-    return this.prisma.comment.findMany({
-      where: {
-        product: {
-          id,
-        },
-      },
-    })
+  async findAll(id: number, page: number, size: number) {
+    await this.productService.findBy(id)
+
+    const query = this.productCommentSpecificationBuilder
+      .withProductId(id)
+      .withIsDeleted(false)
+      .withPagination(page, size)
+      .withOrderBy({ createdAt: 'desc' })
+      .build()
+
+    return this.prisma.comment.findMany(query)
   }
 
   async findBy(id: number) {
     const comment = await this.prisma.comment.findFirst({
       where: {
         id,
+        isDeleted: false,
       },
     })
 
@@ -34,7 +39,7 @@ export class ProductCommentService {
   }
 
   async create(dto: CreateCommentDto, userId: number) {
-    await this.productService.findOne(dto.productId)
+    await this.productService.findBy(dto.productId)
 
     return this.prisma.comment.create({
       data: {
