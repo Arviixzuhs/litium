@@ -8,7 +8,7 @@ export class ProductCommentService {
   constructor(
     private readonly prisma: PrismaService,
     private readonly productService: ProductsService,
-  ) { }
+  ) {}
 
   async findByProductId(id: number) {
     await this.productService.findOne(id)
@@ -49,7 +49,10 @@ export class ProductCommentService {
     const comment = await this.findBy(commentId)
 
     if (comment.userId !== userId) {
-      throw new HttpException('Solo el autor del comentario lo puede eliminar', HttpStatus.UNAUTHORIZED)
+      throw new HttpException(
+        'Solo el autor del comentario lo puede eliminar',
+        HttpStatus.UNAUTHORIZED,
+      )
     }
 
     return this.prisma.comment.update({
@@ -58,7 +61,7 @@ export class ProductCommentService {
       },
       data: {
         isDeleted: true,
-        deletedAt: new Date()
+        deletedAt: new Date(),
       },
     })
   }
