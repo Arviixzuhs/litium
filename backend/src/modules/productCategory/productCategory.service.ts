@@ -61,6 +61,7 @@ export class ProductCategoryService {
       },
       data: {
         isDeleted: true,
+        deletedAt: new Date()
       },
     })
   }
