@@ -6,7 +6,7 @@ import { useDebounce } from 'use-debounce'
 import { AppTableActions } from '@/components/AppTable/interfaces/appTable'
 import { useDispatch, useSelector } from 'react-redux'
 import { tableColumns, modalInputs } from './data'
-import { reqCreateProduct, reqDeleteProdcut, reqGetProducts, reqUpdateProduct } from './services'
+import { reqCreateProduct, reqDeleteProduct, reqGetProducts, reqUpdateProduct } from './services'
 import {
   addItem,
   updateItem,
@@ -50,7 +50,7 @@ export const AdminProductPage = () => {
       toast.success('Producto creado correctamente')
     },
     delete: async () => {
-      await reqDeleteProdcut(table.currentItemToDelete)
+      await reqDeleteProduct(table.currentItemToDelete)
       dispatch(deleteItem(table.currentItemToDelete))
       toast.success('Producto eliminado correctamente')
     },
