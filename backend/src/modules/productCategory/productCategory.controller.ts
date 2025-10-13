@@ -1,8 +1,21 @@
-import { Put, Body, Post, Param, Delete, Controller } from '@nestjs/common'
+import {
+  Put,
+  Body,
+  Post,
+  Param,
+  Delete,
+  Controller,
+  Get,
+  Query,
+  ParseIntPipe,
+} from '@nestjs/common'
 import { CategoryDto } from './dto/category.dto'
 import { ProductCategoryService } from './productCategory.service'
 import { AssignProductToCategoryDto } from './dto/assign-product.dto'
 import { ApiBearerAuth, ApiOperation, ApiResponse, ApiTags } from '@nestjs/swagger'
+import { CategoryFiltersDto } from './dto/category-filter.dto'
+import { Page } from '@/types/Page'
+import { Category } from '@prisma/client'
 
 @ApiTags('Products Category')
 @Controller('/category')
@@ -17,10 +30,17 @@ export class ProductCategoryController {
     return this.productCategoryService.create(dto)
   }
 
+  @Get()
+  @ApiOperation({ summary: 'Obtener todos los categorías' })
+  @ApiResponse({ status: 200, description: 'Lista de categorías con filtros opcionales' })
+  findAll(@Query() filters?: CategoryFiltersDto): Promise<Page<Category>> {
+    return this.productCategoryService.findAll(filters)
+  }
+
   @Delete(':categoryId')
   @ApiOperation({ summary: 'Borra una categoría' })
   @ApiResponse({ status: 200, description: 'Categoría eliminado correctamente.' })
-  delete(@Param('categoryId') categoryId: number) {
+  delete(@Param('categoryId', ParseIntPipe) categoryId: number) {
     return this.productCategoryService.delete(categoryId)
   }
 

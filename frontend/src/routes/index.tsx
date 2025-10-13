@@ -8,6 +8,7 @@ import { AdminLayout } from '@/modules/admin/layout'
 import { Route, Routes } from 'react-router-dom'
 import { DashboardPage } from '@/modules/admin/pages/dashboard'
 import { AdminProductPage } from '@/modules/admin/pages/product'
+import { AdminCategoryPage } from '@/modules/admin/pages/category'
 import { ProtectedRouteAuth } from './middleares/ProtectedRouteAuth'
 import { ProtectedRouteSession } from './middleares/ProtectedRouteSession'
 
@@ -23,7 +24,7 @@ export const Router = () => {
           <Route element={<DashboardPage />} path='/dashboard' />
           <Route element={<AdminProductPage />} path='/productos' />
           <Route element={<AdminProductPage />} path='/proveedores' />
-          <Route element={<AdminProductPage />} path='/categorias' />
+          <Route element={<AdminCategoryPage />} path='/categorias' />
           <Route element={<AdminProductPage />} path='/catalogos' />
           <Route element={<AdminProductPage />} path='/ventas' />
         </Route>
