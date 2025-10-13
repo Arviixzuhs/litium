@@ -52,17 +52,17 @@ export const AdminCategoryPage = () => {
     create: async () => {
       await reqCreateCategory(table.formData)
       dispatch(addItem(table.formData))
-      toast.success('Categoría creado correctamente')
+      toast.success('Categoría creada correctamente')
     },
     delete: async () => {
       await reqDeleteCategory(table.currentItemToDelete)
       dispatch(deleteItem(table.currentItemToDelete))
-      toast.success('Categoría eliminado correctamente')
+      toast.success('Categoría eliminada correctamente')
     },
     update: async () => {
       await reqUpdateCategory(table.currentItemToUpdate, table.formData)
       dispatch(updateItem({ id: table.currentItemToUpdate, newData: table.formData }))
-      toast.success('Categoría actualizado correctamente')
+      toast.success('Categoría actualizada correctamente')
     },
   }
 
