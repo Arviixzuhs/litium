@@ -1,13 +1,22 @@
 import { Prisma } from '@prisma/client'
 
+export interface ProductSpecificationBuild {
+  where: Prisma.ProductWhereInput
+  skip?: number
+  take?: number
+  include?: Prisma.ProductInclude
+  orderBy?: Prisma.ProductOrderByWithRelationInput
+}
+
 export class ProductSpecificationBuilder {
   private where: Prisma.ProductWhereInput = {}
   private skip?: number
   private take?: number
+  private include?: Prisma.ProductInclude
   private orderBy?: Prisma.ProductOrderByWithRelationInput
 
   withName(name?: string) {
-    if (name) {
+    if (name !== undefined) {
       this.where.name = { contains: name }
     }
 
@@ -75,6 +84,13 @@ export class ProductSpecificationBuilder {
     return this
   }
 
+  withInclude(include?: Prisma.ProductInclude) {
+    if (include) {
+      this.include = include
+    }
+    return this
+  }
+
   withCategoryName(categoryName?: string) {
     if (categoryName) {
       this.where.categories = {
@@ -90,16 +106,12 @@ export class ProductSpecificationBuilder {
     return this
   }
 
-  build(): {
-    where: Prisma.ProductWhereInput
-    skip?: number
-    take?: number
-    orderBy?: Prisma.ProductOrderByWithRelationInput
-  } {
+  build(): ProductSpecificationBuild {
     return {
       where: this.where,
       skip: this.skip,
       take: this.take,
+      include: this.include,
       orderBy: this.orderBy,
     }
   }

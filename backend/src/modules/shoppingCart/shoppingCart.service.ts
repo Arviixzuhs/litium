@@ -14,10 +14,8 @@ export class ShoppingCartService {
     private readonly productService: ProductsService,
   ) {}
 
-  private readonly shoppingCartSpecificationBuilder: ShoppingCartSpecificationBuilder
-
   findAll(userId: number, page: number, size: number) {
-    const query = this.shoppingCartSpecificationBuilder
+    const query = new ShoppingCartSpecificationBuilder()
       .withIsDeleted(false)
       .withPagination(page, size)
       .withUserId(userId)
@@ -152,7 +150,7 @@ export class ShoppingCartService {
   }
 
   private async findCurrentShoppingCart(userId: number) {
-    const query = this.shoppingCartSpecificationBuilder
+    const query = new ShoppingCartSpecificationBuilder()
       .withIsDeleted(false)
       .withUserId(userId)
       .withInclude({

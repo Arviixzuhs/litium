@@ -1,0 +1,112 @@
+import { useState } from 'react'
+import { Link, useLocation } from 'react-router-dom'
+import {
+  Truck,
+  Package,
+  BookOpen,
+  FolderTree,
+  ChevronLeft,
+  ChevronRight,
+  ShoppingCart,
+  LayoutDashboard,
+} from 'lucide-react'
+import { cn } from '@heroui/theme'
+import { Button } from '@heroui/button'
+import { RootState } from '@/store'
+import { useSelector } from 'react-redux'
+
+const menuItems = [
+  {
+    title: 'Dashboard',
+    icon: LayoutDashboard,
+    href: '/dashboard',
+  },
+  {
+    title: 'Productos',
+    icon: Package,
+    href: '/productos',
+  },
+  {
+    title: 'Proveedores',
+    icon: Truck,
+    href: '/proveedores',
+  },
+  {
+    title: 'Categorías',
+    icon: FolderTree,
+    href: '/categorias',
+  },
+  {
+    title: 'Catálogos',
+    icon: BookOpen,
+    href: '/catalogos',
+  },
+  {
+    title: 'Ventas',
+    icon: ShoppingCart,
+    href: '/ventas',
+  },
+]
+
+export const AdminSidebar = () => {
+  const [isCollapsed, setIsCollapsed] = useState(false)
+  const pathname = useLocation().pathname
+  const user = useSelector((state: RootState) => state.user)
+
+  return (
+    <aside
+      className={cn(
+        'relative flex h-screen flex-col border-gray-300 border-r transition-all duration-300',
+        isCollapsed ? 'w-16' : 'w-64',
+      )}
+    >
+      <div className='flex h-16 items-center justify-between border-gray-300 border-b px-4'>
+        {!isCollapsed && <h2 className='text-lg font-semibold text-nowrap'>Litium C.A</h2>}
+        <Button
+          variant='light'
+          isIconOnly
+          onPress={() => setIsCollapsed(!isCollapsed)}
+          className={cn('h-8 w-8 hover:bg-sidebar-accent', isCollapsed && 'mx-auto')}
+        >
+          {isCollapsed ? <ChevronRight className='h-4 w-4' /> : <ChevronLeft className='h-4 w-4' />}
+        </Button>
+      </div>
+      <nav className='flex-1 space-y-1 p-2'>
+        {menuItems.map((item) => {
+          const Icon = item.icon
+          const isActive = pathname === item.href
+          return (
+            <Link
+              key={item.href}
+              to={item.href}
+              className={cn(
+                'hover:bg-primary hover:text-white flex items-center gap-3 rounded-lg px-3 py-2.5 text-sm font-medium transition-colors',
+                isActive ? 'bg-primary text-white' : '',
+                isCollapsed && 'justify-center',
+              )}
+              title={isCollapsed ? item.title : undefined}
+            >
+              <Icon className='h-5 w-5 flex-shrink-0' />
+              {!isCollapsed && <span>{item.title}</span>}
+            </Link>
+          )
+        })}
+      </nav>
+      <div className='border-gray-300 border-t p-4'>
+        <div className={cn('flex items-center gap-3', isCollapsed && 'justify-center')}>
+          <div className='flex h-8 w-8 items-center justify-center rounded-full bg-sidebar-primary text-sidebar-primary-foreground'>
+            <span className='text-sm font-semibold'>{user?.name.charAt(0)}</span>
+          </div>
+          {!isCollapsed && (
+            <div className='flex-1 overflow-hidden'>
+              <p className='truncate text-sm font-medium'>
+                {user?.name} {user?.lastName}
+              </p>
+              <p className='truncate text-xs'>{user?.email}</p>
+            </div>
+          )}
+        </div>
+      </div>
+    </aside>
+  )
+}

@@ -1,10 +1,9 @@
 import React from 'react'
-import { Navbar } from '@/components/Navbar'
-import { Footer } from '@/modules/home/components/Footer'
 import { Outlet } from 'react-router-dom'
 import { useLocation } from 'react-router-dom'
+import { AdminSidebar } from '../components/Sidebar'
 
-export const Layout = () => {
+export const AdminLayout = () => {
   const location = useLocation()
 
   React.useEffect(() => {
@@ -12,12 +11,11 @@ export const Layout = () => {
   }, [location])
 
   return (
-    <>
-      <Navbar />
-      <div className='max-w-5xl w-full mx-auto px-4'>
+    <div className='flex h-screen overflow-hidden'>
+      <AdminSidebar />
+      <div className='flex-1 h-full w-full mx-auto p-4'>
         <Outlet />
       </div>
-      <Footer />
-    </>
+    </div>
   )
 }

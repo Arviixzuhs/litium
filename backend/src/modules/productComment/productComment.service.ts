@@ -11,12 +11,10 @@ export class ProductCommentService {
     private readonly productService: ProductsService,
   ) {}
 
-  private readonly productCommentSpecificationBuilder: ProductCommentSpecificationBuilder
-
   async findAll(id: number, page: number, size: number) {
     await this.productService.findBy(id)
 
-    const query = this.productCommentSpecificationBuilder
+    const query = new ProductCommentSpecificationBuilder()
       .withProductId(id)
       .withIsDeleted(false)
       .withPagination(page, size)

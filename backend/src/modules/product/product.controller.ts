@@ -2,7 +2,7 @@ import { ProductsService } from './product.service'
 import { ProductFilterDto } from './dto/productfilters.dto'
 import { CreateProductDto } from './dto/create-product.dto'
 import { UpdateProductDto } from './dto/update-product.dto'
-import { ApiTags, ApiOperation, ApiResponse, ApiParam } from '@nestjs/swagger'
+import { ApiTags, ApiOperation, ApiResponse, ApiParam, ApiBearerAuth } from '@nestjs/swagger'
 import {
   Get,
   Post,
@@ -14,9 +14,12 @@ import {
   Controller,
   ParseIntPipe,
 } from '@nestjs/common'
+import { Page } from '@/types/Page'
+import { Product } from '@prisma/client'
 
 @ApiTags('Products')
-@Controller('products')
+@Controller('product')
+@ApiBearerAuth()
 export class ProductsController {
   constructor(private readonly productsService: ProductsService) {}
 
@@ -29,8 +32,8 @@ export class ProductsController {
 
   @Get()
   @ApiOperation({ summary: 'Obtener todos los productos' })
-  @ApiResponse({ status: 200, description: 'Lista de productos.' })
-  findAll(@Query() filters?: ProductFilterDto) {
+  @ApiResponse({ status: 200, description: 'Lista de productos con filtros opcionales' })
+  findAll(@Query() filters?: ProductFilterDto): Promise<Page<Product>> {
     return this.productsService.findAll(filters)
   }
 

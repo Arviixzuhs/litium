@@ -11,10 +11,8 @@ export class ProductCatalogService {
     private readonly productsService: ProductsService,
   ) {}
 
-  private readonly productCatalogSpecificationBuilder: ProductCatalogSpecificationBuilder
-
   async findAll(name: string, page: number, size: number) {
-    const query = this.productCatalogSpecificationBuilder
+    const query = new ProductCatalogSpecificationBuilder()
       .withName(name)
       .withIsDeleted(false)
       .withPagination(page, size)
