@@ -50,8 +50,8 @@ export const AdminCategoryPage = () => {
 
   const tableActions: AppTableActions = {
     create: async () => {
-      await reqCreateCategory(table.formData)
-      dispatch(addItem(table.formData))
+      const response = await reqCreateCategory(table.formData)
+      dispatch(addItem(response.data))
       toast.success('Categoría creada correctamente')
     },
     delete: async () => {
