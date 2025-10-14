@@ -19,15 +19,15 @@ export class ProductCatalogService {
   ) {}
 
   async findAll(filters: FindCatalogsDto): Promise<Page<Catalog>> {
-  const query = new ProductCatalogSpecificationBuilder()
-    .withName(filters.name)
-    .withIsDeleted(false)
-    .withPagination(filters.page, filters.size)
-    .withOrderBy({ createdAt: 'desc' })
-    .build()
+    const query = new ProductCatalogSpecificationBuilder()
+      .withName(filters.name)
+      .withIsDeleted(false)
+      .withPagination(filters.page, filters.size)
+      .withOrderBy({ createdAt: 'desc' })
+      .build()
 
-  return this.page(query, filters)
-}
+    return this.page(query, filters)
+  }
 
   create(data: CatalogDto) {
     return this.prisma.catalog.create({
@@ -59,18 +59,18 @@ export class ProductCatalogService {
   }
 
   async update(catalogId: number, dto: UpdateCatalogDto) {
-      await this.findBy(catalogId)
-  
-      return this.prisma.product.update({
-        where: {
-          id : catalogId,
-        },
-        data: {
-          ...dto,
-          updatedAt: new Date(),
-        },
-      })
-    }
+    await this.findBy(catalogId)
+
+    return this.prisma.catalog.update({
+      where: {
+        id: catalogId,
+      },
+      data: {
+        ...dto,
+        updatedAt: new Date(),
+      },
+    })
+  }
 
   async delete(catalogId: number) {
     await this.findBy(catalogId)
