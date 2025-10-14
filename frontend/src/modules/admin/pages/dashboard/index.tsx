@@ -143,7 +143,7 @@ export const DashboardPage = () => {
                   <Area
                     type='monotone'
                     dataKey='ventas'
-                    stroke='rgb(59, 130, 246)'
+                    stroke='var(--primary)'
                     strokeWidth={3}
                     fillOpacity={1}
                     fill='url(#colorVentas)'

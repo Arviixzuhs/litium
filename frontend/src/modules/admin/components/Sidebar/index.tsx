@@ -94,7 +94,7 @@ export const AdminSidebar = () => {
       </nav>
       <div className='border-gray-300 border-t p-4'>
         <div className={cn('flex items-center gap-3', isCollapsed && 'justify-center')}>
-          <div className='flex h-8 w-8 items-center justify-center rounded-full bg-sidebar-primary text-sidebar-primary-foreground'>
+          <div className='flex h-8 w-8 items-center justify-center rounded-full bg-primary text-sidebar-primary-foreground'>
             <span className='text-sm font-semibold'>{user?.name.charAt(0)}</span>
           </div>
           {!isCollapsed && (
