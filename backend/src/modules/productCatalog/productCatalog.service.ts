@@ -61,7 +61,7 @@ export class ProductCatalogService {
   async update(catalogId: number, dto: UpdateCatalogDto) {
     await this.findBy(catalogId)
 
-    return this.prisma.product.update({
+    return this.prisma.catalog.update({
       where: {
         id: catalogId,
       },
@@ -110,3 +110,4 @@ export class ProductCatalogService {
     }
   }
 }
+

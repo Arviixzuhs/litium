@@ -21,12 +21,7 @@ export const ConfirmDeleteModal = ({ handleDelete }: ConfirmDeleteModalProps) =>
   }
 
   return (
-    <Modal
-      isOpen={table.isConfirmDeleteModalOpen}
-      onClose={toggleDeleteModal}
-      backdrop='blur'
-      placement='center'
-    >
+    <Modal isOpen={table.isConfirmDeleteModalOpen} onClose={toggleDeleteModal} placement='center'>
       <ModalContent onClick={(e) => e.stopPropagation()}>
         <ModalHeader className='flex justify-center'>Mensaje importante</ModalHeader>
         <ModalBody className='text-center'>

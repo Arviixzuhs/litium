@@ -6,12 +6,7 @@ import { useDebounce } from 'use-debounce'
 import { AppTableActions } from '@/components/AppTable/interfaces/appTable'
 import { useDispatch, useSelector } from 'react-redux'
 import { tableColumns, modalInputs } from './data'
-import { 
-  reqCreateCatalog, 
-  reqDeleteCatalog, 
-  reqGetCatalogs, 
-  reqUpdateCatalog 
-} from './services'
+import { reqCreateCatalog, reqDeleteCatalog, reqGetCatalogs, reqUpdateCatalog } from './services'
 import {
   addItem,
   updateItem,
@@ -50,8 +45,8 @@ export const AdminCatalogPage = () => {
 
   const tableActions: AppTableActions = {
     create: async () => {
-      await reqCreateCatalog(table.formData)
-      dispatch(addItem(table.formData))
+      const response = await reqCreateCatalog(table.formData)
+      dispatch(addItem(response.data))
       toast.success('Catalogo creado correctamente')
     },
     delete: async () => {

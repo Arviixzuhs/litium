@@ -56,8 +56,8 @@ export const AdminSidebar = () => {
   return (
     <aside
       className={cn(
-        'relative flex h-screen flex-col border-gray-300 border-r transition-all duration-300',
-        isCollapsed ? 'w-16' : 'w-64',
+        'absolute flex h-screen sm:relative bg-sidebar z-50 flex-col border-gray-300 border-r transition-all duration-300',
+        isCollapsed ? 'w-16' : 'w-82',
       )}
     >
       <div className='flex h-16 items-center justify-between border-gray-300 border-b px-4'>
@@ -94,7 +94,7 @@ export const AdminSidebar = () => {
       </nav>
       <div className='border-gray-300 border-t p-4'>
         <div className={cn('flex items-center gap-3', isCollapsed && 'justify-center')}>
-          <div className='flex h-8 w-8 items-center justify-center rounded-full bg-sidebar-primary text-sidebar-primary-foreground'>
+          <div className='flex h-8 w-8 items-center justify-center rounded-full bg-primary text-sidebar-primary-foreground'>
             <span className='text-sm font-semibold'>{user?.name.charAt(0)}</span>
           </div>
           {!isCollapsed && (

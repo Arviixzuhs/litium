@@ -45,8 +45,8 @@ export const AdminProductPage = () => {
 
   const tableActions: AppTableActions = {
     create: async () => {
-      await reqCreateProduct(table.formData)
-      dispatch(addItem(table.formData))
+      const response = await reqCreateProduct(table.formData)
+      dispatch(addItem(response.data))
       toast.success('Producto creado correctamente')
     },
     delete: async () => {
