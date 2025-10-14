@@ -31,7 +31,7 @@ export class ProductCategoryController {
   }
 
   @Get()
-  @ApiOperation({ summary: 'Obtener todos los categorías' })
+  @ApiOperation({ summary: 'Obtener todos las categorías' })
   @ApiResponse({ status: 200, description: 'Lista de categorías con filtros opcionales' })
   findAll(@Query() filters?: CategoryFiltersDto): Promise<Page<Category>> {
     return this.productCategoryService.findAll(filters)
