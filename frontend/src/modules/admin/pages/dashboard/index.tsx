@@ -1,192 +1,196 @@
+'use client'
+
 import { Card, CardBody, CardHeader } from '@heroui/react'
 import {
-  Package,
-  Truck,
-  FolderTree,
-  BookOpen,
+  ArrowDownRight,
+  ArrowUpRight,
+  DollarSign,
   ShoppingCart,
   TrendingUp,
-  DollarSign,
   Users,
-  ArrowUpRight,
-  ArrowDownRight,
 } from 'lucide-react'
+import {
+  Area,
+  AreaChart,
+  Bar,
+  BarChart,
+  CartesianGrid,
+  ResponsiveContainer,
+  XAxis,
+  YAxis,
+} from 'recharts'
+
+const salesData = [
+  { month: 'Ene', ventas: 45000, objetivo: 40000 },
+  { month: 'Feb', ventas: 52000, objetivo: 45000 },
+  { month: 'Mar', ventas: 48000, objetivo: 50000 },
+  { month: 'Abr', ventas: 61000, objetivo: 55000 },
+  { month: 'May', ventas: 55000, objetivo: 58000 },
+  { month: 'Jun', ventas: 67000, objetivo: 62000 },
+]
+
+const categoryData = [
+  { name: 'Electrónica', value: 35 },
+  { name: 'Hogar', value: 28 },
+  { name: 'Ropa', value: 22 },
+  { name: 'Deportes', value: 15 },
+]
 
 export const DashboardPage = () => {
   const stats = [
     {
       title: 'Ventas Totales',
-      value: '$45,231',
-      change: '+20.1%',
+      value: '$328,500',
+      change: '+23.5%',
       trend: 'up',
       icon: DollarSign,
-    },
-    {
-      title: 'Productos',
-      value: '234',
-      change: '+12',
-      trend: 'up',
-      icon: Package,
-    },
-    {
-      title: 'Proveedores',
-      value: '18',
-      change: '+2',
-      trend: 'up',
-      icon: Truck,
-    },
-    {
-      title: 'Categorías',
-      value: '12',
-      change: '0',
-      trend: 'neutral',
-      icon: FolderTree,
-    },
-  ]
-
-  const recentActivity = [
-    {
-      title: 'Catálogos Activos',
-      value: '8',
-      description: 'Catálogos publicados',
-      icon: BookOpen,
-    },
-    {
-      title: 'Ventas del Mes',
-      value: '156',
-      description: 'Transacciones completadas',
-      icon: ShoppingCart,
-    },
-    {
-      title: 'Crecimiento',
-      value: '+18%',
-      description: 'Comparado con el mes anterior',
-      icon: TrendingUp,
+      description: 'vs. mes anterior',
     },
     {
       title: 'Clientes Activos',
-      value: '89',
-      description: 'Clientes con compras recientes',
+      value: '1,429',
+      change: '+12.3%',
+      trend: 'up',
       icon: Users,
+      description: 'nuevos este mes',
+    },
+    {
+      title: 'Pedidos',
+      value: '892',
+      change: '+8.2%',
+      trend: 'up',
+      icon: ShoppingCart,
+      description: 'completados',
+    },
+    {
+      title: 'Tasa de Conversión',
+      value: '3.24%',
+      change: '-2.1%',
+      trend: 'down',
+      icon: TrendingUp,
+      description: 'del tráfico total',
     },
   ]
 
   return (
-    <div className='flex h-screen'>
-      <main className='flex-1 overflow-auto bg-background p-8'>
-        <div className='mx-auto max-w-7xl space-y-8'>
-          <div>
-            <h1 className='mb-2 text-3xl font-bold tracking-tight'>Dashboard</h1>
-            <p className='text-muted-foreground'>
-              Vista general de tu negocio y métricas principales
-            </p>
-          </div>
-
-          <div className='grid gap-4 md:grid-cols-2 lg:grid-cols-4'>
-            {stats.map((stat) => {
-              const Icon = stat.icon
-              return (
-                <Card key={stat.title}>
-                  <CardHeader className='flex flex-row items-center justify-between space-y-0 pb-2'>
-                    <h3 className='text-sm font-medium'>{stat.title}</h3>
-                    <Icon className='h-4 w-4 text-muted-foreground' />
-                  </CardHeader>
-                  <CardBody>
-                    <div className='text-2xl font-bold'>{stat.value}</div>
-                    <div className='flex items-center text-xs text-muted-foreground'>
-                      {stat.trend === 'up' ? (
-                        <ArrowUpRight className='mr-1 h-4 w-4 text-green-500' />
-                      ) : stat.trend === 'down' ? (
-                        <ArrowDownRight className='mr-1 h-4 w-4 text-red-500' />
-                      ) : null}
-                      <span
-                        className={
-                          stat.trend === 'up'
-                            ? 'text-green-500'
-                            : stat.trend === 'down'
-                              ? 'text-red-500'
-                              : ''
-                        }
-                      >
-                        {stat.change}
-                      </span>
-                      <span className='ml-1'>desde el último mes</span>
+    <div className='flex gap-4 flex-col'>
+      <div className='grid gap-6 md:grid-cols-2 lg:grid-cols-4'>
+        {stats.map((stat) => {
+          const Icon = stat.icon
+          return (
+            <Card key={stat.title}>
+              <CardHeader className='flex flex-row items-center justify-between space-y-0 pb-3'>
+                <h3 className='text-sm font-medium text-muted-foreground'>{stat.title}</h3>
+                <div className='rounded-lg bg-primary/10 p-2'>
+                  <Icon className='h-5 w-5 text-primary' />
+                </div>
+              </CardHeader>
+              <CardBody>
+                <div className='text-3xl font-bold text-foreground'>{stat.value}</div>
+                <div className='mt-2 flex items-center gap-2 text-sm'>
+                  {stat.trend === 'up' ? (
+                    <div className='flex items-center gap-1 text-emerald-600'>
+                      <ArrowUpRight className='h-4 w-4' />
+                      <span className='font-medium'>{stat.change}</span>
                     </div>
-                  </CardBody>
-                </Card>
-              )
-            })}
-          </div>
+                  ) : (
+                    <div className='flex items-center gap-1 text-rose-600'>
+                      <ArrowDownRight className='h-4 w-4' />
+                      <span className='font-medium'>{stat.change}</span>
+                    </div>
+                  )}
+                  <span className='text-muted-foreground'>{stat.description}</span>
+                </div>
+              </CardBody>
+            </Card>
+          )
+        })}
+      </div>
 
-          <div>
-            <h2 className='mb-4 text-xl font-semibold'>Actividad Reciente</h2>
-            <div className='grid gap-4 md:grid-cols-2 lg:grid-cols-4'>
-              {recentActivity.map((item) => {
-                const Icon = item.icon
-                return (
-                  <Card key={item.title}>
-                    <CardHeader className='flex flex-row items-center justify-between space-y-0 pb-2'>
-                      <h3 className='text-sm font-medium'>{item.title}</h3>
-                      <Icon className='h-4 w-4 text-muted-foreground' />
-                    </CardHeader>
-                    <CardBody>
-                      <div className='text-2xl font-bold'>{item.value}</div>
-                      <p className='text-xs text-muted-foreground'>{item.description}</p>
-                    </CardBody>
-                  </Card>
-                )
-              })}
+      <div className='grid gap-6 lg:grid-cols-2'>
+        <Card>
+          <CardHeader className='font-bold'>Ventas Mensuales</CardHeader>
+          <CardBody>
+            <ResponsiveContainer width='100%' height='100%'>
+              <AreaChart data={salesData}>
+                <defs>
+                  <linearGradient id='colorVentas' x1='0' y1='0' x2='0' y2='1'>
+                    <stop offset='5%' stopColor='rgb(59, 130, 246)' stopOpacity={0.4} />
+                    <stop offset='95%' stopColor='rgb(59, 130, 246)' stopOpacity={0.05} />
+                  </linearGradient>
+                  <linearGradient id='colorObjetivo' x1='0' y1='0' x2='0' y2='1'>
+                    <stop offset='5%' stopColor='rgb(147, 197, 253)' stopOpacity={0.4} />
+                    <stop offset='95%' stopColor='rgb(147, 197, 253)' stopOpacity={0.05} />
+                  </linearGradient>
+                </defs>
+                <CartesianGrid strokeDasharray='3 3' className='stroke-muted' opacity={0.3} />
+                <XAxis
+                  dataKey='month'
+                  className='text-muted-foreground'
+                  fontSize={12}
+                  tickLine={false}
+                  axisLine={false}
+                />
+                <YAxis
+                  className='text-muted-foreground'
+                  fontSize={12}
+                  tickLine={false}
+                  axisLine={false}
+                  tickFormatter={(value) => `$${value / 1000}k`}
+                />
+
+                <Area
+                  type='monotone'
+                  dataKey='ventas'
+                  stroke='rgb(59, 130, 246)'
+                  strokeWidth={3}
+                  fillOpacity={1}
+                  fill='url(#colorVentas)'
+                />
+                <Area
+                  type='monotone'
+                  dataKey='objetivo'
+                  stroke='rgb(147, 197, 253)'
+                  strokeWidth={2}
+                  strokeDasharray='5 5'
+                  fillOpacity={1}
+                  fill='url(#colorObjetivo)'
+                />
+              </AreaChart>
+            </ResponsiveContainer>
+          </CardBody>
+        </Card>
+
+        {/* Category Chart */}
+        <Card>
+          <CardHeader className='font-bold'>Ventas por Categoría</CardHeader>
+          <CardBody>
+            <div className='h-[300px] w-full'>
+              <ResponsiveContainer width='100%' height='100%'>
+                <BarChart data={categoryData}>
+                  <CartesianGrid strokeDasharray='3 3' className='stroke-muted' opacity={0.3} />
+                  <XAxis
+                    dataKey='name'
+                    className='text-muted-foreground'
+                    fontSize={12}
+                    tickLine={false}
+                    axisLine={false}
+                  />
+                  <YAxis
+                    className='text-muted-foreground'
+                    fontSize={12}
+                    tickLine={false}
+                    axisLine={false}
+                    tickFormatter={(value) => `${value}%`}
+                  />
+
+                  <Bar dataKey='value' fill='rgb(96, 165, 250)' radius={[8, 8, 0, 0]} />
+                </BarChart>
+              </ResponsiveContainer>
             </div>
-          </div>
-
-          <div>
-            <h2 className='mb-4 text-xl font-semibold'>Acceso Rápido</h2>
-            <div className='grid gap-4 md:grid-cols-2 lg:grid-cols-3'>
-              <Card className='cursor-pointer transition-colors hover:bg-accent'>
-                <CardHeader>
-                  <h3 className='flex items-center gap-2'>
-                    <Package className='h-5 w-5' />
-                    Gestionar Productos
-                  </h3>
-                </CardHeader>
-                <CardBody>
-                  <p className='text-sm text-muted-foreground'>
-                    Añade, edita o elimina productos de tu inventario
-                  </p>
-                </CardBody>
-              </Card>
-
-              <Card className='cursor-pointer transition-colors hover:bg-accent'>
-                <CardHeader>
-                  <h3 className='flex items-center gap-2'>
-                    <ShoppingCart className='h-5 w-5' />
-                    Nueva Venta
-                  </h3>
-                </CardHeader>
-                <CardBody>
-                  <p className='text-sm text-muted-foreground'>
-                    Registra una nueva transacción de venta
-                  </p>
-                </CardBody>
-              </Card>
-
-              <Card className='cursor-pointer transition-colors hover:bg-accent'>
-                <CardHeader>
-                  <h3 className='flex items-center gap-2'>
-                    <BookOpen className='h-5 w-5' />
-                    Ver Catálogos
-                  </h3>
-                </CardHeader>
-                <CardBody>
-                  <p className='text-sm text-muted-foreground'>
-                    Consulta y administra tus catálogos activos
-                  </p>
-                </CardBody>
-              </Card>
-            </div>
-          </div>
-        </div>
-      </main>
+          </CardBody>
+        </Card>
+      </div>
     </div>
   )
 }

@@ -1,6 +1,7 @@
 import React from 'react'
 import { Outlet } from 'react-router-dom'
 import { useLocation } from 'react-router-dom'
+import { AdminNavbar } from '../components/Navbar'
 import { AdminSidebar } from '../components/Sidebar'
 
 export const AdminLayout = () => {
@@ -11,10 +12,13 @@ export const AdminLayout = () => {
   }, [location])
 
   return (
-    <div className='flex h-screen overflow-hidden'>
+    <div className='flex h-screen'>
       <AdminSidebar />
-      <div className='flex-1 h-full w-full mx-auto p-4'>
-        <Outlet />
+      <div className='flex flex-col h-full w-full'>
+        <AdminNavbar />
+        <div className='h-full w-full p-4 pl-20 sm:pl-4 overflow-auto'>
+          <Outlet />
+        </div>
       </div>
     </div>
   )

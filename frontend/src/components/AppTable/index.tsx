@@ -1,13 +1,15 @@
+import React from 'react'
 import type { RootState } from '@/store'
 import { TopContent } from './components/TopContent'
 import { RenderCell } from './components/RenderCell'
-import { useSelector } from 'react-redux'
+import { useLocation } from 'react-router-dom'
 import { AddItemModal } from './components/AddItemModal'
 import { EditItemModal } from './components/EditItemModal'
 import { TablePagination } from './components/Pagination'
 import { ConfirmDeleteModal } from './components/ConfirmDeleteModal'
 import type { AppTableActions } from './interfaces/appTable'
-import type { TableColumnInterface } from '@/features/appTableSlice'
+import { useDispatch, useSelector } from 'react-redux'
+import { setFilterValue, type TableColumnInterface } from '@/features/appTableSlice'
 import { Table, TableBody, TableCell, TableColumn, TableHeader, TableRow } from '@heroui/react'
 
 export interface AppTableProps {
@@ -15,7 +17,13 @@ export interface AppTableProps {
 }
 
 export const AppTable = ({ tableActions }: AppTableProps) => {
+  const location = useLocation()
+  const dispatch = useDispatch()
   const table = useSelector((state: RootState) => state.appTable)
+
+  React.useEffect(() => {
+    dispatch(setFilterValue(''))
+  }, [location])
 
   return (
     <>

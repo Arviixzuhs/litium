@@ -56,8 +56,8 @@ export const AdminSidebar = () => {
   return (
     <aside
       className={cn(
-        'relative flex h-screen flex-col border-gray-300 border-r transition-all duration-300',
-        isCollapsed ? 'w-16' : 'w-64',
+        'absolute flex h-screen sm:relative bg-sidebar z-50 flex-col border-gray-300 border-r transition-all duration-300',
+        isCollapsed ? 'w-16' : 'w-82',
       )}
     >
       <div className='flex h-16 items-center justify-between border-gray-300 border-b px-4'>

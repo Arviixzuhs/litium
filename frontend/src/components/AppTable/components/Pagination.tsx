@@ -1,4 +1,3 @@
-import React from 'react'
 import { RootState } from '@/store'
 import { Pagination } from '@heroui/react'
 import { RowsPerPage } from './RowsPerPage'
@@ -12,12 +11,6 @@ export const TablePagination = () => {
   const handlePagination = (page: number) => {
     dispatch(setCurrentPage(page - 1))
   }
-
-  React.useEffect(() => {
-    if (table.data.length === 0 && table.currentPage !== 0) {
-      dispatch(setCurrentPage(0))
-    }
-  }, [table.data, table.currentPage])
 
   return (
     <div className='flex gap-2'>
