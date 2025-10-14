@@ -16,7 +16,10 @@ import { RequestLoggerMiddleware } from '@/middlewares/request.logger.middleware
 import { ProductCommentController } from '@/modules/productComment/productComment.controller'
 import { ProductCatalogController } from '@/modules/productCatalog/productCatalog.controller'
 import { ProductCategoryController } from '@/modules/productCategory/productCategory.controller'
+import { ProductSupplierController } from './modules/productSupplier/productSupplier.controller'
 import { MiddlewareConsumer, Module, NestModule } from '@nestjs/common'
+import { ProductSupplierModule } from './modules/productSupplier/productSupplier.module'
+
 
 @Module({
   imports: [
@@ -29,6 +32,7 @@ import { MiddlewareConsumer, Module, NestModule } from '@nestjs/common'
     ProductCommentModule,
     ProductCatalogModule,
     ProductCategoryModule,
+    ProductSupplierModule,
   ],
   controllers: [AppController],
   providers: [],
@@ -44,6 +48,7 @@ export class AppModule implements NestModule {
         ProductCommentController,
         ProductCatalogController,
         ProductCategoryController,
+        ProductSupplierController,
       )
     consumer.apply(RequestLoggerMiddleware).forRoutes('*')
   }
