@@ -111,53 +111,55 @@ export const DashboardPage = () => {
         <Card>
           <CardHeader className='font-bold'>Ventas Mensuales</CardHeader>
           <CardBody>
-            <ResponsiveContainer width='100%' height='100%'>
-              <AreaChart data={salesData}>
-                <defs>
-                  <linearGradient id='colorVentas' x1='0' y1='0' x2='0' y2='1'>
-                    <stop offset='5%' stopColor='rgb(59, 130, 246)' stopOpacity={0.4} />
-                    <stop offset='95%' stopColor='rgb(59, 130, 246)' stopOpacity={0.05} />
-                  </linearGradient>
-                  <linearGradient id='colorObjetivo' x1='0' y1='0' x2='0' y2='1'>
-                    <stop offset='5%' stopColor='rgb(147, 197, 253)' stopOpacity={0.4} />
-                    <stop offset='95%' stopColor='rgb(147, 197, 253)' stopOpacity={0.05} />
-                  </linearGradient>
-                </defs>
-                <CartesianGrid strokeDasharray='3 3' className='stroke-muted' opacity={0.3} />
-                <XAxis
-                  dataKey='month'
-                  className='text-muted-foreground'
-                  fontSize={12}
-                  tickLine={false}
-                  axisLine={false}
-                />
-                <YAxis
-                  className='text-muted-foreground'
-                  fontSize={12}
-                  tickLine={false}
-                  axisLine={false}
-                  tickFormatter={(value) => `$${value / 1000}k`}
-                />
+            <div className='h-[300px] w-full'>
+              <ResponsiveContainer width='100%' height='100%'>
+                <AreaChart data={salesData}>
+                  <defs>
+                    <linearGradient id='colorVentas' x1='0' y1='0' x2='0' y2='1'>
+                      <stop offset='5%' stopColor='rgb(59, 130, 246)' stopOpacity={0.4} />
+                      <stop offset='95%' stopColor='rgb(59, 130, 246)' stopOpacity={0.05} />
+                    </linearGradient>
+                    <linearGradient id='colorObjetivo' x1='0' y1='0' x2='0' y2='1'>
+                      <stop offset='5%' stopColor='rgb(147, 197, 253)' stopOpacity={0.4} />
+                      <stop offset='95%' stopColor='rgb(147, 197, 253)' stopOpacity={0.05} />
+                    </linearGradient>
+                  </defs>
+                  <CartesianGrid strokeDasharray='3 3' className='stroke-muted' opacity={0.3} />
+                  <XAxis
+                    dataKey='month'
+                    className='text-muted-foreground'
+                    fontSize={12}
+                    tickLine={false}
+                    axisLine={false}
+                  />
+                  <YAxis
+                    className='text-muted-foreground'
+                    fontSize={12}
+                    tickLine={false}
+                    axisLine={false}
+                    tickFormatter={(value) => `$${value / 1000}k`}
+                  />
 
-                <Area
-                  type='monotone'
-                  dataKey='ventas'
-                  stroke='rgb(59, 130, 246)'
-                  strokeWidth={3}
-                  fillOpacity={1}
-                  fill='url(#colorVentas)'
-                />
-                <Area
-                  type='monotone'
-                  dataKey='objetivo'
-                  stroke='rgb(147, 197, 253)'
-                  strokeWidth={2}
-                  strokeDasharray='5 5'
-                  fillOpacity={1}
-                  fill='url(#colorObjetivo)'
-                />
-              </AreaChart>
-            </ResponsiveContainer>
+                  <Area
+                    type='monotone'
+                    dataKey='ventas'
+                    stroke='rgb(59, 130, 246)'
+                    strokeWidth={3}
+                    fillOpacity={1}
+                    fill='url(#colorVentas)'
+                  />
+                  <Area
+                    type='monotone'
+                    dataKey='objetivo'
+                    stroke='rgb(147, 197, 253)'
+                    strokeWidth={2}
+                    strokeDasharray='5 5'
+                    fillOpacity={1}
+                    fill='url(#colorObjetivo)'
+                  />
+                </AreaChart>
+              </ResponsiveContainer>
+            </div>
           </CardBody>
         </Card>
 
