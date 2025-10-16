@@ -85,7 +85,16 @@ model Product {
   comments          Comment[]
   categories        Product_x_Category[]
   shoppingCarts     ShoppingCartProduct[]
+  specifications    ProductSpecifications[]
   product_x_catalog Product_x_Catalog[]
+}
+
+model ProductSpecifications {
+  id        Int     @id @default(autoincrement())
+  title     String  @db.VarChar(100)
+  value     String  @db.VarChar(180)
+  product   Product @relation(fields: [productId], references: [id], onDelete: Cascade)
+  productId Int
 }
 
 model ImageProduct {
@@ -144,12 +153,13 @@ model Product_x_Category {
 // =======================
 
 model Comment {
-  id        Int       @id @default(autoincrement())
-  userId    Int
-  comment   String    @db.VarChar(250)
-  productId Int
-  isDeleted Boolean?
-  deletedAt DateTime?
+  id            Int       @id @default(autoincrement())
+  userId        Int
+  comment       String    @db.VarChar(250)
+  productId     Int
+  isDeleted     Boolean?
+  deletedAt     DateTime?
+  qualification Int
 
   user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
   product   Product  @relation(fields: [productId], references: [id], onDelete: Cascade)
@@ -237,7 +247,7 @@ model Message {
   isEdited       Boolean?  @default(false)
   isDeleted      Boolean?  @default(false)
   deletedAt      DateTime?
-  editedAt      DateTime?
+  editedAt       DateTime?
   createdAt      DateTime? @default(now())
   shoppingCartId Int
 
