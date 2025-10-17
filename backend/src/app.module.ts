@@ -18,9 +18,9 @@ import { RequestLoggerMiddleware } from '@/middlewares/request.logger.middleware
 import { ProductCommentController } from '@/modules/productComment/productComment.controller'
 import { ProductCatalogController } from '@/modules/productCatalog/productCatalog.controller'
 import { ProductCategoryController } from '@/modules/productCategory/productCategory.controller'
-import { ProductCommentReplyModule } from './modules/ProductCommentReply/productCommentReply.module'
-import { ProductSupplierController } from './modules/productSupplier/productSupplier.controller'
-import { ProductCommentReplyController } from './modules/ProductCommentReply/productCommentReply.controller'
+import { ProductCommentReplyModule } from '@/modules/productCommentReply/productCommentReply.module'
+import { ProductSupplierController } from '@/modules/productSupplier/productSupplier.controller'
+import { ProductCommentReplyController } from '@/modules/productCommentReply/productCommentReply.controller'
 import { MiddlewareConsumer, Module, NestModule } from '@nestjs/common'
 
 @Module({
