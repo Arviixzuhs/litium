@@ -34,7 +34,7 @@ export const ProductPage = () => {
         id: product.id,
         name: product.name,
         price: product.price,
-        image: product.images?.[0].imageURL || '',
+        image: product.images?.[0]?.imageURL || '',
         quantity: 1,
         totalPrice: product.price,
       }),
