@@ -7,13 +7,13 @@ import { ProductPage } from '@/modules/product'
 import { AdminLayout } from '@/modules/admin/layout'
 import { Route, Routes } from 'react-router-dom'
 import { DashboardPage } from '@/modules/admin/pages/dashboard'
+import { PurchasesPage } from '@/modules/purchases'
 import { AdminProductPage } from '@/modules/admin/pages/product'
 import { AdminCatalogPage } from '@/modules/admin/pages/catalog'
 import { AdminSupplierPage } from '@/modules/admin/pages/supplier'
 import { AdminCategoryPage } from '@/modules/admin/pages/category'
 import { ProtectedRouteAuth } from './middleares/ProtectedRouteAuth'
 import { ProtectedRouteSession } from './middleares/ProtectedRouteSession'
-import { PurchasesPage } from '@/modules/purchases'
 
 export const Router = () => {
   return (
@@ -21,8 +21,8 @@ export const Router = () => {
       <Route element={<ProtectedRouteSession />}>
         <Route element={<Layout />}>
           <Route element={<HomePage />} path='/' />
-          <Route element={<PurchasesPage />} path='/purchases' />
           <Route element={<ProductPage />} path='/product/:productId' />
+          <Route element={<PurchasesPage />} path='/purchases' />
           <Route element={<Messages />} path='/messages/:cartId' />
         </Route>
         <Route element={<AdminLayout />}>
