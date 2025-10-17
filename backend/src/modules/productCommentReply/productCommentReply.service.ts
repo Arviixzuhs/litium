@@ -10,18 +10,6 @@ export class ProductCommentReplyService {
     private readonly productCommentService: ProductCommentService,
   ) {}
 
-  async findBy(id: number) {
-    const comment = await this.prisma.comment.findFirst({
-      where: {
-        id,
-        isDeleted: false,
-      },
-    })
-
-    if (!comment) throw new NotFoundException('Comentario no encontrado')
-    return comment
-  }
-
   async create(dto: CreateReplyDto, userId: number) {
     await this.productCommentService.findBy(dto.commentId)
 
