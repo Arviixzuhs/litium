@@ -19,7 +19,7 @@ export function ProductCard({ product }: ProductCardProps) {
         id: product.id,
         name: product.name,
         price: product.price,
-        image: product.images[0],
+        image: product.images?.[0].imageURL || '',
         quantity: 1,
         totalPrice: product.price,
       }),
@@ -37,7 +37,7 @@ export function ProductCard({ product }: ProductCardProps) {
             radius='none'
             className='object-cover transition-transform duration-300 group-hover:scale-105'
           />
-          {!product.inStock && (
+          {product.stock === 0 && (
             <Badge className='absolute right-2 top-2 bg-destructive text-destructive-foreground'>
               Agotado
             </Badge>
@@ -46,8 +46,8 @@ export function ProductCard({ product }: ProductCardProps) {
         <div className='p-4'>
           <div className='mb-2 flex items-center gap-1'>
             <Star className='h-4 w-4 fill-accent text-accent' />
-            <span className='text-sm font-medium'>{product.rating}</span>
-            <span className='text-sm text-muted-foreground'>({product.reviews})</span>
+            <span className='text-sm font-medium'>4</span>
+            <span className='text-sm text-muted-foreground'>(4)</span>
           </div>
           <div></div>
           <Link to={`/product/${product.id}`}>
@@ -55,12 +55,12 @@ export function ProductCard({ product }: ProductCardProps) {
               {product.name}
             </h3>
           </Link>
-          <p className='mb-3 text-sm text-muted-foreground'>{product.category}</p>
+
           <div className='flex items-center justify-between gap-2'>
             <span className='text-2xl font-bold'>${product.price.toLocaleString()}</span>
             <Button
               size='sm'
-              disabled={!product.inStock}
+              disabled={product.stock === 0}
               className='gap-2'
               onPress={() => handleAddToCart(product)}
             >
