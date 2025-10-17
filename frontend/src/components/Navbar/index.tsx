@@ -58,10 +58,10 @@ export const Navbar = () => {
           {!user ? (
             <>
               <NavbarItem className='hidden lg:flex'>
-                <Link href='#'>Iniciar sesión</Link>
+                <Link href='/login'>Iniciar sesión</Link>
               </NavbarItem>
               <NavbarItem>
-                <Button as={Link} color='primary' href='#' variant='flat'>
+                <Button as={Link} color='primary' href='/register' radius='sm' variant='flat'>
                   Registrarme
                 </Button>
               </NavbarItem>
