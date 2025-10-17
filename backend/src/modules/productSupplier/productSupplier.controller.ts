@@ -2,7 +2,7 @@ import {
   Controller,
   Get,
   Post,
-  Put,
+  Patch,
   Delete,
   Body,
   Param,
@@ -39,7 +39,7 @@ export class ProductSupplierController {
     return this.supplierService.findAll(filters)
   }
 
-  @Put(':id')
+  @Patch(':id')
   @ApiOperation({ summary: 'Actualizar proveedor' })
   @ApiResponse({ status: 200, description: 'Proveedor actualizado correctamente.' })
   update(
