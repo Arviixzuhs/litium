@@ -3,7 +3,6 @@ import toast from 'react-hot-toast'
 import { Input } from '@heroui/input'
 import { NavLink } from 'react-router-dom'
 import { reqAuthLogin } from '@/modules/auth/services'
-/* import BackgroundImage from '@/assets/img/background.gif' */
 import { LoginUserDto } from '../services/interfaces'
 import './Auth.scss'
 
