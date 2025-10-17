@@ -1,7 +1,7 @@
 import { createSlice, PayloadAction } from '@reduxjs/toolkit'
 
 export interface ShoppingCartItem {
-  id: string
+  id: number
   name: string
   price: number
   image: string
@@ -43,7 +43,7 @@ export const shoppingCartSlice = createSlice({
       state.totalQuantity++
       state.totalPrice += newItem.price
     },
-    removeItemFromCart: (state, action: PayloadAction<string>) => {
+    removeItemFromCart: (state, action: PayloadAction<number>) => {
       const id = action.payload
       const existingItem = state.cartItems.find((item) => item.id === id)
 
@@ -53,7 +53,7 @@ export const shoppingCartSlice = createSlice({
         state.totalPrice -= existingItem.totalPrice
       }
     },
-    incrementItemQuantity: (state, action: PayloadAction<string>) => {
+    incrementItemQuantity: (state, action: PayloadAction<number>) => {
       const id = action.payload
       const existingItem = state.cartItems.find((item) => item.id === id)
 
@@ -64,7 +64,7 @@ export const shoppingCartSlice = createSlice({
         state.totalPrice += existingItem.price
       }
     },
-    decrementItemQuantity: (state, action: PayloadAction<string>) => {
+    decrementItemQuantity: (state, action: PayloadAction<number>) => {
       const id = action.payload
       const existingItem = state.cartItems.find((item) => item.id === id)
 
