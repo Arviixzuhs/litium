@@ -1,23 +1,21 @@
-'use client'
-
 import { Card, CardBody, CardHeader } from '@heroui/react'
 import {
-  ArrowDownRight,
-  ArrowUpRight,
-  DollarSign,
-  ShoppingCart,
-  TrendingUp,
   Users,
+  DollarSign,
+  TrendingUp,
+  ArrowUpRight,
+  ShoppingCart,
+  ArrowDownRight,
 } from 'lucide-react'
 import {
-  Area,
-  AreaChart,
   Bar,
+  Area,
+  YAxis,
+  XAxis,
   BarChart,
+  AreaChart,
   CartesianGrid,
   ResponsiveContainer,
-  XAxis,
-  YAxis,
 } from 'recharts'
 
 const salesData = [
@@ -106,7 +104,6 @@ export const DashboardPage = () => {
           )
         })}
       </div>
-
       <div className='grid gap-6 lg:grid-cols-2'>
         <Card>
           <CardHeader className='font-bold'>Ventas Mensuales</CardHeader>
@@ -139,7 +136,6 @@ export const DashboardPage = () => {
                     axisLine={false}
                     tickFormatter={(value) => `$${value / 1000}k`}
                   />
-
                   <Area
                     type='monotone'
                     dataKey='ventas'
@@ -162,8 +158,6 @@ export const DashboardPage = () => {
             </div>
           </CardBody>
         </Card>
-
-        {/* Category Chart */}
         <Card>
           <CardHeader className='font-bold'>Ventas por Categoría</CardHeader>
           <CardBody>

@@ -1,6 +1,13 @@
 import React from 'react'
 import { cn } from '@heroui/theme'
 import { io } from 'socket.io-client'
+import { Shopping } from './components/Shopping'
+import { RootState } from '@/store'
+import { useParams } from 'react-router-dom'
+import { useSelector } from 'react-redux'
+import { MessageModel } from '@/types/messageModal'
+import { EllipsisVertical } from 'lucide-react'
+import { reqGetMessagesByCartId } from './services'
 import {
   Avatar,
   Button,
@@ -10,13 +17,6 @@ import {
   DropdownItem,
   DropdownTrigger,
 } from '@heroui/react'
-import { Shopping } from './components/Shopping'
-import { RootState } from '@/store'
-import { useSelector } from 'react-redux'
-import { MessageModel } from '@/types/messageModal'
-import { EllipsisVertical } from 'lucide-react'
-import { reqGetMessagesByCartId } from './services'
-import { useParams } from 'react-router-dom'
 
 const socket = io(import.meta.env.VITE_SERVER_API, { transports: ['websocket'] })
 
@@ -93,14 +93,13 @@ export const Messages = () => {
     socket.emit('deleteMessage', id)
   }
 
-  const handleEdit = (msg: any) => {
+  const handleEdit = (msg: MessageModel) => {
     setEditingId(msg.id)
     setInput(msg.message)
   }
 
   return (
     <div className='flex flex-col md:flex-row h-[calc(100vh_-_64px)] gap-4 p-4 bg-card'>
-      {/* Chat principal */}
       <div className='flex-1 flex flex-col h-full p-2'>
         <div ref={scrollRef} className='flex-1 overflow-y-auto space-y-4 px-2 hoverScrollbar'>
           {messages.map((msg) => (
@@ -112,7 +111,6 @@ export const Messages = () => {
               )}
             >
               {msg.senderId !== user?.id && <Avatar src='/other.png' size='sm' />}
-
               <div
                 className={cn(
                   'rounded-xl px-4 py-2 text-sm max-w-full md:max-w-[70%] relative break-words',
@@ -143,7 +141,6 @@ export const Messages = () => {
                   </span>
                 </div>
               </div>
-
               {msg.senderId === user?.id && (
                 <div className='absolute top-0 right-0'>
                   <Dropdown>
@@ -176,8 +173,6 @@ export const Messages = () => {
             </div>
           ))}
         </div>
-
-        {/* Input y botones */}
         <div className='mt-4 flex flex-wrap gap-2'>
           <Textarea
             value={input}
@@ -203,8 +198,6 @@ export const Messages = () => {
           )}
         </div>
       </div>
-
-      {/* Shopping cart */}
       <div className='w-full md:w-[500px] mt-4 md:mt-0'>
         <Shopping />
       </div>
