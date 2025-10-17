@@ -26,11 +26,16 @@ export class ShoppingCartController {
     return this.shoppingCartService.delete(shoppingCartId, req.user.userId)
   }
 
+  @Get(':shoppingCartId')
+  @ApiOperation({ summary: 'Obtener un carrito de compras por id' })
+  findById(@Param('shoppingCartId') shoppingCartId: number, @Req() req: Request) {
+    return this.shoppingCartService.findBy(shoppingCartId, req.user.userId)
+  }
+
   @Get()
   @ApiOperation({ summary: 'Obtener carritos de compras del usuario con filtros opcionales' })
   findAll(@Query() query: FindShoppingCartDto, @Req() req: Request) {
-    const { page, size } = query
-    return this.shoppingCartService.findAll(req.user.userId, page, size)
+    return this.shoppingCartService.findAll(req.user.userId, query)
   }
 
   @Patch('/product/quantity')
