@@ -157,7 +157,7 @@ model Comment {
   userId        Int
   comment       String    @db.VarChar(250)
   productId     Int
-  isDeleted     Boolean?
+  isDeleted     Boolean?  @default(false)
   deletedAt     DateTime?
   qualification Int
 
@@ -177,8 +177,8 @@ model Reply {
   user       User      @relation(fields: [userId], references: [id], onDelete: Cascade)
   parent     Reply?    @relation("ReplyToReply", fields: [replyId], references: [id])
   children   Reply[]   @relation("ReplyToReply")
+  isDeleted  Boolean?  @default(false)
   commentRef Comment   @relation(fields: [commentId], references: [id], onDelete: Cascade)
-  isDeleted  Boolean?
   deletedAt  DateTime?
   createdAt  DateTime  @default(now())
 }
@@ -200,7 +200,7 @@ model ShoppingCart {
   status    ShoppingCartStatus    @default(EDITING)
   products  ShoppingCartProduct[]
   messages  Message[]
-  isDeleted Boolean?
+  isDeleted Boolean?              @default(false)
   deletedAt DateTime?
   createdAt DateTime              @default(now())
 }
@@ -229,7 +229,7 @@ model Invoice {
 
   seller    User                  @relation("SellerInvoices", fields: [sellerId], references: [id], onDelete: Cascade)
   products  ShoppingCartProduct[]
-  isDeleted Boolean?
+  isDeleted Boolean?              @default(false)
   deletedAt DateTime?
   createdAt DateTime              @default(now())
 }
