@@ -39,7 +39,7 @@ export const manageAppTableSlice = createSlice({
     filterValue: '',
     totalPages: 0,
     currentPage: 0,
-    rowsPerPage: 1,
+    rowsPerPage: 10,
     modalInputs: [],
     isAddItemModalOpen: false,
     isEditItemModalOpen: false,
