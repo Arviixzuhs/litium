@@ -1,27 +1,34 @@
-export interface ProductImageModel {
-  id: number
-  imageURL: string
-  createdAt: string
-}
-
 export interface ProductModel {
   id: number
   name: string
   show?: string | null
-  stock?: number | null
+  stock: number
   image?: string | null
-  price?: number | null
+  price: number
   catalogId?: number | null
-  createdAt: string
+  createdAt?: string | null
   updatedAt?: string | null
   deletedAt?: string | null
-  isDeleted: boolean
+  isDeleted?: boolean | null
   description?: string | null
-  images: ProductImageModel[]
 
-  // TODO: por definir
-  specs: { label: string; value: string }[]
-  rating: number
-  reviews: number
-  inStock: boolean
+  // Relaciones
+  images?: ImageProductModel[]
+  specifications?: ProductSpecificationModel[]
+}
+
+export interface ProductSpecificationModel {
+  id: number
+  title: string
+  value: string
+  productId: number
+  product?: ProductModel
+}
+
+export interface ImageProductModel {
+  id: number
+  productId: number
+  product?: ProductModel
+  imageURL: string
+  createdAt: string
 }
