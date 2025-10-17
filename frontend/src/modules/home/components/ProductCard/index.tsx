@@ -19,7 +19,7 @@ export function ProductCard({ product }: ProductCardProps) {
         id: product.id,
         name: product.name,
         price: product.price,
-        image: product.images?.[0].imageURL || '',
+        image: product.images?.[0]?.imageURL || '',
         quantity: 1,
         totalPrice: product.price,
       }),
@@ -43,28 +43,30 @@ export function ProductCard({ product }: ProductCardProps) {
             </Badge>
           )}
         </div>
-        <div className='p-4'>
-          <div className='mb-2 flex items-center gap-1'>
-            <Star className='h-4 w-4 fill-accent text-accent' />
-            <span className='text-sm font-medium'>4</span>
-            <span className='text-sm text-muted-foreground'>(4)</span>
+        <div className='p-4 flex flex-col gap-4'>
+          <div className='flex flex-col gap-1'>
+            <div className='flex items-center gap-1'>
+              <Star className='h-4 w-4 fill-accent text-accent' />
+              <span className='text-sm font-medium'>4</span>
+              <span className='text-sm text-muted-foreground'>(4)</span>
+            </div>
+            <Link to={`/product/${product.id}`}>
+              <h3 className='mb-1 line-clamp-2 text-balance font-semibold leading-tight'>
+                {product.name}
+              </h3>
+            </Link>
           </div>
-          <div></div>
-          <Link to={`/product/${product.id}`}>
-            <h3 className='mb-1 line-clamp-2 text-balance font-semibold leading-tight'>
-              {product.name}
-            </h3>
-          </Link>
-
           <div className='flex items-center justify-between gap-2'>
             <span className='text-2xl font-bold'>${product.price.toLocaleString()}</span>
             <Button
               size='sm'
+              radius='sm'
               disabled={product.stock === 0}
               className='gap-2'
+              color='primary'
               onPress={() => handleAddToCart(product)}
+              startContent={<ShoppingCart className='h-4 w-4' />}
             >
-              <ShoppingCart className='h-4 w-4' />
               Agregar
             </Button>
           </div>
