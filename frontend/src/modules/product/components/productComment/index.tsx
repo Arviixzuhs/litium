@@ -1,30 +1,67 @@
 import React from 'react'
-import { reviews } from './product-comment-mock'
-import { Star, ThumbsUp, MessageCircle } from 'lucide-react'
-import { Button, Textarea, Avatar, Badge, Divider } from '@heroui/react'
+import toast from 'react-hot-toast'
+import { useParams } from 'react-router-dom'
+import { CommentModel } from '@/types/productCommentModel'
+import { reqCreateReply } from '../../services'
+import { PaginatedResponse } from '@/types/paginatedResponse'
+import { MessageCircle, Star } from 'lucide-react'
+import { Button, Textarea, Avatar, Divider } from '@heroui/react'
+import { reqCreateComment, reqGetProductComments } from '../../services'
 
 export const ProductComment = () => {
   const [rating, setRating] = React.useState(0)
+  const [response, setResponse] = React.useState<PaginatedResponse<CommentModel> | null>(null)
   const [newReview, setNewReview] = React.useState('')
   const [replyText, setReplyText] = React.useState('')
-  const [replyingTo, setReplyingTo] = React.useState<string | null>(null)
+  const [replyingTo, setReplyingTo] = React.useState<number | null>(null)
   const [hoveredRating, setHoveredRating] = React.useState(0)
+  const params = useParams<{ productId: string }>()
 
-  const handleSubmitReview = (e: React.FormEvent) => {
+  const loadData = () => {
+    if (!params.productId) return
+    reqGetProductComments({
+      page: 0,
+      size: 50,
+      productId: Number(params.productId),
+    })
+      .then((res) => setResponse(res.data))
+      .catch(console.log)
+  }
+
+  React.useEffect(() => {
+    loadData()
+  }, [params.productId])
+
+  const handleSubmitReview = async (e: React.FormEvent) => {
     e.preventDefault()
-    if (newReview.trim() && rating > 0) {
-      setNewReview('')
-      setRating(0)
-      alert('¡Gracias por tu comentario! Se ha enviado correctamente.')
+    try {
+      if (!params.productId) return
+      await reqCreateComment({
+        comment: newReview,
+        productId: Number(params.productId),
+        qualification: rating,
+      })
+      loadData()
+      if (newReview.trim() && rating > 0) {
+        setNewReview('')
+        setRating(0)
+        toast.success('Comentario enviado correctamente.')
+      }
+    } catch (error) {
+      console.log(error)
     }
   }
 
-  const handleSubmitReply = (reviewId: string) => {
-    if (replyText.trim()) {
-      console.log('[v0] Reply submitted:', { reviewId, comment: replyText })
+  const handleSubmitReply = async () => {
+    if (replyText.trim() && replyingTo) {
+      await reqCreateReply({
+        comment: replyText,
+        commentId: replyingTo,
+      })
       setReplyText('')
       setReplyingTo(null)
-      alert('¡Tu respuesta se ha enviado correctamente!')
+      toast.success('Respuesta enviada correctamente')
+      loadData()
     }
   }
 
@@ -38,7 +75,7 @@ export const ProductComment = () => {
       <div>
         <h2 className='mb-2 text-2xl font-bold'>Comentarios del producto</h2>
         <p className='text-muted-foreground'>
-          {reviews.length} {reviews.length === 1 ? 'comntario' : 'comentarios'}
+          {response?.totalItems} {response?.totalItems === 1 ? 'comntario' : 'comentarios'}
         </p>
       </div>
       <Divider />
@@ -81,39 +118,45 @@ export const ProductComment = () => {
               className='resize-none'
             />
           </div>
-          <Button type='submit' disabled={!newReview.trim() || rating === 0}>
+          <Button
+            type='submit'
+            color='primary'
+            radius='sm'
+            disabled={!newReview.trim() || rating === 0}
+          >
             Publicar comentario
           </Button>
         </form>
       </div>
       <Divider />
       <div className='space-y-6'>
-        {reviews.length === 0 ? (
+        {response?.content.length === 0 ? (
           <p className='py-8 text-center text-muted-foreground'>
             Aún no hay comentarios. ¡Sé el primero en opinar!
           </p>
         ) : (
-          reviews.map((review) => (
+          response?.content.map((review) => (
             <div key={review.id} className='rounded-lg border border-gray-300 p-6'>
               <div className='mb-4 flex items-start justify-between'>
                 <div className='flex gap-3'>
                   <Avatar></Avatar>
                   <div>
                     <div className='mb-1 flex items-center gap-2'>
-                      <span className='font-semibold'>{review.userName}</span>
-                      {review.verified && <Badge className='text-xs'>Compra verificada</Badge>}
+                      <span className='font-semibold'>
+                        {review.user?.name} {review.user?.lastName}
+                      </span>
                     </div>
                     <div className='flex items-center gap-2'>
                       <div className='flex gap-0.5'>
-                        {[...Array(5)].map((_, i) => (
+                        {[...Array(review.qualification)].map((_, i) => (
                           <Star
                             key={i}
-                            className={`h-4 w-4 ${i < review.rating ? 'fill-accent text-accent' : 'fill-muted text-muted'}`}
+                            className={`h-4 w-4 ${i < review.qualification ? 'fill-accent text-accent' : 'fill-muted text-muted'}`}
                           />
                         ))}
                       </div>
                       <span className='text-sm text-muted-foreground'>
-                        {formatDate(review.date)}
+                        {formatDate(review.createdAt)}
                       </span>
                     </div>
                   </div>
@@ -121,10 +164,6 @@ export const ProductComment = () => {
               </div>
               <p className='mb-4 text-pretty leading-relaxed'>{review.comment}</p>
               <div className='flex items-center gap-4'>
-                <Button variant='ghost' size='sm' className='gap-2'>
-                  <ThumbsUp className='h-4 w-4' />
-                  Útil ({review.helpful})
-                </Button>
                 <Button
                   variant='ghost'
                   size='sm'
@@ -145,11 +184,7 @@ export const ProductComment = () => {
                     className='mb-2 resize-none'
                   />
                   <div className='flex gap-2'>
-                    <Button
-                      size='sm'
-                      onPress={() => handleSubmitReply(review.id)}
-                      disabled={!replyText.trim()}
-                    >
+                    <Button size='sm' onPress={handleSubmitReply} disabled={!replyText.trim()}>
                       Enviar respuesta
                     </Button>
                     <Button size='sm' variant='flat' onPress={() => setReplyingTo(null)}>
@@ -159,27 +194,21 @@ export const ProductComment = () => {
                 </div>
               )}
               {review.replies && review.replies.length > 0 && (
-                <div className='mt-4 space-y-4 border-l-2 border-gray-300 border-muted pl-6'>
+                <div className='mt-4 space-y-4 border-l-2 border-gray-300 pl-6'>
                   {review.replies.map((reply) => (
                     <div key={reply.id} className='rounded-lg bg-muted/30 p-4'>
                       <div className='mb-2 flex items-start gap-3'>
                         <Avatar className='h-8 w-8'></Avatar>
                         <div className='flex-1'>
                           <div className='mb-1 flex items-center gap-2'>
-                            <span className='text-sm font-semibold'>{reply.userName}</span>
+                            <span className='text-sm font-semibold'>
+                              {review.user?.name} {review.user?.lastName}
+                            </span>
                             <span className='text-xs text-muted-foreground'>
-                              {formatDate(reply.date)}
+                              {formatDate(reply.createdAt)}
                             </span>
                           </div>
                           <p className='text-sm leading-relaxed text-pretty'>{reply.comment}</p>
-                          <Button
-                            variant='ghost'
-                            size='sm'
-                            className='mt-2 h-auto gap-1 p-0 text-xs'
-                          >
-                            <ThumbsUp className='h-3 w-3' />
-                            Útil ({reply.helpful})
-                          </Button>
                         </div>
                       </div>
                     </div>
