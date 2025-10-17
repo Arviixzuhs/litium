@@ -16,15 +16,18 @@ export interface ShoppingCartState {
   isOpen: boolean
 }
 
+const initialState: ShoppingCartState = {
+  isOpen: false,
+  cartItems: [],
+  totalPrice: 0,
+  totalQuantity: 0,
+}
+
 export const shoppingCartSlice = createSlice({
   name: 'shoppingCart',
-  initialState: {
-    isOpen: false,
-    cartItems: [],
-    totalPrice: 0,
-    totalQuantity: 0,
-  } as ShoppingCartState,
+  initialState,
   reducers: {
+    resetShoppingCart: (_state, _action: PayloadAction<null>) => initialState,
     addItemToCart: (state, action: PayloadAction<ShoppingCartItem>) => {
       const newItem = action.payload
       const existingItem = state.cartItems.find((item) => item.id === newItem.id)
@@ -88,6 +91,7 @@ export const shoppingCartSlice = createSlice({
 export const {
   addItemToCart,
   handleOpenCart,
+  resetShoppingCart,
   removeItemFromCart,
   incrementItemQuantity,
   decrementItemQuantity,
