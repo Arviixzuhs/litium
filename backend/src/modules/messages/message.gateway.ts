@@ -8,8 +8,10 @@ import {
 import { Server, Socket } from 'socket.io'
 import { MessagesService } from './message.service'
 import { CreateMessageDto } from './dto/create-message.dto'
+import { UsePipes, ValidationPipe } from '@nestjs/common'
 
 @WebSocketGateway({ cors: true })
+@UsePipes(new ValidationPipe({ transform: true }))
 export class MessagesGateway {
   @WebSocketServer()
   server: Server
