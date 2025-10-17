@@ -1,8 +1,14 @@
+import { Page } from '@/types/Page'
+import { Comment } from '@prisma/client'
 import { PrismaService } from '@/prisma/prisma.service'
+import { FindCommentsDto } from './dto/find-comments.dto'
 import { ProductsService } from '@/modules/product/product.service'
 import { CreateCommentDto } from './dto/create-comment.dto'
-import { ProductCommentSpecificationBuilder } from './repositories/productComment.specificationBuilder'
 import { HttpException, HttpStatus, Injectable, NotFoundException } from '@nestjs/common'
+import {
+  ProductCommentSpecificationBuild,
+  ProductCommentSpecificationBuilder,
+} from './repositories/productComment.specificationBuilder'
 
 @Injectable()
 export class ProductCommentService {
@@ -11,17 +17,25 @@ export class ProductCommentService {
     private readonly productService: ProductsService,
   ) {}
 
-  async findAll(id: number, page: number, size: number) {
-    await this.productService.findBy(id)
+  async findAll(filters: FindCommentsDto) {
+    await this.productService.findBy(filters.productId)
 
     const query = new ProductCommentSpecificationBuilder()
-      .withProductId(id)
+      .withProductId(filters.productId)
       .withIsDeleted(false)
-      .withPagination(page, size)
+      .withInclude({
+        user: true,
+        replies: {
+          include: {
+            user: true,
+          },
+        },
+      })
+      .withPagination(filters.page, filters.size)
       .withOrderBy({ createdAt: 'desc' })
       .build()
 
-    return this.prisma.comment.findMany(query)
+    return this.page(query, filters)
   }
 
   async findBy(id: number) {
@@ -44,6 +58,7 @@ export class ProductCommentService {
         userId,
         comment: dto.comment,
         productId: dto.productId,
+        qualification: dto.qualification,
       },
     })
   }
@@ -67,5 +82,29 @@ export class ProductCommentService {
         deletedAt: new Date(),
       },
     })
+  }
+
+  private async page(
+    query: ProductCommentSpecificationBuild,
+    filters: FindCommentsDto,
+  ): Promise<Page<Comment>> {
+    const [categories, totalItems] = await this.prisma.$transaction([
+      this.prisma.comment.findMany(query),
+      this.prisma.comment.count({
+        where: query.where,
+      }),
+    ])
+
+    const page = filters.page ?? 1
+    const size = filters.size ?? 10
+    const totalPages = Math.ceil(totalItems / size)
+
+    return {
+      content: categories,
+      totalPages,
+      totalItems,
+      currentPage: page,
+      rowsPerPage: size,
+    }
   }
 }
