@@ -1,8 +1,10 @@
-@import "tailwindcss";
-@import "tw-animate-css";
+@import 'tailwindcss';
+@import 'tw-animate-css';
 
 /* Updated theme with blue color scheme for Litium C.A. */
 :root {
+  --scrollbar-bg: #e1e1e4;
+  --scrollbar-bg-hover: #ceced1;
   --background: oklch(0.99 0.005 240);
   --foreground: oklch(0.15 0.02 240);
   --card: oklch(1 0 0);
@@ -123,6 +125,27 @@
   }
 }
 
+.hoverScrollbar {
+  &::-webkit-scrollbar-thumb {
+    background: transparent;
+  }
 
-@config "../../tailwind.config.js"
+  &::-webkit-scrollbar {
+    width: 3px;
+    height: 3px;
+    background: transparent;
+  }
 
+  &:hover {
+    &::-webkit-scrollbar-thumb {
+      background: var(--scrollbar-bg);
+      border-radius: 10px;
+    }
+
+    &::-webkit-scrollbar-thumb:hover {
+      background: var(--scrollbar-bg-hover);
+    }
+  }
+}
+
+@config "../../tailwind.config.js";
