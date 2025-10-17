@@ -6,6 +6,18 @@ export const tableColumns: TableColumnInterface[] = [
     uid: 'name',
   },
   {
+    name: 'Teléfono',
+    uid: 'phone',
+  },
+  {
+    name: 'Email',
+    uid: 'email',
+  },
+  {
+    name: 'Dirección',
+    uid: 'address',
+  },
+  {
     name: 'Acciones',
     uid: 'actions',
   },
