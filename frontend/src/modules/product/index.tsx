@@ -1,27 +1,40 @@
+import React from 'react'
 import toast from 'react-hot-toast'
-import { products } from '../home/components/Products/products-mock'
+import { Back } from '@/components/Back'
+import { useParams } from 'react-router-dom'
 import { useDispatch } from 'react-redux'
 import { ProductSpecs } from './components/productSpecs'
+import { ProductModel } from '@/types/productModel'
 import { addItemToCart } from '@/features/shoppingCartSlice'
 import { ProductComment } from './components/productComment'
-import { Link, useParams } from 'react-router-dom'
+import { reqGetProductById } from '../admin/pages/product/services'
 import { ProductImageGallery } from './components/productGallery'
-import { Divider, Badge, Button } from '@heroui/react'
-import { ShoppingCart, Star, Truck, ShieldCheck, Heart, Share2, ChevronLeft } from 'lucide-react'
+import { Button, Divider, Snippet, Spinner } from '@heroui/react'
+import { ShieldCheck, ShoppingCart, Star, Truck } from 'lucide-react'
 
 export const ProductPage = () => {
   const params = useParams<{ productId: string }>()
-  const product = products.find((item) => item.id === params.productId)
+  const [product, setProduct] = React.useState<ProductModel | null>(null)
+  const [isLoading, setIsLoading] = React.useState<boolean>(false)
   const dispatch = useDispatch()
-  if (!product) return
+
+  React.useEffect(() => {
+    if (!params.productId) return
+    setIsLoading(true)
+    reqGetProductById(Number(params.productId))
+      .then((res) => setProduct(res.data))
+      .catch(console.log)
+      .finally(() => setIsLoading(false))
+  }, [params.productId])
 
   const handleAddToCart = () => {
+    if (!product) return
     dispatch(
       addItemToCart({
         id: product.id,
         name: product.name,
         price: product.price,
-        image: product.images[0],
+        image: product.images?.[0].imageURL || '',
         quantity: 1,
         totalPrice: product.price,
       }),
@@ -29,16 +42,12 @@ export const ProductPage = () => {
     toast.success('Producto agregado al carrito')
   }
 
+  if (!product || isLoading) return <Spinner />
+
   return (
     <div className='min-h-screen px-4 py-8'>
       <div className='mx-auto max-w-7xl'>
-        <Link
-          to='/'
-          className='mb-6 inline-flex items-center gap-2 text-sm text-muted-foreground transition-colors hover:text-foreground'
-        >
-          <ChevronLeft className='h-4 w-4' />
-          Volver a productos
-        </Link>
+        <Back />
         <div className='grid gap-8 lg:grid-cols-2'>
           <div>
             <ProductImageGallery
@@ -53,27 +62,26 @@ export const ProductPage = () => {
           </div>
           <div className='space-y-6'>
             <div>
-              <Badge className='mb-3'>{product.category}</Badge>
               <h1 className='mb-2 text-balance text-3xl font-bold md:text-4xl'>{product.name}</h1>
               <div className='mb-4 flex items-center gap-2'>
                 <div className='flex items-center gap-1'>
                   {[...Array(5)].map((_, i) => (
                     <Star
                       key={i}
-                      className={`h-5 w-5 ${i < Math.floor(product.rating) ? 'fill-accent text-accent' : 'fill-muted text-muted'}`}
+                      className={`h-5 w-5 ${i < Math.floor(4) ? 'fill-accent text-accent' : 'fill-muted text-muted'}`}
                     />
                   ))}
                 </div>
-                <span className='font-medium'>{product.rating}</span>
-                <span className='text-muted-foreground'>({product.reviews} reseñas)</span>
+                <span className='font-medium'>4</span>
+                <span className='text-muted-foreground'>(3 reseñas)</span>
               </div>
               <div className='mb-6'>
                 <span className='text-4xl font-bold'>${product.price.toLocaleString()}</span>
               </div>
-              {product.inStock ? (
+              {product.stock > 0 ? (
                 <p className='mb-6 flex items-center gap-2 text-sm font-medium text-green-600'>
                   <span className='h-2 w-2 rounded-full bg-green-600' />
-                  En stock - Envío inmediato
+                  En stock
                 </p>
               ) : (
                 <p className='mb-6 flex items-center gap-2 text-sm font-medium text-destructive'>
@@ -91,17 +99,22 @@ export const ProductPage = () => {
                   radius='sm'
                   className='flex-1 gap-2'
                   onPress={handleAddToCart}
-                  disabled={!product.inStock}
+                  disabled={false}
                 >
                   <ShoppingCart className='h-5 w-5' />
                   Agregar al carrito
                 </Button>
-                <Button size='lg' radius='sm' color='danger'>
-                  <Heart className='h-5 w-5' />
-                </Button>
-                <Button size='lg' radius='sm' color='warning'>
-                  <Share2 className='h-5 w-5' />
-                </Button>
+
+                <Snippet
+                  symbol=''
+                  radius='sm'
+                  size='lg'
+                  color='danger'
+                  variant='solid'
+                  codeString={window.location.href}
+                >
+                  Compartir
+                </Snippet>
               </div>
             </div>
             <Divider />
@@ -122,7 +135,7 @@ export const ProductPage = () => {
               </div>
             </div>
             <Divider />
-            <ProductSpecs specs={product.specs} />
+            <ProductSpecs specs={product.specifications || []} />
           </div>
         </div>
       </div>
