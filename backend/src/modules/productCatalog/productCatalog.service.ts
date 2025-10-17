@@ -90,7 +90,7 @@ export class ProductCatalogService {
     query: ProductCatalogSpecificationBuild,
     filters: FindCatalogsDto,
   ): Promise<Page<Catalog>> {
-    const [categories, totalItems] = await this.prisma.$transaction([
+    const [catalogs, totalItems] = await this.prisma.$transaction([
       this.prisma.catalog.findMany(query),
       this.prisma.catalog.count({
         where: query.where,
@@ -102,7 +102,7 @@ export class ProductCatalogService {
     const totalPages = Math.ceil(totalItems / size)
 
     return {
-      content: categories,
+      content: catalogs,
       totalPages,
       totalItems,
       currentPage: page,

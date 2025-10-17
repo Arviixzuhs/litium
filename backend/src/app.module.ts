@@ -12,12 +12,14 @@ import { MessagesController } from './modules/messages/message.controller'
 import { ProductCommentModule } from '@/modules/productComment/productComment.module'
 import { ProductCatalogModule } from '@/modules/productCatalog/productCatalog.module'
 import { ProductCategoryModule } from '@/modules/productCategory/productCategory.module'
+import { ProductSupplierModule } from './modules/productSupplier/productSupplier.module'
 import { ShoppingCartController } from '@/modules/shoppingCart/shoppingCart.controller'
 import { RequestLoggerMiddleware } from '@/middlewares/request.logger.middleware'
 import { ProductCommentController } from '@/modules/productComment/productComment.controller'
 import { ProductCatalogController } from '@/modules/productCatalog/productCatalog.controller'
 import { ProductCategoryController } from '@/modules/productCategory/productCategory.controller'
 import { ProductCommentReplyModule } from './modules/ProductCommentReply/productCommentReply.module'
+import { ProductSupplierController } from './modules/productSupplier/productSupplier.controller'
 import { ProductCommentReplyController } from './modules/ProductCommentReply/productCommentReply.controller'
 import { MiddlewareConsumer, Module, NestModule } from '@nestjs/common'
 
@@ -33,6 +35,7 @@ import { MiddlewareConsumer, Module, NestModule } from '@nestjs/common'
     ProductCatalogModule,
     ProductCategoryModule,
     ProductCommentReplyModule,
+    ProductSupplierModule,
   ],
   controllers: [AppController],
   providers: [],
@@ -50,6 +53,7 @@ export class AppModule implements NestModule {
         ProductCatalogController,
         ProductCategoryController,
         ProductCommentReplyController,
+        ProductSupplierController,
       )
     consumer.apply(RequestLoggerMiddleware).forRoutes('*')
   }

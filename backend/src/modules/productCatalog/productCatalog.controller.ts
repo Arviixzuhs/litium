@@ -22,7 +22,7 @@ import {
 @Controller('/catalog')
 @ApiBearerAuth()
 export class ProductCatalogController {
-  constructor(private readonly productCatalogService: ProductCatalogService) { }
+  constructor(private readonly productCatalogService: ProductCatalogService) {}
 
   @Post()
   @ApiOperation({ summary: 'Crear un nuevo catálogo' })

@@ -16,7 +16,8 @@ export const modalInputs: ModalInput[] = [
     name: 'name',
     label: 'Nombre',
     placeholder: 'Ingresa el nombre',
-    type: 'text', required: true
+    type: 'text',
+    required: true,
   },
   {
     name: 'description',
