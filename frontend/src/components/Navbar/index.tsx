@@ -1,5 +1,6 @@
 import { RootState } from '@/store'
 import { useSelector } from 'react-redux'
+import { ExternalLink } from 'lucide-react'
 import { ShoppingCartSidebar } from '../ShoppingCartSidebar'
 import { ShoppingCartTrigger } from '../ShoppingCartSidebar/components/ShoppingCartTrigger'
 import {
@@ -38,7 +39,22 @@ export const Navbar = () => {
         </NavbarBrand>
         <NavbarContent className='hidden sm:flex gap-4' justify='center'></NavbarContent>
         <NavbarContent justify='end'>
+          {user && (
+            <NavbarItem>
+              <Link href='/dashboard' target='_blank' className='flex gap-2'>
+                Dasboard
+                <ExternalLink size={15} />
+              </Link>
+            </NavbarItem>
+          )}
+          {user && (
+            <NavbarItem>
+              <Link href='purchases'>Mis compras</Link>
+            </NavbarItem>
+          )}
+
           <ShoppingCartTrigger />
+
           {!user ? (
             <>
               <NavbarItem className='hidden lg:flex'>
