@@ -1,77 +1,213 @@
 import React from 'react'
 import { cn } from '@heroui/theme'
+import { io } from 'socket.io-client'
+import {
+  Avatar,
+  Button,
+  Textarea,
+  Dropdown,
+  DropdownMenu,
+  DropdownItem,
+  DropdownTrigger,
+} from '@heroui/react'
 import { Shopping } from './components/Shopping'
-import { Avatar, Button, Textarea } from '@heroui/react'
+import { RootState } from '@/store'
+import { useSelector } from 'react-redux'
+import { MessageModel } from '@/types/messageModal'
+import { EllipsisVertical } from 'lucide-react'
+import { reqGetMessagesByCartId } from './services'
+import { useParams } from 'react-router-dom'
+
+const socket = io(import.meta.env.VITE_SERVER_API, { transports: ['websocket'] })
 
 export const Messages = () => {
-  const [messages, setMessages] = React.useState([
-    { id: 1, text: 'Hola, ¿cómo estás?', sender: 'other', timestamp: '17:00' },
-    { id: 2, text: 'Todo bien, ¿y tú?', sender: 'me', timestamp: '17:01' },
-  ])
+  const params = useParams<{ cartId: string }>()
+  const user = useSelector((state: RootState) => state.user)
   const [input, setInput] = React.useState('')
+  const [messages, setMessages] = React.useState<MessageModel[]>([])
+  const [editingId, setEditingId] = React.useState<number | null>(null)
   const scrollRef = React.useRef<HTMLDivElement>(null)
 
   React.useEffect(() => {
-    scrollRef.current?.scrollTo({ top: scrollRef.current.scrollHeight, behavior: 'smooth' })
+    if (!params.cartId) return
+    const fetchMessages = async () => {
+      try {
+        const { data } = await reqGetMessagesByCartId(Number(params.cartId))
+        setMessages(data)
+      } catch (error) {
+        console.error('Error al cargar mensajes:', error)
+      }
+    }
+
+    fetchMessages()
+  }, [params.cartId])
+
+  React.useEffect(() => {
+    socket.emit('joinCart', params.cartId)
+
+    socket.on('newMessage', (message) => setMessages((prev) => [...prev, message]))
+    socket.on('messageEdited', (updated) =>
+      setMessages((prev) => prev.map((msg) => (msg.id === updated.id ? updated : msg))),
+    )
+    socket.on('messageDeleted', ({ id }) =>
+      setMessages((prev) => prev.filter((msg) => msg.id !== id)),
+    )
+
+    return () => {
+      socket.emit('leaveCart', params.cartId)
+      socket.off('newMessage')
+      socket.off('messageEdited')
+      socket.off('messageDeleted')
+    }
+  }, [params.cartId])
+
+  React.useEffect(() => {
+    scrollRef.current?.scrollTo({
+      top: scrollRef.current.scrollHeight,
+      behavior: 'smooth',
+    })
   }, [messages])
 
   const handleSend = () => {
     if (!input.trim()) return
-    const newMessage = {
-      id: messages.length + 1,
-      text: input.trim(),
-      sender: 'me',
-      timestamp: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }),
+
+    if (editingId) {
+      socket.emit('editMessage', { messageId: editingId, newContent: input.trim() })
+      setEditingId(null)
+      setInput('')
+      return
     }
-    setMessages([...messages, newMessage])
+
+    const messageData = {
+      message: input.trim(),
+      shoppingCartId: params.cartId,
+      userId: user?.id,
+      senderId: user?.id,
+    }
+
+    socket.emit('sendMessage', messageData)
     setInput('')
   }
 
+  const handleDelete = (id: number) => {
+    socket.emit('deleteMessage', id)
+  }
+
+  const handleEdit = (msg: any) => {
+    setEditingId(msg.id)
+    setInput(msg.message)
+  }
+
   return (
-    <div className='flex h-screen gap-4 p-4'>
-      <div className='w-full h-full flex flex-col p-4'>
-        <div ref={scrollRef} className='flex-1 overflow-y-auto space-y-4 px-2'>
+    <div className='flex flex-col md:flex-row h-[calc(100vh_-_64px)] gap-4 p-4 bg-card'>
+      {/* Chat principal */}
+      <div className='flex-1 flex flex-col h-full p-2'>
+        <div ref={scrollRef} className='flex-1 overflow-y-auto space-y-4 px-2 hoverScrollbar'>
           {messages.map((msg) => (
             <div
               key={msg.id}
               className={cn(
-                'flex items-end gap-2',
-                msg.sender === 'me' ? 'justify-end' : 'justify-start',
+                'flex items-end gap-2 relative group flex-wrap',
+                msg.senderId === user?.id ? 'justify-end' : 'justify-start',
               )}
             >
-              {msg.sender === 'other' && <Avatar src='/other.png' size='sm' />}
+              {msg.senderId !== user?.id && <Avatar src='/other.png' size='sm' />}
+
               <div
                 className={cn(
-                  'rounded-xl px-4 py-2 text-sm max-w-[70%]',
-                  msg.sender === 'me' ? 'bg-primary text-white' : 'bg-default-200 text-black',
+                  'rounded-xl px-4 py-2 text-sm max-w-full md:max-w-[70%] relative break-words',
+                  msg.senderId === user?.id ? 'bg-primary text-white' : 'bg-default-200 text-black',
                 )}
               >
-                <p>{msg.text}</p>
-                <span
-                  className={`text-xs  block mt-1 text-right
-                ${msg.sender === 'me' ? ' text-white' : ' text-black'}
-                `}
+                <p>{msg.message}</p>
+                <div
+                  className={`flex justify-between gap-3 text-xs mt-1 ${
+                    msg.senderId === user?.id ? 'text-white' : 'text-black'
+                  }`}
                 >
-                  {msg.timestamp}
-                </span>
+                  {msg.isEdited && (
+                    <span
+                      className={cn(
+                        'text-xs italic ml-1 opacity-80',
+                        msg.senderId === user?.id ? 'text-white' : 'text-gray-600',
+                      )}
+                    >
+                      (editado)
+                    </span>
+                  )}
+                  <span>
+                    {new Date(msg.createdAt).toLocaleTimeString([], {
+                      hour: '2-digit',
+                      minute: '2-digit',
+                    })}
+                  </span>
+                </div>
               </div>
+
+              {msg.senderId === user?.id && (
+                <div className='absolute top-0 right-0'>
+                  <Dropdown>
+                    <DropdownTrigger>
+                      <Button
+                        isIconOnly
+                        variant='light'
+                        size='sm'
+                        className='opacity-0 group-hover:opacity-100 transition-opacity text-white'
+                      >
+                        <EllipsisVertical size={18} />
+                      </Button>
+                    </DropdownTrigger>
+                    <DropdownMenu aria-label='Acciones de mensaje'>
+                      <DropdownItem key='edit' onPress={() => handleEdit(msg)}>
+                        Editar
+                      </DropdownItem>
+                      <DropdownItem
+                        key='delete'
+                        color='danger'
+                        className='text-danger'
+                        onPress={() => handleDelete(msg.id)}
+                      >
+                        Eliminar
+                      </DropdownItem>
+                    </DropdownMenu>
+                  </Dropdown>
+                </div>
+              )}
             </div>
           ))}
         </div>
-        <div className='mt-4 flex gap-2'>
+
+        {/* Input y botones */}
+        <div className='mt-4 flex flex-wrap gap-2'>
           <Textarea
             value={input}
             onChange={(e) => setInput(e.target.value)}
-            placeholder='Escribe un mensaje...'
-            className='flex-1'
+            placeholder={editingId ? 'Edita tu mensaje...' : 'Escribe un mensaje...'}
+            className='flex-1 min-w-[150px]'
             size='sm'
           />
-          <Button onPress={handleSend} color='primary' size='sm'>
-            Enviar
+          <Button onPress={handleSend} color='primary' size='sm' isDisabled={input.trim() === ''}>
+            {editingId ? 'Guardar' : 'Enviar'}
           </Button>
+          {editingId && (
+            <Button
+              onPress={() => {
+                setEditingId(null)
+                setInput('')
+              }}
+              color='default'
+              size='sm'
+            >
+              Cancelar
+            </Button>
+          )}
         </div>
       </div>
-      <Shopping />
+
+      {/* Shopping cart */}
+      <div className='w-full md:w-[500px] mt-4 md:mt-0'>
+        <Shopping />
+      </div>
     </div>
   )
 }
