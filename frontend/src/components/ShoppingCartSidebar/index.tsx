@@ -7,6 +7,7 @@ import {
 import { RootState } from '@/store'
 import { useNavigate } from 'react-router-dom'
 import { Button, Image } from '@heroui/react'
+import { reqCreateShoppingCart } from './services'
 import { Plus, Minus, X, Trash2 } from 'lucide-react'
 import { useDispatch, useSelector } from 'react-redux'
 
@@ -19,19 +20,35 @@ export const ShoppingCartSidebar = () => {
 
   const handleClose = () => dispatch(handleOpenCart(null))
 
+  const onConfirm = async () => {
+    try {
+      const response = await reqCreateShoppingCart({
+        name: new Date().getTime().toString(),
+        products: cartItems.map((item) => ({
+          productId: item.id,
+          quantity: item.quantity,
+        })),
+      })
+      handleClose()
+      navigate(`/messages/${response.data.id}`)
+    } catch (error) {
+      console.log(error)
+    }
+  }
+
   return (
     <div
-      className={`flex flex-col gap-3 p-4 fixed top-0 right-0 w-[500px] h-full bg-opacity-90 bg-white/90 dark:bg-black/20 backdrop-blur-md shadow-lg z-50 transform transition-transform duration-300 ${
+      className={`flex flex-col gap-3 p-4 fixed top-0 right-0 w-[500px] h-full bg-opacity-90 bg-white/50 dark:bg-black/20 backdrop-blur-md shadow-lg z-50 transform transition-transform duration-300 ${
         isOpen ? 'translate-x-0' : 'translate-x-full'
       }`}
     >
       <div className='flex justify-between items-center'>
         <h2 className='text-xl font-bold'>Carrito de Compras</h2>
         <Button
-          isIconOnly
           variant='flat'
           onPress={handleClose}
           className='text-gray-600 hover:text-red-500 dark:text-gray-300'
+          isIconOnly
         >
           <X size={24} />
         </Button>
@@ -62,8 +79,8 @@ export const ShoppingCartSidebar = () => {
                   <Button
                     size='sm'
                     variant='flat'
-                    isIconOnly
                     onPress={() => dispatch(decrementItemQuantity(item.id))}
+                    isIconOnly
                     className='border border-gray-400 dark:border-gray-600 text-gray-800 dark:text-white w-6 h-6 flex items-center justify-center hover:bg-gray-200 dark:hover:bg-gray-500 transition duration-200 ease-in-out'
                   >
                     <Minus size={14} />
@@ -74,8 +91,8 @@ export const ShoppingCartSidebar = () => {
                   <Button
                     size='sm'
                     variant='flat'
-                    isIconOnly
                     onPress={() => dispatch(incrementItemQuantity(item.id))}
+                    isIconOnly
                     className='border border-gray-400 dark:border-gray-600 text-gray-800 dark:text-white w-6 h-6 flex items-center justify-center hover:bg-gray-200 dark:hover:bg-gray-500 transition duration-200 ease-in-out'
                   >
                     <Plus size={14} />
@@ -84,8 +101,8 @@ export const ShoppingCartSidebar = () => {
                 <Button
                   size='sm'
                   variant='flat'
-                  isIconOnly
                   onPress={() => dispatch(removeItemFromCart(item.id))}
+                  isIconOnly
                   className='text-red-500 hover:text-red-700 dark:text-red-400 transition duration-200 ease-in-out'
                 >
                   <Trash2 size={14} />
@@ -99,7 +116,7 @@ export const ShoppingCartSidebar = () => {
         <p className='font-bold dark:text-white'>Total: ${totalPrice}</p>
         <p className='text-gray-500 dark:text-gray-300'>Artículos: {totalQuantity}</p>
       </div>
-      <Button color='primary' radius='sm' onPress={() => navigate('/messages')}>
+      <Button color='primary' radius='sm' onPress={onConfirm}>
         Confirmar
       </Button>
     </div>
