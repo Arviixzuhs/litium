@@ -8,6 +8,7 @@ import { UserController } from '@/modules/user/user.controller'
 import { MessagesModule } from '@/modules/messages/message.module'
 import { ShoppingCartModule } from '@/modules/shoppingCart/shoppingCart.module'
 import { ProductsController } from '@/modules/product/product.controller'
+import { MessagesController } from './modules/messages/message.controller'
 import { ProductCommentModule } from '@/modules/productComment/productComment.module'
 import { ProductCatalogModule } from '@/modules/productCatalog/productCatalog.module'
 import { ProductCategoryModule } from '@/modules/productCategory/productCategory.module'
@@ -16,6 +17,8 @@ import { RequestLoggerMiddleware } from '@/middlewares/request.logger.middleware
 import { ProductCommentController } from '@/modules/productComment/productComment.controller'
 import { ProductCatalogController } from '@/modules/productCatalog/productCatalog.controller'
 import { ProductCategoryController } from '@/modules/productCategory/productCategory.controller'
+import { ProductCommentReplyModule } from './modules/ProductCommentReply/productCommentReply.module'
+import { ProductCommentReplyController } from './modules/ProductCommentReply/productCommentReply.controller'
 import { MiddlewareConsumer, Module, NestModule } from '@nestjs/common'
 
 @Module({
@@ -29,6 +32,7 @@ import { MiddlewareConsumer, Module, NestModule } from '@nestjs/common'
     ProductCommentModule,
     ProductCatalogModule,
     ProductCategoryModule,
+    ProductCommentReplyModule,
   ],
   controllers: [AppController],
   providers: [],
@@ -40,10 +44,12 @@ export class AppModule implements NestModule {
       .forRoutes(
         UserController,
         ProductsController,
+        MessagesController,
         ShoppingCartController,
         ProductCommentController,
         ProductCatalogController,
         ProductCategoryController,
+        ProductCommentReplyController,
       )
     consumer.apply(RequestLoggerMiddleware).forRoutes('*')
   }
