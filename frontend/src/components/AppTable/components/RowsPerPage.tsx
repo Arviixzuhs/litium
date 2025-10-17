@@ -6,7 +6,7 @@ import { useDispatch, useSelector } from 'react-redux'
 export const RowsPerPage = () => {
   const dispatch = useDispatch()
   const table = useSelector((state: RootState) => state.appTable)
-  const rowsPerPageOptions = [1, 2, 3]
+  const rowsPerPageOptions = [10, 15, 20]
 
   return (
     <Select
