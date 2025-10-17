@@ -12,11 +12,11 @@ export const tableColumns: TableColumnInterface[] = [
 ]
 
 export const modalInputs: ModalInput[] = [
-  { name: 'name', 
-    label: 'Nombre', 
-    placeholder: 'Ingresa el nombre', 
-    type: 'text', 
-    required: true 
+  {
+    name: 'name',
+    label: 'Nombre',
+    placeholder: 'Ingresa el nombre',
+    type: 'text', required: true
   },
   {
     name: 'description',
