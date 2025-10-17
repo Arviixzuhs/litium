@@ -1,9 +1,18 @@
 import { Prisma } from '@prisma/client'
 
+export interface ProductCommentSpecificationBuild {
+  where: Prisma.CommentWhereInput
+  skip?: number
+  take?: number
+  include?: Prisma.CommentInclude
+  orderBy?: Prisma.CommentOrderByWithRelationInput
+}
+
 export class ProductCommentSpecificationBuilder {
   private where: Prisma.CommentWhereInput = {}
   private skip?: number
   private take?: number
+  private include?: Prisma.CommentInclude
   private orderBy?: Prisma.CommentOrderByWithRelationInput
 
   withProductId(productId?: number) {
@@ -16,6 +25,13 @@ export class ProductCommentSpecificationBuilder {
   withIsDeleted(isDeleted?: boolean) {
     if (isDeleted !== undefined) {
       this.where.isDeleted = isDeleted
+    }
+    return this
+  }
+
+  withInclude(include?: Prisma.CommentInclude) {
+    if (include) {
+      this.include = include
     }
     return this
   }
@@ -35,16 +51,12 @@ export class ProductCommentSpecificationBuilder {
     return this
   }
 
-  build(): {
-    where: Prisma.CommentWhereInput
-    skip?: number
-    take?: number
-    orderBy?: Prisma.CommentOrderByWithRelationInput
-  } {
+  build(): ProductCommentSpecificationBuild {
     return {
       where: this.where,
       skip: this.skip,
       take: this.take,
+      include: this.include,
       orderBy: this.orderBy,
     }
   }
