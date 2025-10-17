@@ -1,6 +1,8 @@
 import React from 'react'
 import toast from 'react-hot-toast'
 import { useParams } from 'react-router-dom'
+import { RootState } from '@/store'
+import { useSelector } from 'react-redux'
 import { CommentModel } from '@/types/productCommentModel'
 import { reqCreateReply } from '../../services'
 import { PaginatedResponse } from '@/types/paginatedResponse'
@@ -9,6 +11,7 @@ import { Button, Textarea, Avatar, Divider } from '@heroui/react'
 import { reqCreateComment, reqGetProductComments } from '../../services'
 
 export const ProductComment = () => {
+  const user = useSelector((state: RootState) => state.user)
   const [rating, setRating] = React.useState(0)
   const [response, setResponse] = React.useState<PaginatedResponse<CommentModel> | null>(null)
   const [newReview, setNewReview] = React.useState('')
@@ -75,60 +78,64 @@ export const ProductComment = () => {
       <div>
         <h2 className='mb-2 text-2xl font-bold'>Comentarios del producto</h2>
         <p className='text-muted-foreground'>
-          {response?.totalItems} {response?.totalItems === 1 ? 'comntario' : 'comentarios'}
+          {response?.totalItems} {response?.totalItems === 1 ? 'comentario' : 'comentarios'}
         </p>
       </div>
       <Divider />
-      <div className='rounded-lg border border-gray-300 p-6'>
-        <h3 className='mb-4 text-lg font-semibold'>Escribe tu opinión</h3>
-        <form onSubmit={handleSubmitReview} className='space-y-4'>
-          <div>
-            <label className='mb-2 block text-sm font-medium'>Tu calificación</label>
-            <div className='flex gap-1'>
-              {[1, 2, 3, 4, 5].map((star) => (
-                <button
-                  key={star}
-                  type='button'
-                  onClick={() => setRating(star)}
-                  onMouseEnter={() => setHoveredRating(star)}
-                  onMouseLeave={() => setHoveredRating(0)}
-                  className='transition-transform hover:scale-110'
-                >
-                  <Star
-                    className={`h-8 w-8 ${
-                      star <= (hoveredRating || rating)
-                        ? 'fill-accent text-accent'
-                        : 'fill-muted text-muted'
-                    }`}
-                  />
-                </button>
-              ))}
-            </div>
+      {user && (
+        <>
+          <div className='rounded-lg border border-gray-300 p-6'>
+            <h3 className='mb-4 text-lg font-semibold'>Escribe tu opinión</h3>
+            <form onSubmit={handleSubmitReview} className='space-y-4'>
+              <div>
+                <label className='mb-2 block text-sm font-medium'>Tu calificación</label>
+                <div className='flex gap-1'>
+                  {[1, 2, 3, 4, 5].map((star) => (
+                    <button
+                      key={star}
+                      type='button'
+                      onClick={() => setRating(star)}
+                      onMouseEnter={() => setHoveredRating(star)}
+                      onMouseLeave={() => setHoveredRating(0)}
+                      className='transition-transform hover:scale-110'
+                    >
+                      <Star
+                        className={`h-8 w-8 ${
+                          star <= (hoveredRating || rating)
+                            ? 'fill-accent text-accent'
+                            : 'fill-muted text-muted'
+                        }`}
+                      />
+                    </button>
+                  ))}
+                </div>
+              </div>
+              <div>
+                <label htmlFor='review-comment' className='mb-2 block text-sm font-medium'>
+                  Tu comentario
+                </label>
+                <Textarea
+                  id='review-comment'
+                  placeholder='Comparte tu experiencia con este producto...'
+                  value={newReview}
+                  onChange={(e) => setNewReview(e.target.value)}
+                  rows={4}
+                  className='resize-none'
+                />
+              </div>
+              <Button
+                type='submit'
+                color='primary'
+                radius='sm'
+                disabled={!newReview.trim() || rating === 0}
+              >
+                Publicar comentario
+              </Button>
+            </form>
           </div>
-          <div>
-            <label htmlFor='review-comment' className='mb-2 block text-sm font-medium'>
-              Tu comentario
-            </label>
-            <Textarea
-              id='review-comment'
-              placeholder='Comparte tu experiencia con este producto...'
-              value={newReview}
-              onChange={(e) => setNewReview(e.target.value)}
-              rows={4}
-              className='resize-none'
-            />
-          </div>
-          <Button
-            type='submit'
-            color='primary'
-            radius='sm'
-            disabled={!newReview.trim() || rating === 0}
-          >
-            Publicar comentario
-          </Button>
-        </form>
-      </div>
-      <Divider />
+          <Divider />
+        </>
+      )}
       <div className='space-y-6'>
         {response?.content.length === 0 ? (
           <p className='py-8 text-center text-muted-foreground'>
