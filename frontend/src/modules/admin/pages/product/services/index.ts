@@ -9,3 +9,4 @@ export const reqCreateProduct = (data: Partial<ProductModel>) => api.post('/prod
 export const reqUpdateProduct = (id: number, data: Partial<ProductModel>) =>
   api.patch(`/product/${id}`, data)
 export const reqDeleteProduct = (id: number) => api.delete(`/product/${id}`)
+export const reqGetProductById = (id: number) => api.get<ProductModel>(`/product/${id}`)
