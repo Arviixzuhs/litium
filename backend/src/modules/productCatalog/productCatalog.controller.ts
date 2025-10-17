@@ -1,18 +1,28 @@
-import { Put, Body, Post, Param, Delete, Controller, Get, Query, ParseIntPipe, Patch } from '@nestjs/common'
+import { Page } from '@/types/Page'
+import { Catalog } from '@prisma/client'
 import { CatalogDto } from './dto/catalog.dto'
+import { FindCatalogsDto } from './dto/find-catalogs.dto'
+import { UpdateCatalogDto } from './dto/update-catalog.dto'
 import { ProductCatalogService } from './productCatalog.service'
 import { AssignProductToCatalogDto } from './dto/assign-product.dto'
 import { ApiBearerAuth, ApiOperation, ApiResponse, ApiTags } from '@nestjs/swagger'
-import { FindCatalogsDto } from './dto/find-catalogs.dto'
-import { Page } from '@/types/Page'
-import { Catalog } from '@prisma/client'
-import { UpdateCatalogDto } from './dto/update-catalog.dto'
+import {
+  Get,
+  Body,
+  Post,
+  Param,
+  Query,
+  Patch,
+  Delete,
+  Controller,
+  ParseIntPipe,
+} from '@nestjs/common'
 
 @ApiTags('Products Catalog')
 @Controller('/catalog')
 @ApiBearerAuth()
 export class ProductCatalogController {
-  constructor(private readonly productCatalogService: ProductCatalogService) {}
+  constructor(private readonly productCatalogService: ProductCatalogService) { }
 
   @Post()
   @ApiOperation({ summary: 'Crear un nuevo catálogo' })
