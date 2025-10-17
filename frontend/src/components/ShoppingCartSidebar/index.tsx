@@ -3,6 +3,7 @@ import {
   removeItemFromCart,
   incrementItemQuantity,
   decrementItemQuantity,
+  resetShoppingCart,
 } from '@/features/shoppingCartSlice'
 import { RootState } from '@/store'
 import { useNavigate } from 'react-router-dom'
@@ -14,6 +15,7 @@ import { useDispatch, useSelector } from 'react-redux'
 export const ShoppingCartSidebar = () => {
   const navigate = useNavigate()
   const dispatch = useDispatch()
+  const user = useSelector((state: RootState) => state.user)
   const { cartItems, totalQuantity, totalPrice, isOpen } = useSelector(
     (state: RootState) => state.shoppingCart,
   )
@@ -22,6 +24,10 @@ export const ShoppingCartSidebar = () => {
 
   const onConfirm = async () => {
     try {
+      if (!user) {
+        navigate('/login')
+      }
+
       const response = await reqCreateShoppingCart({
         name: new Date().getTime().toString(),
         products: cartItems.map((item) => ({
@@ -30,6 +36,7 @@ export const ShoppingCartSidebar = () => {
         })),
       })
       handleClose()
+      dispatch(resetShoppingCart(null))
       navigate(`/messages/${response.data.id}`)
     } catch (error) {
       console.log(error)
@@ -117,7 +124,7 @@ export const ShoppingCartSidebar = () => {
         <p className='text-gray-500 dark:text-gray-300'>Artículos: {totalQuantity}</p>
       </div>
       <Button color='primary' radius='sm' onPress={onConfirm}>
-        Confirmar
+        {user ? 'Confirmar' : 'Iniciar sesión'}
       </Button>
     </div>
   )
