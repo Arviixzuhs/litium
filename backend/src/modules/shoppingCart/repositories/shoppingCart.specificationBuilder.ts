@@ -1,5 +1,13 @@
 import { Prisma, ShoppingCartStatus } from '@prisma/client'
 
+export interface ShoppingCartSpecificationBuild {
+  where: Prisma.ShoppingCartWhereInput
+  skip?: number
+  take?: number
+  include?: Prisma.ShoppingCartInclude
+  orderBy?: Prisma.ShoppingCartOrderByWithRelationInput
+}
+
 export class ShoppingCartSpecificationBuilder {
   private where: Prisma.ShoppingCartWhereInput = {}
   private skip?: number
@@ -22,9 +30,24 @@ export class ShoppingCartSpecificationBuilder {
     return this
   }
 
+  withProductName(productName?: string) {
+    if (productName !== undefined) {
+      this.where.products = {
+        some: {
+          product: {
+            name: {
+              contains: productName,
+            },
+          },
+        },
+      }
+    }
+    return this
+  }
+
   withUserId(userId?: number) {
     if (userId !== undefined) {
-      this.where.user.id === userId
+      this.where.userId === userId
     }
 
     return this
@@ -52,13 +75,7 @@ export class ShoppingCartSpecificationBuilder {
     return this
   }
 
-  build(): {
-    where: Prisma.ShoppingCartWhereInput
-    skip?: number
-    take?: number
-    include?: Prisma.ShoppingCartInclude
-    orderBy?: Prisma.ShoppingCartOrderByWithRelationInput
-  } {
+  build(): ShoppingCartSpecificationBuild {
     return {
       where: this.where,
       skip: this.skip,
