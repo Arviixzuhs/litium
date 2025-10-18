@@ -1,6 +1,6 @@
 import { Module } from '@nestjs/common'
 import { PrismaService } from '@/prisma/prisma.service'
-import { ProductsService } from '../product/product.service'
+import { ProductsService } from '@/modules/product/product.service'
 import { ProductCategoryService } from './productCategory.service'
 import { ProductCategoryController } from './productCategory.controller'
 

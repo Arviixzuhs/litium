@@ -2,8 +2,8 @@ import { Page } from '@/types/Page'
 import { EditType } from './dto/edit-product-quantity.dto'
 import { PrismaService } from '@/prisma/prisma.service'
 import { ProductsService } from '@/modules/product/product.service'
-import { FindShoppingCartDto } from './dto/find-shoppingcart.dto'
 import { CreateShoppingCartDto } from './dto/create-shoppingcart.dto'
+import { ShoppingCartFiltersDto } from './dto/shoppingcart-filters.dto'
 import { ShoppingCartProductDto } from './dto/shoppingcart-product.dto'
 import { ShoppingCart, ShoppingCartStatus } from '@prisma/client'
 import { HttpException, HttpStatus, Injectable, NotFoundException } from '@nestjs/common'
@@ -19,7 +19,7 @@ export class ShoppingCartService {
     private readonly productService: ProductsService,
   ) {}
 
-  findAll(userId: number, filters: FindShoppingCartDto) {
+  findAll(userId: number, filters: ShoppingCartFiltersDto) {
     const query = new ShoppingCartSpecificationBuilder()
       .withUserId(userId)
       .withIsDeleted(false)
@@ -184,7 +184,7 @@ export class ShoppingCartService {
 
   private async page(
     query: ShoppingCartSpecificationBuild,
-    filters: FindShoppingCartDto,
+    filters: ShoppingCartFiltersDto,
   ): Promise<Page<ShoppingCart>> {
     const [categories, totalItems] = await this.prisma.$transaction([
       this.prisma.shoppingCart.findMany(query),

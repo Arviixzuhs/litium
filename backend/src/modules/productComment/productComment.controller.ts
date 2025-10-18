@@ -1,6 +1,6 @@
 import { Request } from 'express'
-import { FindCommentsDto } from './dto/find-comments.dto'
 import { CreateCommentDto } from './dto/create-comment.dto'
+import { CommentFiltersDto } from './dto/comment-filters.dto'
 import { ProductCommentService } from './productComment.service'
 import { ApiBearerAuth, ApiOperation, ApiResponse, ApiTags } from '@nestjs/swagger'
 import { Req, Get, Body, Post, Param, Delete, Controller, Query } from '@nestjs/common'
@@ -27,7 +27,7 @@ export class ProductCommentController {
 
   @Get()
   @ApiOperation({ summary: 'Obtener comentarios de un producto con filtros opcionales' })
-  findByProductId(@Query() query: FindCommentsDto) {
+  findByProductId(@Query() query: CommentFiltersDto) {
     return this.productCommentService.findAll(query)
   }
 }

@@ -1,5 +1,5 @@
 import { ProductsService } from './product.service'
-import { ProductFilterDto } from './dto/productfilters.dto'
+import { ProductFilterDto } from './dto/product-filters.dto'
 import { CreateProductDto } from './dto/create-product.dto'
 import { UpdateProductDto } from './dto/update-product.dto'
 import { ApiTags, ApiOperation, ApiResponse, ApiParam, ApiBearerAuth } from '@nestjs/swagger'

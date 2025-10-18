@@ -4,7 +4,7 @@ import { PrismaService } from '@/prisma/prisma.service'
 import { CreateSupplierDto } from './dto/create-supplier.dto'
 import { UpdateSupplierDto } from './dto/update-supplier.dto'
 import { Injectable, NotFoundException } from '@nestjs/common'
-import { SupplierFiltersDto } from './dto/filters-supplier.dto'
+import { SupplierFiltersDto } from './dto/supplier-filters.dto'
 import { ProductsService } from '@/modules/product/product.service'
 import { AssignProductToSupplierDto } from './dto/assign-product.dto'
 import {

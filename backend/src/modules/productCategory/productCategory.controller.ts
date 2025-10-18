@@ -1,21 +1,21 @@
-import {
-  Put,
-  Body,
-  Post,
-  Param,
-  Delete,
-  Controller,
-  Get,
-  Query,
-  ParseIntPipe,
-} from '@nestjs/common'
+import { Page } from '@/types/Page'
+import { Category } from '@prisma/client'
 import { CategoryDto } from './dto/category.dto'
+import { CategoryFiltersDto } from './dto/category-filters.dto'
 import { ProductCategoryService } from './productCategory.service'
 import { AssignProductToCategoryDto } from './dto/assign-product.dto'
 import { ApiBearerAuth, ApiOperation, ApiResponse, ApiTags } from '@nestjs/swagger'
-import { CategoryFiltersDto } from './dto/category-filter.dto'
-import { Page } from '@/types/Page'
-import { Category } from '@prisma/client'
+import {
+  Put,
+  Get,
+  Body,
+  Post,
+  Param,
+  Query,
+  Delete,
+  Controller,
+  ParseIntPipe,
+} from '@nestjs/common'
 
 @ApiTags('Products Category')
 @Controller('/category')

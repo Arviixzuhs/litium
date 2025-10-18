@@ -1,8 +1,8 @@
 import { Page } from '@/types/Page'
 import { Catalog } from '@prisma/client'
 import { CatalogDto } from './dto/catalog.dto'
-import { FindCatalogsDto } from './dto/find-catalogs.dto'
 import { UpdateCatalogDto } from './dto/update-catalog.dto'
+import { CatalogFiltersDto } from './dto/catalog-filters.dto'
 import { ProductCatalogService } from './productCatalog.service'
 import { AssignProductToCatalogDto } from './dto/assign-product.dto'
 import { ApiBearerAuth, ApiOperation, ApiResponse, ApiTags } from '@nestjs/swagger'
@@ -54,7 +54,7 @@ export class ProductCatalogController {
   @Get()
   @ApiOperation({ summary: 'Obtener todos los catálogos' })
   @ApiResponse({ status: 200, description: 'Lista de catálogos con filtros opcionales' })
-  findAll(@Query() filters: FindCatalogsDto): Promise<Page<Catalog>> {
+  findAll(@Query() filters: CatalogFiltersDto): Promise<Page<Catalog>> {
     return this.productCatalogService.findAll(filters)
   }
 }

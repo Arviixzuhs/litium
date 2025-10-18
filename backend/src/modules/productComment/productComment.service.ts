@@ -1,7 +1,7 @@
 import { Page } from '@/types/Page'
 import { Comment } from '@prisma/client'
 import { PrismaService } from '@/prisma/prisma.service'
-import { FindCommentsDto } from './dto/find-comments.dto'
+import { CommentFiltersDto } from './dto/comment-filters.dto'
 import { ProductsService } from '@/modules/product/product.service'
 import { CreateCommentDto } from './dto/create-comment.dto'
 import { HttpException, HttpStatus, Injectable, NotFoundException } from '@nestjs/common'
@@ -17,7 +17,7 @@ export class ProductCommentService {
     private readonly productService: ProductsService,
   ) {}
 
-  async findAll(filters: FindCommentsDto) {
+  async findAll(filters: CommentFiltersDto) {
     await this.productService.findBy(filters.productId)
 
     const query = new ProductCommentSpecificationBuilder()
@@ -86,7 +86,7 @@ export class ProductCommentService {
 
   private async page(
     query: ProductCommentSpecificationBuild,
-    filters: FindCommentsDto,
+    filters: CommentFiltersDto,
   ): Promise<Page<Comment>> {
     const [categories, totalItems] = await this.prisma.$transaction([
       this.prisma.comment.findMany(query),

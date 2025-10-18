@@ -3,7 +3,7 @@ import { Category } from '@prisma/client'
 import { CategoryDto } from './dto/category.dto'
 import { PrismaService } from '@/prisma/prisma.service'
 import { ProductsService } from '@/modules/product/product.service'
-import { CategoryFiltersDto } from './dto/category-filter.dto'
+import { CategoryFiltersDto } from './dto/category-filters.dto'
 import { AssignProductToCategoryDto } from './dto/assign-product.dto'
 import { Injectable, NotFoundException } from '@nestjs/common'
 import {

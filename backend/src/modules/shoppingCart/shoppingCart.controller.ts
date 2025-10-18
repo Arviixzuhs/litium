@@ -1,7 +1,7 @@
 import { Request } from 'express'
 import { ShoppingCartService } from './shoppingCart.service'
-import { FindShoppingCartDto } from './dto/find-shoppingcart.dto'
 import { CreateShoppingCartDto } from './dto/create-shoppingcart.dto'
+import { ShoppingCartFiltersDto } from './dto/shoppingcart-filters.dto'
 import { EditProductQuantityDto } from './dto/edit-product-quantity.dto'
 import { ApiTags, ApiBearerAuth, ApiOperation, ApiResponse } from '@nestjs/swagger'
 import { Req, Get, Post, Body, Param, Query, Delete, Patch, Controller } from '@nestjs/common'
@@ -34,7 +34,7 @@ export class ShoppingCartController {
 
   @Get()
   @ApiOperation({ summary: 'Obtener carritos de compras del usuario con filtros opcionales' })
-  findAll(@Query() query: FindShoppingCartDto, @Req() req: Request) {
+  findAll(@Query() query: ShoppingCartFiltersDto, @Req() req: Request) {
     return this.shoppingCartService.findAll(req.user.userId, query)
   }
 

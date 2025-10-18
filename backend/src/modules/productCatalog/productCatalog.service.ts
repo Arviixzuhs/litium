@@ -2,14 +2,14 @@ import { Page } from '@/types/Page'
 import { Catalog } from '@prisma/client'
 import { CatalogDto } from './dto/catalog.dto'
 import { PrismaService } from '@/prisma/prisma.service'
-import { ProductsService } from '../product/product.service'
+import { ProductsService } from '@/modules/product/product.service'
+import { UpdateCatalogDto } from './dto/update-catalog.dto'
+import { CatalogFiltersDto } from './dto/catalog-filters.dto'
 import { Injectable, NotFoundException } from '@nestjs/common'
-import { FindCatalogsDto } from './dto/find-catalogs.dto'
 import {
   ProductCatalogSpecificationBuild,
   ProductCatalogSpecificationBuilder,
 } from './repositories/productCatalog.specificationBuilder'
-import { UpdateCatalogDto } from './dto/update-catalog.dto'
 
 @Injectable()
 export class ProductCatalogService {
@@ -18,7 +18,7 @@ export class ProductCatalogService {
     private readonly productsService: ProductsService,
   ) {}
 
-  async findAll(filters: FindCatalogsDto): Promise<Page<Catalog>> {
+  async findAll(filters: CatalogFiltersDto): Promise<Page<Catalog>> {
     const query = new ProductCatalogSpecificationBuilder()
       .withName(filters.name)
       .withIsDeleted(false)
@@ -88,7 +88,7 @@ export class ProductCatalogService {
 
   private async page(
     query: ProductCatalogSpecificationBuild,
-    filters: FindCatalogsDto,
+    filters: CatalogFiltersDto,
   ): Promise<Page<Catalog>> {
     const [catalogs, totalItems] = await this.prisma.$transaction([
       this.prisma.catalog.findMany(query),

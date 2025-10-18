@@ -3,7 +3,7 @@ import { Product } from '@prisma/client'
 import { PrismaService } from '@/prisma/prisma.service'
 import { CreateProductDto } from './dto/create-product.dto'
 import { UpdateProductDto } from './dto/update-product.dto'
-import { ProductFilterDto } from './dto/productfilters.dto'
+import { ProductFilterDto } from './dto/product-filters.dto'
 import { Injectable, NotFoundException } from '@nestjs/common'
 import {
   ProductSpecificationBuild,
