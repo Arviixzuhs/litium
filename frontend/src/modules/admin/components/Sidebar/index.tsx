@@ -63,10 +63,12 @@ export const AdminSidebar = () => {
       <div className='flex h-16 items-center justify-between border-gray-300 border-b px-4'>
         {!isCollapsed && <h2 className='text-lg font-semibold text-nowrap'>Litium C.A</h2>}
         <Button
+          size='sm'
           variant='light'
+          color='primary'
           isIconOnly
           onPress={() => setIsCollapsed(!isCollapsed)}
-          className={cn('h-8 w-8 hover:bg-sidebar-accent', isCollapsed && 'mx-auto')}
+          className={cn('h-8 w-8 hover:bg-sidebar-accent')}
         >
           {isCollapsed ? <ChevronRight className='h-4 w-4' /> : <ChevronLeft className='h-4 w-4' />}
         </Button>
@@ -80,31 +82,37 @@ export const AdminSidebar = () => {
               key={item.href}
               to={item.href}
               className={cn(
-                'hover:bg-primary hover:text-white flex items-center gap-3 rounded-lg px-3 py-2.5 text-sm font-medium transition-colors',
-                isActive ? 'bg-primary text-white' : '',
-                isCollapsed && 'justify-center',
+                'flex items-center gap-3 rounded-lg px-3 py-2.5 text-sm font-medium transition-all duration-200',
+                'hover:bg-primary/10 hover:text-primary',
+                isActive ? 'bg-primary/10 text-primary' : 'text-muted-foreground',
               )}
               title={isCollapsed ? item.title : undefined}
             >
-              <Icon className='h-5 w-5 flex-shrink-0' />
-              {!isCollapsed && <span>{item.title}</span>}
+              <Icon className='h-5 w-5 flex-shrink-0 text-primary transition-colors' />
+              {
+                <span
+                  className={`transition-all duration-200 ${isCollapsed ? 'opacity-0' : 'opacity-100'}`}
+                >
+                  {item.title}
+                </span>
+              }
             </Link>
           )
         })}
       </nav>
       <div className='border-gray-300 border-t p-4'>
-        <div className={cn('flex items-center gap-3', isCollapsed && 'justify-center')}>
-          <div className='flex h-8 w-8 items-center justify-center rounded-full bg-primary text-sidebar-primary-foreground'>
+        <div className={cn('flex items-center gap-3')}>
+          <div className='flex min-h-8 min-w-8 items-center justify-center rounded-full bg-primary text-sidebar-primary-foreground'>
             <span className='text-sm font-semibold'>{user?.name.charAt(0)}</span>
           </div>
-          {!isCollapsed && (
-            <div className='flex-1 overflow-hidden'>
-              <p className='truncate text-sm font-medium'>
-                {user?.name} {user?.lastName}
-              </p>
-              <p className='truncate text-xs'>{user?.email}</p>
-            </div>
-          )}
+          <div
+            className={`flex-1 overflow-hidden transition-all duration-200 ${isCollapsed ? 'opacity-0' : 'opacity-100'}`}
+          >
+            <p className='truncate text-sm font-medium'>
+              {user?.name} {user?.lastName}
+            </p>
+            <p className='truncate text-xs'>{user?.email}</p>
+          </div>
         </div>
       </div>
     </aside>
