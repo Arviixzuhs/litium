@@ -25,7 +25,7 @@ export class ProductSpecificationBuilder {
 
   withCatalogId(catalogId?: number) {
     if (catalogId) {
-      this.where.catalogId = catalogId
+      this.where.product_x_catalog.some.id = catalogId
     }
 
     return this
