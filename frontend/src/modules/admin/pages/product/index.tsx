@@ -3,18 +3,13 @@ import toast from 'react-hot-toast'
 import { AppTable } from '@/components/AppTable'
 import { RootState } from '@/store'
 import { useDebounce } from 'use-debounce'
+import { ModalExtension } from './components/ModalExtension'
 import { AppTableActions } from '@/components/AppTable/interfaces/appTable'
+import { AutocompleteChip } from '@/components/AutocompleteWithChips'
 import { useDispatch, useSelector } from 'react-redux'
 import { tableColumns, modalInputs } from './data'
+import { deleteItem, setTableData, setModalInputs, setTableColumns } from '@/features/appTableSlice'
 import { reqCreateProduct, reqDeleteProduct, reqGetProducts, reqUpdateProduct } from './services'
-import {
-  addItem,
-  updateItem,
-  deleteItem,
-  setTableData,
-  setModalInputs,
-  setTableColumns,
-} from '@/features/appTableSlice'
 
 export const AdminProductPage = () => {
   const table = useSelector((state: RootState) => state.appTable)
@@ -43,10 +38,17 @@ export const AdminProductPage = () => {
     dispatch(setTableColumns(tableColumns))
   }, [])
 
+  const { categories, suppliers, ...data } = table.formData
+  const tableFormData = {
+    ...data,
+    supplierIds: (suppliers as AutocompleteChip[])?.map((item) => item.id) || [],
+    categoryIds: (categories as AutocompleteChip[])?.map((item) => item.id) || [],
+  }
+
   const tableActions: AppTableActions = {
     create: async () => {
-      const response = await reqCreateProduct(table.formData)
-      dispatch(addItem(response.data))
+      await reqCreateProduct(tableFormData)
+      loadData()
       toast.success('Producto creado correctamente')
     },
     delete: async () => {
@@ -55,11 +57,11 @@ export const AdminProductPage = () => {
       toast.success('Producto eliminado correctamente')
     },
     update: async () => {
-      await reqUpdateProduct(table.currentItemToUpdate, table.formData)
-      dispatch(updateItem({ id: table.currentItemToUpdate, newData: table.formData }))
+      await reqUpdateProduct(table.currentItemToUpdate, tableFormData)
+      loadData()
       toast.success('Producto actualizado correctamente')
     },
   }
 
-  return <AppTable tableActions={tableActions} />
+  return <AppTable tableActions={tableActions} modalExtension={<ModalExtension />} />
 }
