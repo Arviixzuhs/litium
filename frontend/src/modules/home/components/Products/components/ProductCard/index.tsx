@@ -10,10 +10,10 @@ interface ProductCardProps {
   product: ProductModel
 }
 
-export function ProductCard({ product }: ProductCardProps) {
+export const ProductCard = ({ product }: ProductCardProps) => {
   const dispatch = useDispatch()
 
-  const handleAddToCart = (product: ProductModel) => {
+  const handleAddToCart = () => {
     dispatch(
       addItemToCart({
         id: product.id,
@@ -64,7 +64,7 @@ export function ProductCard({ product }: ProductCardProps) {
               disabled={product.stock === 0}
               className='gap-2'
               color='primary'
-              onPress={() => handleAddToCart(product)}
+              onPress={() => handleAddToCart()}
               startContent={<ShoppingCart className='h-4 w-4' />}
             >
               Agregar
