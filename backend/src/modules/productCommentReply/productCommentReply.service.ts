@@ -1,7 +1,7 @@
+import { Injectable } from '@nestjs/common'
 import { PrismaService } from '@/prisma/prisma.service'
 import { CreateReplyDto } from './dto/create-reply.dto'
 import { ProductCommentService } from '@/modules/productComment/productComment.service'
-import { Injectable, NotFoundException } from '@nestjs/common'
 
 @Injectable()
 export class ProductCommentReplyService {

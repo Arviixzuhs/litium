@@ -1,5 +1,5 @@
+import { Type } from 'class-transformer'
 import { ApiProperty } from '@nestjs/swagger'
-import { Transform, Type } from 'class-transformer'
 import { IsString, IsOptional, IsNumber, MaxLength } from 'class-validator'
 
 export class CreateProductDto {

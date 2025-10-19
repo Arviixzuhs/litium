@@ -1,6 +1,6 @@
-import { IsInt, IsNotEmpty, IsNumber } from 'class-validator'
-import { ApiProperty } from '@nestjs/swagger'
 import { Type } from 'class-transformer'
+import { ApiProperty } from '@nestjs/swagger'
+import { IsInt, IsNotEmpty } from 'class-validator'
 
 export class AssignProductToCategoryDto {
   @ApiProperty({ example: 1, description: 'Id del producto', required: true })
