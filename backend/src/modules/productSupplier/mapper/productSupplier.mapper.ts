@@ -1,6 +1,6 @@
 import { Supplier } from '@prisma/client'
 import { BaseMapper } from '@/common/utils/base.mapper'
-import { SupplierResponseDto } from '../dto/supplier.dto'
+import { SupplierResponseDto } from '../dto/supplier-response.dto'
 
 export class SupplierMapper extends BaseMapper<Supplier, SupplierResponseDto> {
   modelToDto(model: Supplier): SupplierResponseDto {
