@@ -5,7 +5,7 @@ import { ProductsService } from '@/modules/product/product.service'
 import { CreateSupplierDto } from './dto/create-supplier.dto'
 import { UpdateSupplierDto } from './dto/update-supplier.dto'
 import { SupplierFiltersDto } from './dto/supplier-filters.dto'
-import { SupplierResponseDto } from './dto/supplier.dto'
+import { SupplierResponseDto } from './dto/supplier-response.dto'
 import { AssignProductToSupplierDto } from './dto/assign-product.dto'
 import { Injectable, NotFoundException } from '@nestjs/common'
 import {
