@@ -1,3 +1,6 @@
+import { CategoryModel } from './categoryModel'
+import { SupplierModel } from './supplierModel'
+
 export interface ProductModel {
   id: number
   name: string
@@ -14,7 +17,14 @@ export interface ProductModel {
 
   // Relaciones
   images?: ImageProductModel[]
+  suppliers: SupplierModel[]
+  categories: CategoryModel[]
   specifications?: ProductSpecificationModel[]
+}
+
+export interface ProductDto extends ProductModel {
+  categoryIds: number[]
+  supplierIds: number[]
 }
 
 export interface ProductSpecificationModel {
