@@ -73,7 +73,6 @@ model Product {
   stock       Int?
   image       String?   @db.VarChar(250)
   price       Float?
-  catalogId   Int?
   createdAt   DateTime? @default(now())
   updatedAt   DateTime?
   deletedAt   DateTime?
@@ -81,16 +80,16 @@ model Product {
   description String?   @db.VarChar(150)
 
   // Relaciones
-  images                ImageProduct[]
-  comments              Comment[]
-  categories            Product_x_Category[]
-  shoppingCarts         ShoppingCartProduct[]
-  product_x_catalog     Product_x_Catalog[]
-  product_x_supplier    Product_x_Supplier[]
-  ProductSpecifications ProductSpecifications[]
+  images             ImageProduct[]
+  comments           Comment[]
+  categories         Product_x_Category[]
+  shoppingCarts      ShoppingCartProduct[]
+  specifications     ProductSpecification[]
+  product_x_catalog  Product_x_Catalog[]
+  product_x_supplier Product_x_Supplier[]
 }
 
-model ProductSpecifications {
+model ProductSpecification {
   id        Int     @id @default(autoincrement())
   title     String  @db.VarChar(100)
   value     String  @db.VarChar(180)
@@ -159,12 +158,13 @@ model Product_x_Supplier {
 // =======================
 
 model Category {
-  id                 Int                  @id @default(autoincrement())
-  name               String               @db.VarChar(50)
-  isDeleted          Boolean?             @default(false)
-  deletedAt          DateTime?
-  Product_x_Category Product_x_Category[]
-  createdAt          DateTime             @default(now())
+  id        Int       @id @default(autoincrement())
+  name      String    @db.VarChar(50)
+  isDeleted Boolean?  @default(false)
+  deletedAt DateTime?
+  createdAt DateTime  @default(now())
+
+  product_x_category Product_x_Category[]
 }
 
 model Product_x_Category {
