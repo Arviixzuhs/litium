@@ -16,7 +16,7 @@ export interface ShoppingCartProductModel {
   shoppingCartId: number
   createdAt: Date
 
-  product?: ProductModel
+  product: ProductModel
   invoice?: InvoiceModel
   shoppingCart?: ShoppingCartModel
 }
