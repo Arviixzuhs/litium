@@ -1,3 +1,10 @@
+import { CreateSupplierDto } from './dto/create-supplier.dto'
+import { UpdateSupplierDto } from './dto/update-supplier.dto'
+import { SupplierFiltersDto } from './dto/supplier-filters.dto'
+import { SupplierResponseDto } from './dto/supplier-response.dto'
+import { ProductSupplierService } from './productSupplier.service'
+import { SupplierPageResponseDto } from './dto/supplier-page-response.dto'
+import { ApiTags, ApiOperation, ApiResponse, ApiBearerAuth } from '@nestjs/swagger'
 import {
   Get,
   Post,
@@ -9,14 +16,6 @@ import {
   Controller,
   ParseIntPipe,
 } from '@nestjs/common'
-import { PageResponseDto } from '@/common/dto/pageresponse.dto'
-import { CreateSupplierDto } from './dto/create-supplier.dto'
-import { UpdateSupplierDto } from './dto/update-supplier.dto'
-import { SupplierFiltersDto } from './dto/supplier-filters.dto'
-import { SupplierResponseDto } from './dto/supplier-response.dto'
-import { ProductSupplierService } from './productSupplier.service'
-import { AssignProductToSupplierDto } from './dto/assign-product.dto'
-import { ApiTags, ApiOperation, ApiResponse, ApiBearerAuth } from '@nestjs/swagger'
 
 @ApiTags('Products Suppliers')
 @Controller('/supplier')
@@ -40,7 +39,7 @@ export class ProductSupplierController {
   @ApiResponse({
     status: 200,
     description: 'Lista de proveedores.',
-    type: PageResponseDto(SupplierResponseDto),
+    type: SupplierPageResponseDto,
   })
   findAll(@Query() filters: SupplierFiltersDto) {
     return this.supplierService.findAll(filters)
@@ -66,12 +65,5 @@ export class ProductSupplierController {
   })
   delete(@Param('id', ParseIntPipe) id: number) {
     return this.supplierService.delete(id)
-  }
-
-  @Post('assign')
-  @ApiOperation({ summary: 'Asignar producto a proveedor' })
-  @ApiResponse({ status: 201, description: 'Producto asignado al proveedor.' })
-  assign(@Body() dto: AssignProductToSupplierDto) {
-    return this.supplierService.assignProduct(dto)
   }
 }
