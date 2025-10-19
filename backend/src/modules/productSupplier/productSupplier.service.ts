@@ -1,12 +1,10 @@
 import { Page } from '@/types/Page'
 import { PrismaService } from '@/prisma/prisma.service'
 import { SupplierMapper } from './mapper/productSupplier.mapper'
-import { ProductsService } from '@/modules/product/product.service'
 import { CreateSupplierDto } from './dto/create-supplier.dto'
 import { UpdateSupplierDto } from './dto/update-supplier.dto'
 import { SupplierFiltersDto } from './dto/supplier-filters.dto'
 import { SupplierResponseDto } from './dto/supplier-response.dto'
-import { AssignProductToSupplierDto } from './dto/assign-product.dto'
 import { Injectable, NotFoundException } from '@nestjs/common'
 import {
   ProductSupplierSpecificationBuild,
@@ -15,10 +13,7 @@ import {
 
 @Injectable()
 export class ProductSupplierService {
-  constructor(
-    private readonly prisma: PrismaService,
-    private readonly productService: ProductsService,
-  ) {}
+  constructor(private readonly prisma: PrismaService) {}
 
   private supplierMapper = new SupplierMapper()
 
@@ -39,18 +34,6 @@ export class ProductSupplierService {
     })
 
     return this.supplierMapper.modelToDto(created)
-  }
-
-  async assignProduct(dto: AssignProductToSupplierDto) {
-    await this.productService.findBy(dto.productId)
-    await this.findBy(dto.supplierId)
-
-    return this.prisma.product_x_Supplier.create({
-      data: {
-        supplierId: dto.supplierId,
-        productId: dto.productId,
-      },
-    })
   }
 
   async findBy(id: number): Promise<SupplierResponseDto> {
