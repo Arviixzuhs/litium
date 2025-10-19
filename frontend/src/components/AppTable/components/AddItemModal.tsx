@@ -15,9 +15,13 @@ import {
 
 export interface AddItemModalProps {
   action: () => void
+  children: React.ReactNode
 }
 
-export const AddItemModal = (props: AddItemModalProps) => {
+export const AddItemModal: React.FC<AddItemModalProps> = ({
+  action,
+  children,
+}: AddItemModalProps) => {
   const table = useSelector((state: RootState) => state.appTable)
   const dispatch = useDispatch()
 
@@ -36,7 +40,7 @@ export const AddItemModal = (props: AddItemModalProps) => {
     e.preventDefault()
 
     /* Object.fromEntries(new FormData(e.currentTarget)) */
-    props.action()
+    action()
     toggleModal()
   }
 
@@ -51,6 +55,7 @@ export const AddItemModal = (props: AddItemModalProps) => {
       >
         <ModalContent>
           <ModalHeader className='flex flex-col gap-1'>Agregar</ModalHeader>
+
           <Form onSubmit={onSubmit} className='overflow-auto'>
             <ModalBody className='w-full'>
               <div className='w-full flex flex-col gap-4'>
@@ -65,7 +70,7 @@ export const AddItemModal = (props: AddItemModalProps) => {
                       size='sm'
                       type={item.type}
                       name={item.name}
-                      value={table.formData?.[item.name]}
+                      value={String(table.formData?.[item.name] || '')}
                       label={item.label}
                       required={item.required}
                       onChange={handleChange}
@@ -73,6 +78,7 @@ export const AddItemModal = (props: AddItemModalProps) => {
                     />
                   </div>
                 ))}
+                {children}
               </div>
             </ModalBody>
             <ModalFooter className='flex gap-2 mt-3 w-full'>

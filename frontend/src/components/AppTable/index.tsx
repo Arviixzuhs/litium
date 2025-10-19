@@ -14,9 +14,10 @@ import { Table, TableBody, TableCell, TableColumn, TableHeader, TableRow } from 
 
 export interface AppTableProps {
   tableActions?: AppTableActions
+  modalExtension?: React.ReactElement
 }
 
-export const AppTable = ({ tableActions }: AppTableProps) => {
+export const AppTable = ({ tableActions, modalExtension }: AppTableProps) => {
   const location = useLocation()
   const dispatch = useDispatch()
   const table = useSelector((state: RootState) => state.appTable)
@@ -62,8 +63,8 @@ export const AppTable = ({ tableActions }: AppTableProps) => {
           )}
         </TableBody>
       </Table>
-      <AddItemModal action={() => tableActions?.create()} />
-      <EditItemModal action={() => tableActions?.update()} />
+      <AddItemModal action={() => tableActions?.create()}>{modalExtension}</AddItemModal>
+      <EditItemModal action={() => tableActions?.update()}>{modalExtension}</EditItemModal>
       <ConfirmDeleteModal handleDelete={() => tableActions?.delete()} />
     </>
   )

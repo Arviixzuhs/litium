@@ -1,7 +1,12 @@
 import React from 'react'
 import { RootState } from '@/store'
 import { useDispatch, useSelector } from 'react-redux'
-import { setFormData, clearFormData, toggleEditItemModal } from '@/features/appTableSlice'
+import {
+  setFormData,
+  clearFormData,
+  toggleEditItemModal,
+  setCurrentItemToUpdate,
+} from '@/features/appTableSlice'
 import {
   Form,
   Modal,
@@ -15,15 +20,22 @@ import {
 
 export interface EditItemModalProps {
   action: () => void
+  children: React.ReactNode
 }
 
-export const EditItemModal = (props: EditItemModalProps) => {
+export const EditItemModal: React.FC<EditItemModalProps> = ({
+  action,
+  children,
+}: EditItemModalProps) => {
   const table = useSelector((state: RootState) => state.appTable)
   const dispatch = useDispatch()
   const currentItemToEdit = table.data.find((item) => item.id === table.currentItemToUpdate)
 
   React.useEffect(() => {
-    dispatch(clearFormData(null))
+    if (!table.isEditItemModalOpen) {
+      dispatch(clearFormData(null))
+      dispatch(setCurrentItemToUpdate(-1))
+    }
   }, [table.isEditItemModalOpen])
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) =>
@@ -35,7 +47,7 @@ export const EditItemModal = (props: EditItemModalProps) => {
 
   const onSubmit = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault()
-    props.action()
+    action()
     toggleModal()
   }
 
@@ -72,6 +84,7 @@ export const EditItemModal = (props: EditItemModalProps) => {
                     />
                   </div>
                 ))}
+                {children}
               </div>
             </ModalBody>
             <ModalFooter className='flex gap-2 mt-3 w-full'>
