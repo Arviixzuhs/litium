@@ -89,6 +89,9 @@ export const AutocompleteWithChips = <T extends { id: number; name: string }>({
       <div className='flex w-full flex-wrap md:flex-nowrap gap-4'>
         <Autocomplete<T>
           label={label}
+          listboxProps={{
+            emptyContent: 'Sin resultados.',
+          }}
           startContent={<Search />}
           placeholder={placeholder}
           defaultItems={availableItems}
