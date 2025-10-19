@@ -1,21 +1,21 @@
 import {
-  Controller,
   Get,
   Post,
-  Patch,
-  Delete,
   Body,
   Param,
   Query,
+  Patch,
+  Delete,
+  Controller,
   ParseIntPipe,
 } from '@nestjs/common'
-import { Page } from '@/types/Page'
-import { Supplier } from '@prisma/client'
+import { PageResponseDto } from '@/common/dto/pageresponse.dto'
 import { CreateSupplierDto } from './dto/create-supplier.dto'
 import { UpdateSupplierDto } from './dto/update-supplier.dto'
 import { SupplierFiltersDto } from './dto/supplier-filters.dto'
-import { AssignProductToSupplierDto } from './dto/assign-product.dto'
+import { SupplierResponseDto } from './dto/supplier.dto'
 import { ProductSupplierService } from './productSupplier.service'
+import { AssignProductToSupplierDto } from './dto/assign-product.dto'
 import { ApiTags, ApiOperation, ApiResponse, ApiBearerAuth } from '@nestjs/swagger'
 
 @ApiTags('Products Suppliers')
@@ -26,28 +26,44 @@ export class ProductSupplierController {
 
   @Post()
   @ApiOperation({ summary: 'Crear proveedor' })
-  @ApiResponse({ status: 201, description: 'Proveedor creado correctamente.' })
+  @ApiResponse({
+    status: 201,
+    description: 'Proveedor creado correctamente.',
+    type: SupplierResponseDto,
+  })
   create(@Body() dto: CreateSupplierDto) {
     return this.supplierService.create(dto)
   }
 
   @Get()
   @ApiOperation({ summary: 'Obtener todos los proveedores' })
-  @ApiResponse({ status: 200, description: 'Lista de proveedores.' })
-  findAll(@Query() filters: SupplierFiltersDto): Promise<Page<Supplier>> {
+  @ApiResponse({
+    status: 200,
+    description: 'Lista de proveedores.',
+    type: PageResponseDto(SupplierResponseDto),
+  })
+  findAll(@Query() filters: SupplierFiltersDto) {
     return this.supplierService.findAll(filters)
   }
 
   @Patch(':id')
   @ApiOperation({ summary: 'Actualizar proveedor' })
-  @ApiResponse({ status: 200, description: 'Proveedor actualizado correctamente.' })
+  @ApiResponse({
+    status: 200,
+    description: 'Proveedor actualizado correctamente.',
+    type: SupplierResponseDto,
+  })
   update(@Param('id', ParseIntPipe) id: number, @Body() dto: UpdateSupplierDto) {
     return this.supplierService.update(id, dto)
   }
 
   @Delete(':id')
   @ApiOperation({ summary: 'Eliminar proveedor' })
-  @ApiResponse({ status: 200, description: 'Proveedor eliminado correctamente.' })
+  @ApiResponse({
+    status: 200,
+    description: 'Proveedor eliminado correctamente.',
+    type: SupplierResponseDto,
+  })
   delete(@Param('id', ParseIntPipe) id: number) {
     return this.supplierService.delete(id)
   }

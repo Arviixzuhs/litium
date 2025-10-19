@@ -1,12 +1,13 @@
 import { Page } from '@/types/Page'
-import { Supplier } from '@prisma/client'
 import { PrismaService } from '@/prisma/prisma.service'
+import { SupplierMapper } from './mapper/productSupplier.mapper'
+import { ProductsService } from '@/modules/product/product.service'
 import { CreateSupplierDto } from './dto/create-supplier.dto'
 import { UpdateSupplierDto } from './dto/update-supplier.dto'
-import { Injectable, NotFoundException } from '@nestjs/common'
 import { SupplierFiltersDto } from './dto/supplier-filters.dto'
-import { ProductsService } from '@/modules/product/product.service'
+import { SupplierResponseDto } from './dto/supplier.dto'
 import { AssignProductToSupplierDto } from './dto/assign-product.dto'
+import { Injectable, NotFoundException } from '@nestjs/common'
 import {
   ProductSupplierSpecificationBuild,
   ProductSupplierSpecificationBuilder,
@@ -19,7 +20,9 @@ export class ProductSupplierService {
     private readonly productService: ProductsService,
   ) {}
 
-  async findAll(filters: SupplierFiltersDto): Promise<Page<Supplier>> {
+  private supplierMapper = new SupplierMapper()
+
+  async findAll(filters: SupplierFiltersDto) {
     const query = new ProductSupplierSpecificationBuilder()
       .withName(filters.name)
       .withIsDeleted(false)
@@ -30,10 +33,12 @@ export class ProductSupplierService {
     return this.page(query, filters)
   }
 
-  create(dto: CreateSupplierDto) {
-    return this.prisma.supplier.create({
+  async create(dto: CreateSupplierDto) {
+    const created = await this.prisma.supplier.create({
       data: dto,
     })
+
+    return this.supplierMapper.modelToDto(created)
   }
 
   async assignProduct(dto: AssignProductToSupplierDto) {
@@ -48,17 +53,19 @@ export class ProductSupplierService {
     })
   }
 
-  async findBy(id: number) {
+  async findBy(id: number): Promise<SupplierResponseDto> {
     const supplier = await this.prisma.supplier.findUnique({
       where: { id },
     })
     if (!supplier) throw new NotFoundException('Proveedor no encontrado')
-    return supplier
+
+    return this.supplierMapper.modelToDto(supplier)
   }
 
-  async update(supplierId: number, dto: UpdateSupplierDto) {
+  async update(supplierId: number, dto: UpdateSupplierDto): Promise<SupplierResponseDto> {
     await this.findBy(supplierId)
-    return this.prisma.supplier.update({
+
+    const updated = await this.prisma.supplier.update({
       where: {
         id: supplierId,
       },
@@ -67,11 +74,14 @@ export class ProductSupplierService {
         updatedAt: new Date(),
       },
     })
+
+    return this.supplierMapper.modelToDto(updated)
   }
 
   async delete(supplierId: number) {
     await this.findBy(supplierId)
-    return this.prisma.supplier.update({
+
+    const deleted = await this.prisma.supplier.update({
       where: {
         id: supplierId,
       },
@@ -80,12 +90,14 @@ export class ProductSupplierService {
         deletedAt: new Date(),
       },
     })
+
+    return this.supplierMapper.modelToDto(deleted)
   }
 
   private async page(
     query: ProductSupplierSpecificationBuild,
     filters: SupplierFiltersDto,
-  ): Promise<Page<Supplier>> {
+  ): Promise<Page<SupplierResponseDto>> {
     const [suppliers, totalItems] = await this.prisma.$transaction([
       this.prisma.supplier.findMany(query),
       this.prisma.supplier.count({
@@ -98,7 +110,7 @@ export class ProductSupplierService {
     const totalPages = Math.ceil(totalItems / size)
 
     return {
-      content: suppliers,
+      content: this.supplierMapper.modelsToDtos(suppliers),
       totalPages,
       totalItems,
       currentPage: page,
