@@ -17,7 +17,7 @@ export interface ModalInput {
 export interface AppTableInterface<T> {
   data: T[]
   columns: TableColumnInterface[]
-  formData: Record<string, string>
+  formData: Record<string, string | unknown>
   filterValue: string
   totalPages: number
   currentPage: number
@@ -81,7 +81,7 @@ export const manageAppTableSlice = createSlice({
     setModalInputs: (state, action: PayloadAction<ModalInput[]>) => {
       state.modalInputs = action.payload
     },
-    setFormData: (state, action: PayloadAction<{ name: string; value: string }>) => {
+    setFormData: (state, action: PayloadAction<{ name: string; value: string | unknown }>) => {
       const { name, value } = action.payload
       if (state.formData) {
         state.formData[name] = value
