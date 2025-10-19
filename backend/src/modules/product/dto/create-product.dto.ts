@@ -1,6 +1,7 @@
 import { Type } from 'class-transformer'
 import { ApiProperty } from '@nestjs/swagger'
-import { IsString, IsOptional, IsNumber, MaxLength } from 'class-validator'
+import { IsString, IsOptional, IsNumber, MaxLength, IsArray } from 'class-validator'
+import { ProductSpecificationDto } from './product-specification.dto'
 
 export class CreateProductDto {
   @ApiProperty({ example: 'Camisa azul', description: 'Nombre del producto' })
@@ -38,4 +39,39 @@ export class CreateProductDto {
   @IsString()
   @MaxLength(150)
   description?: string
+
+  @ApiProperty({
+    example: [1, 2, 3],
+    description: 'IDs de categorías asociadas al producto',
+    required: false,
+    type: [Number],
+  })
+  @IsOptional()
+  @IsArray()
+  @Type(() => Number)
+  @IsNumber({}, { each: true })
+  categoryIds?: number[]
+
+  @ApiProperty({
+    example: [1, 2],
+    description: 'IDs de proveedores asociados al producto',
+    required: false,
+    type: [Number],
+  })
+  @IsOptional()
+  @IsArray()
+  @Type(() => Number)
+  @IsNumber({}, { each: true })
+  supplierIds?: number[]
+
+  @ApiProperty({
+    example: [{ title: 'Color', value: 'Azul' }],
+    description: 'Especificaciones del producto',
+    required: false,
+    type: [ProductSpecificationDto],
+  })
+  @IsOptional()
+  @IsArray()
+  @Type(() => ProductSpecificationDto)
+  specifications?: ProductSpecificationDto[]
 }
