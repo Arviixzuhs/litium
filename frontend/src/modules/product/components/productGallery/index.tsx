@@ -23,22 +23,17 @@ export const ProductImageGallery = ({ images, productName }: ProductImageGallery
 
   return (
     <div className='flex gap-5'>
-      {/* Miniaturas */}
       <div className='flex flex-col gap-2'>
         {images.map((image, index) => (
-          <button key={index} onClick={() => setSelectedImage(index)}>
-            <>
-              <Image
-                src={image || '/placeholder.svg'}
-                alt={`${productName} - Miniatura ${index + 1}`}
-                className=' object-cover w-20 h-20 rounded-md'
-              />
-            </>
+          <button key={index} onClick={() => setSelectedImage(index)} className={`cursor-pointer`}>
+            <Image
+              src={image || '/placeholder.svg'}
+              alt={`${productName} - Miniatura ${index + 1}`}
+              className={`object-cover w-20 h-20 rounded-md transition-all cursor-pointer ${selectedImage === index ? 'border-2 border-primary' : 'border-2'}`}
+            />
           </button>
         ))}
       </div>
-
-      {/* Imagen principal con zoom */}
       <div
         ref={imageRef}
         className='relative w-96 h-96 overflow-hidden rounded-lg bg-muted cursor-crosshair'
@@ -61,11 +56,6 @@ export const ProductImageGallery = ({ images, productName }: ProductImageGallery
               : undefined
           }
         />
-        {showZoom && (
-          <div className='absolute top-4 right-4 bg-background/80 backdrop-blur-sm px-3 py-1.5 rounded-md text-sm font-medium'>
-            Zoom activo
-          </div>
-        )}
       </div>
     </div>
   )
