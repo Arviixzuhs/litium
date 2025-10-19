@@ -1,3 +1,4 @@
+import { Plus } from 'lucide-react'
 import { Button } from '@heroui/button'
 import { Searchbar } from './Searchbar'
 import { useDispatch } from 'react-redux'
@@ -8,7 +9,11 @@ export const TopContent = () => {
   return (
     <div className='flex gap-2 w-full'>
       <Searchbar />
-      <Button onPress={() => dispatch(toggleAddItemModal(null))} color='primary'>
+      <Button
+        onPress={() => dispatch(toggleAddItemModal(null))}
+        color='primary'
+        startContent={<Plus />}
+      >
         Agregar
       </Button>
     </div>
