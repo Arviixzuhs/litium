@@ -77,8 +77,10 @@ export const ShoppingCartSidebar = () => {
                 </div>
                 <div>
                   <h3 className='font-semibold'>{item.name}</h3>
-                  <p className='text-gray-500 dark:text-gray-400'>${item.price}</p>
-                  <p className='font-bold dark:text-gray-200'>${item.totalPrice}</p>
+                  <p className='text-gray-500 dark:text-gray-400'>${item.price.toLocaleString()}</p>
+                  <p className='font-bold dark:text-gray-200'>
+                    ${item.totalPrice.toLocaleString()}
+                  </p>
                 </div>
               </div>
               <div className='flex gap-2 items-center justify-center'>
@@ -120,7 +122,7 @@ export const ShoppingCartSidebar = () => {
         </ul>
       )}
       <div>
-        <p className='font-bold dark:text-white'>Total: ${totalPrice}</p>
+        <p className='font-bold dark:text-white'>Total: ${totalPrice.toLocaleString()}</p>
         <p className='text-gray-500 dark:text-gray-300'>Artículos: {totalQuantity}</p>
       </div>
       <Button color='primary' radius='sm' onPress={onConfirm}>
