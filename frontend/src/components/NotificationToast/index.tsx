@@ -1,6 +1,6 @@
 import { Toaster } from 'react-hot-toast'
 
-export const NotificationToast: React.FC = () => {
+export const NotificationToast = () => {
   return (
     <Toaster
       toastOptions={{
