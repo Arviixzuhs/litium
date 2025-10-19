@@ -1,9 +1,11 @@
 import { Page } from '@/types/Page'
-import { Product } from '@prisma/client'
 import { PrismaService } from '@/prisma/prisma.service'
+import { ProductMapper } from './mapper/product.mapper'
 import { CreateProductDto } from './dto/create-product.dto'
 import { UpdateProductDto } from './dto/update-product.dto'
 import { ProductFilterDto } from './dto/product-filters.dto'
+import { ProductResponseDto } from './dto/product-response.dto'
+import { ProductSpecificationDto } from './dto/product-specification.dto'
 import { Injectable, NotFoundException } from '@nestjs/common'
 import {
   ProductSpecificationBuild,
@@ -14,19 +16,42 @@ import {
 export class ProductsService {
   constructor(private readonly prisma: PrismaService) {}
 
-  create(dto: CreateProductDto) {
-    return this.prisma.product.create({
-      data: dto,
+  private productMapper = new ProductMapper()
+
+  async create(dto: CreateProductDto) {
+    const { categoryIds, supplierIds, specifications, ...data } = dto
+
+    const savedProduct = await this.prisma.product.create({
+      data,
     })
+
+    await this.assignCategoriesToProduct(savedProduct.id, categoryIds)
+    await this.assignSuppliersToProduct(savedProduct.id, supplierIds)
+    await this.asignSpecificationsToProduct(savedProduct.id, specifications)
+
+    return this.productMapper.modelToDto(savedProduct)
   }
 
-  async findAll(filters: ProductFilterDto): Promise<Page<Product>> {
+  async findAll(filters: ProductFilterDto): Promise<Page<ProductResponseDto>> {
     const query = new ProductSpecificationBuilder()
       .withName(filters.name)
       .withCatalogId(filters.catalogId)
       .withIsDeleted(false)
       .withOrderBy({ createdAt: 'desc' })
-      .withInclude({ images: true })
+      .withInclude({
+        images: true,
+        product_x_supplier: {
+          include: {
+            supplier: true,
+          },
+        },
+        categories: {
+          include: {
+            category: true,
+          },
+        },
+        specifications: true,
+      })
       .withPagination(filters.page, filters.size)
       .withPriceBetween(filters.minPrice, filters.maxPrice)
       .withCategoryName(filters.category)
@@ -36,47 +61,135 @@ export class ProductsService {
     return this.page(query, filters)
   }
 
-  async findBy(id: number) {
+  async findBy(id: number): Promise<ProductResponseDto> {
     const product = await this.prisma.product.findUnique({
       where: {
         id,
         isDeleted: false,
       },
+      include: {
+        specifications: true,
+      },
     })
 
     if (!product) throw new NotFoundException('Producto no encontrado')
-    return product
+    return this.productMapper.modelToDto(product)
   }
 
   async update(id: number, dto: UpdateProductDto) {
     await this.findBy(id)
+    const { categoryIds, supplierIds, specifications, ...newData } = dto
 
-    return this.prisma.product.update({
+    await this.updateProductCategories(id, categoryIds)
+    await this.updateProductSuppliers(id, supplierIds)
+    await this.updateProductSpecifications(id, specifications)
+
+    const updated = await this.prisma.product.update({
       where: {
         id,
       },
       data: {
-        ...dto,
+        ...newData,
         updatedAt: new Date(),
       },
+    })
+
+    return this.productMapper.modelToDto(updated)
+  }
+
+  private async updateProductSpecifications(
+    productId: number,
+    specifications: ProductSpecificationDto[],
+  ) {
+    await this.findBy(productId)
+    await this.deleteAllSpecificationsFromProduct(productId)
+    await this.asignSpecificationsToProduct(productId, specifications)
+  }
+
+  private async deleteAllSpecificationsFromProduct(productId: number) {
+    return this.prisma.productSpecification.deleteMany({
+      where: {
+        productId,
+      },
+    })
+  }
+
+  private async asignSpecificationsToProduct(
+    productId: number,
+    specifications: ProductSpecificationDto[],
+  ) {
+    return this.prisma.productSpecification.createMany({
+      data: specifications.map((specification) => ({
+        productId,
+        title: specification.title,
+        value: specification.value,
+      })),
+    })
+  }
+
+  private async updateProductCategories(productId: number, categoryIds: number[]) {
+    await this.findBy(productId)
+    await this.deleteAllCategoriesFromProduct(productId)
+    await this.assignCategoriesToProduct(productId, categoryIds)
+  }
+
+  private deleteAllCategoriesFromProduct(productId: number) {
+    return this.prisma.product_x_Category.deleteMany({
+      where: {
+        productId,
+      },
+    })
+  }
+
+  private assignCategoriesToProduct(productId: number, categoryIds: number[]) {
+    return this.prisma.product_x_Category.createMany({
+      data: categoryIds.map((categoryId) => ({
+        categoryId,
+        productId,
+      })),
+    })
+  }
+
+  private async updateProductSuppliers(productId: number, supplierIds: number[]) {
+    await this.findBy(productId)
+    await this.deleteAllSuppliersFromProduct(productId)
+    await this.assignSuppliersToProduct(productId, supplierIds)
+  }
+
+  private deleteAllSuppliersFromProduct(productId: number) {
+    return this.prisma.product_x_Supplier.deleteMany({
+      where: {
+        productId,
+      },
+    })
+  }
+
+  private async assignSuppliersToProduct(productId: number, supplierIds: number[]) {
+    return this.prisma.product_x_Supplier.createMany({
+      data: supplierIds.map((supplierId) => ({
+        supplierId,
+        productId,
+      })),
     })
   }
 
   async remove(id: number) {
     await this.findBy(id)
-    return this.prisma.product.update({
+    const deleted = await this.prisma.product.update({
       where: { id },
       data: {
         isDeleted: true,
         deletedAt: new Date(),
       },
     })
+
+    return this.productMapper.modelToDto(deleted)
   }
 
   private async page(
     query: ProductSpecificationBuild,
     filters: ProductFilterDto,
-  ): Promise<Page<Product>> {
+  ): Promise<Page<ProductResponseDto>> {
     const [products, totalItems] = await this.prisma.$transaction([
       this.prisma.product.findMany(query),
       this.prisma.product.count({
@@ -89,7 +202,7 @@ export class ProductsService {
     const totalPages = Math.ceil(totalItems / size)
 
     return {
-      content: products,
+      content: this.productMapper.modelsToDtos(products),
       totalPages,
       totalItems,
       currentPage: page,
