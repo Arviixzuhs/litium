@@ -15,6 +15,10 @@ export const SearchInput = ({ onChange, searchValue, placeholder }: SearchInputP
       onChange={(e) => onChange(e.target.value)}
       placeholder={placeholder || 'Buscar...'}
       startContent={<Search />}
+      classNames={{
+        input: 'bg-card',
+        inputWrapper: 'bg-card',
+      }}
     />
   )
 }

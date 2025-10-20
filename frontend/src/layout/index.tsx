@@ -12,12 +12,12 @@ export const Layout = () => {
   }, [location])
 
   return (
-    <>
+    <div>
       <Navbar />
       <div className='max-w-5xl w-full mx-auto px-4'>
         <Outlet />
       </div>
       <Footer />
-    </>
+    </div>
   )
 }

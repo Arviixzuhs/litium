@@ -84,7 +84,7 @@ export const ProductComment = () => {
       <Divider />
       {user && (
         <>
-          <div className='rounded-lg border border-gray-300 p-6'>
+          <div className='rounded-lg p-6 bg-card'>
             <h3 className='mb-4 text-lg font-semibold'>Escribe tu opinión</h3>
             <form onSubmit={handleSubmitReview} className='space-y-4'>
               <div>
@@ -143,7 +143,7 @@ export const ProductComment = () => {
           </p>
         ) : (
           response?.content.map((review) => (
-            <div key={review.id} className='rounded-lg border border-gray-300 p-6'>
+            <div key={review.id} className='rounded-lg bg-card p-6'>
               <div className='mb-4 flex items-start justify-between'>
                 <div className='flex gap-3'>
                   <Avatar></Avatar>
@@ -182,7 +182,7 @@ export const ProductComment = () => {
                 </Button>
               </div>
               {replyingTo === review.id && (
-                <div className='mt-4 rounded-lg bg-muted/50 p-4'>
+                <div className='mt-4 rounded-lg'>
                   <Textarea
                     placeholder='Escribe tu respuesta...'
                     value={replyText}
@@ -191,7 +191,12 @@ export const ProductComment = () => {
                     className='mb-2 resize-none'
                   />
                   <div className='flex gap-2'>
-                    <Button size='sm' onPress={handleSubmitReply} disabled={!replyText.trim()}>
+                    <Button
+                      size='sm'
+                      onPress={handleSubmitReply}
+                      color='primary'
+                      disabled={!replyText.trim()}
+                    >
                       Enviar respuesta
                     </Button>
                     <Button size='sm' variant='flat' onPress={() => setReplyingTo(null)}>
