@@ -46,4 +46,10 @@ export class ProductFilterDto extends PaginationDto {
   @Type(() => Number)
   @IsInt()
   catalogId?: number
+
+  @ApiPropertyOptional({ description: 'Excluir productos que pertenecen a este catálogo' })
+  @IsOptional()
+  @Type(() => Number)
+  @IsInt()
+  excludeCatalogId?: number
 }
