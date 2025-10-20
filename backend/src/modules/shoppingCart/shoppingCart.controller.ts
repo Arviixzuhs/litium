@@ -9,7 +9,7 @@ import { ShoppingCartService } from './shoppingCart.service'
 @ApiBearerAuth()
 @Controller('/shopping-cart')
 export class ShoppingCartController {
-  constructor(private readonly shoppingCartService: ShoppingCartService) { }
+  constructor(private readonly shoppingCartService: ShoppingCartService) {}
 
   @Post()
   @ApiOperation({ summary: 'Crear un nuevo carrito de compras' })

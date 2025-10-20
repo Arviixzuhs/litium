@@ -16,7 +16,7 @@ export class ShoppingCartService {
   constructor(
     private readonly prisma: PrismaService,
     private readonly productService: ProductsService,
-  ) { }
+  ) {}
 
   findAll(filters: ShoppingCartFiltersDto) {
     const query = new ShoppingCartSpecificationBuilder()

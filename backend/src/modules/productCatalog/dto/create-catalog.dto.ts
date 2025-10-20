@@ -12,7 +12,7 @@ export class CreateCatalogDto {
   @ApiProperty({
     example: 'Electrodomesticos de color azul',
     description: 'Descripción del catálogo',
-    required: false
+    required: false,
   })
   @IsOptional()
   @IsString()
