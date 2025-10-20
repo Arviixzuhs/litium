@@ -63,7 +63,7 @@ export const AdminSidebar = () => {
     <aside
       className={cn(
         'absolute flex h-screen sm:relative bg-sidebar z-50 flex-col  transition-all duration-300',
-        isCollapsed ? 'w-16' : 'w-82',
+        isCollapsed ? 'w-15' : 'w-82',
       )}
     >
       <div className='flex h-16 items-center justify-between border-gray-300 border-b px-4'>

@@ -17,7 +17,7 @@ export function PurchaseCard({ purchase }: PurchaseCardProps) {
       <div className='mb-4 text-sm font-medium'>
         {getFormattedDateTime({ value: purchase.createdAt })}
       </div>
-      <Card shadow='sm'>
+      <Card shadow='none'>
         <CardBody>
           <div className='flex flex-col gap-4 md:flex-row md:items-center md:justify-between'>
             <div className='flex flex-1 gap-4'>
