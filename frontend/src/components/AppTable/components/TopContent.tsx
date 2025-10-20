@@ -4,18 +4,25 @@ import { Searchbar } from './Searchbar'
 import { useDispatch } from 'react-redux'
 import { toggleAddItemModal } from '@/features/appTableSlice'
 
-export const TopContent = () => {
+interface TopContentProps {
+  hiddeAdd?: boolean
+}
+
+export const TopContent = ({ hiddeAdd }: TopContentProps) => {
   const dispatch = useDispatch()
+
   return (
     <div className='flex gap-2 w-full'>
       <Searchbar />
-      <Button
-        onPress={() => dispatch(toggleAddItemModal(null))}
-        color='primary'
-        startContent={<Plus />}
-      >
-        Agregar
-      </Button>
+      {!hiddeAdd && (
+        <Button
+          onPress={() => dispatch(toggleAddItemModal(null))}
+          color='primary'
+          startContent={<Plus />}
+        >
+          Agregar
+        </Button>
+      )}
     </div>
   )
 }
