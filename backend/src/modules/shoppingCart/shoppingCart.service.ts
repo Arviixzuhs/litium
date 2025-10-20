@@ -1,11 +1,12 @@
 import { Page } from '@/types/Page'
-import { ShoppingCart } from '@prisma/client'
 import { PrismaService } from '@/prisma/prisma.service'
+import { InvoiceService } from '../invoice/invoice.service'
 import { ProductsService } from '@/modules/product/product.service'
 import { CreateShoppingCartDto } from './dto/create-shoppingcart.dto'
 import { ShoppingCartFiltersDto } from './dto/shoppingcart-filters.dto'
 import { ShoppingCartProductDto } from './dto/shoppingcart-product.dto'
-import { HttpException, HttpStatus, Injectable, NotFoundException } from '@nestjs/common'
+import { ShoppingCart, ShoppingCartStatus } from '@prisma/client'
+import { ConflictException, Injectable, NotFoundException } from '@nestjs/common'
 import {
   ShoppingCartSpecificationBuild,
   ShoppingCartSpecificationBuilder,
@@ -16,6 +17,7 @@ export class ShoppingCartService {
   constructor(
     private readonly prisma: PrismaService,
     private readonly productService: ProductsService,
+    private readonly invoiceService: InvoiceService,
   ) {}
 
   findAll(filters: ShoppingCartFiltersDto) {
@@ -36,7 +38,14 @@ export class ShoppingCartService {
     return this.page(query)
   }
 
-  async findBy(id: number, userId: number) {
+  async existsById(id: number) {
+    const choppingCart = await this.prisma.shoppingCart.findFirst({
+      where: { id },
+    })
+    if (!choppingCart) throw new NotFoundException('Carrito no encontrado')
+  }
+
+  async findBy(id: number) {
     const shoppingCart = await this.prisma.shoppingCart.findFirst({
       where: {
         id,
@@ -51,12 +60,40 @@ export class ShoppingCartService {
       },
     })
 
-    if (shoppingCart.userId !== userId) {
-      throw new HttpException('Solo el autor del carrito lo puede ver', HttpStatus.UNAUTHORIZED)
-    }
-
     if (!shoppingCart) throw new NotFoundException('Carrito de compras no encontrado')
     return shoppingCart
+  }
+
+  async confirmPay(shoppingCartId: number, sellerId: number) {
+    const shoppingCart = await this.findBy(shoppingCartId)
+
+    const updated = await this.updateShoppingCartStatus(shoppingCartId, ShoppingCartStatus.PAID)
+    const total = await this.calcTotal(shoppingCartId)
+
+    await this.invoiceService.create({
+      name: shoppingCart.name,
+      total,
+      sellerId,
+      shoppingCartId,
+    })
+
+    return updated
+  }
+
+  async updateShoppingCartStatus(shoppingCartId: number, newStatus: ShoppingCartStatus) {
+    const shoppingCart = await this.findBy(shoppingCartId)
+    if (shoppingCart.status === newStatus) {
+      throw new ConflictException('El carrito de compras ya tiene ese status')
+    }
+
+    return this.prisma.shoppingCart.update({
+      where: {
+        id: shoppingCartId,
+      },
+      data: {
+        status: newStatus,
+      },
+    })
   }
 
   async create(dto: CreateShoppingCartDto, userId: number) {
@@ -68,14 +105,14 @@ export class ShoppingCartService {
     })
 
     if (dto.products.length > 0) {
-      await this.createShoppingCartProducts(userId, dto.products, shoppingCart.id)
+      await this.createShoppingCartProducts(dto.products, shoppingCart.id)
     }
 
     return shoppingCart
   }
 
-  async delete(shoppingCartId: number, userId: number) {
-    await this.findBy(shoppingCartId, userId)
+  async delete(shoppingCartId: number) {
+    await this.findBy(shoppingCartId)
 
     return this.prisma.shoppingCart.update({
       where: {
@@ -88,12 +125,33 @@ export class ShoppingCartService {
     })
   }
 
+  private async calcTotal(shoppingCartId: number): Promise<number> {
+    const shoppingCart = await this.prisma.shoppingCart.findUnique({
+      where: { id: shoppingCartId },
+      include: {
+        products: {
+          include: {
+            product: true,
+          },
+        },
+      },
+    })
+
+    if (!shoppingCart) throw new NotFoundException('Carrito no encontrado')
+
+    const total = shoppingCart.products.reduce(
+      (sum, item) => sum + item.quantity * (item.product.price ?? 0),
+      0,
+    )
+
+    return total
+  }
+
   private async createShoppingCartProducts(
-    userId: number,
     products: ShoppingCartProductDto[],
     shoppingCartId: number,
   ) {
-    await this.findBy(shoppingCartId, userId)
+    await this.findBy(shoppingCartId)
 
     await Promise.all(products.map((item) => this.productService.findBy(item.productId)))
 
