@@ -9,6 +9,7 @@ import {
   ChevronRight,
   ShoppingCart,
   LayoutDashboard,
+  MessagesSquareIcon,
 } from 'lucide-react'
 import { cn } from '@heroui/theme'
 import { Button } from '@heroui/button'
@@ -46,6 +47,11 @@ const menuItems = [
     icon: ShoppingCart,
     href: '/ventas',
   },
+  {
+    title: 'Mensajes',
+    icon: MessagesSquareIcon,
+    href: '/messages/cart',
+  },
 ]
 
 export const AdminSidebar = () => {
@@ -56,7 +62,7 @@ export const AdminSidebar = () => {
   return (
     <aside
       className={cn(
-        'absolute flex h-screen sm:relative bg-sidebar z-50 flex-col border-gray-300 border-r transition-all duration-300',
+        'absolute flex h-screen sm:relative bg-sidebar z-50 flex-col  transition-all duration-300',
         isCollapsed ? 'w-16' : 'w-82',
       )}
     >

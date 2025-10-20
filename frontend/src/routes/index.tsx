@@ -12,6 +12,7 @@ import { AdminProductPage } from '@/modules/admin/pages/product'
 import { AdminCatalogPage } from '@/modules/admin/pages/catalog'
 import { AdminSupplierPage } from '@/modules/admin/pages/supplier'
 import { AdminCategoryPage } from '@/modules/admin/pages/category'
+import { MessagesAdminPage } from '@/modules/admin/pages/messages'
 import { ProtectedRouteAuth } from './middlewares/ProtectedRouteAuth'
 import { ProtectedRouteSession } from './middlewares/ProtectedRouteSession'
 
@@ -27,6 +28,7 @@ export const Router = () => {
         </Route>
         <Route element={<AdminLayout />}>
           <Route element={<DashboardPage />} path='/dashboard' />
+          <Route element={<MessagesAdminPage />} path='/messages/cart/:cartId?' />
           <Route element={<AdminProductPage />} path='/productos' />
           <Route element={<AdminSupplierPage />} path='/proveedores' />
           <Route element={<AdminCategoryPage />} path='/categorias' />
