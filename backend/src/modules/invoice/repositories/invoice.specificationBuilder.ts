@@ -60,15 +60,6 @@ export class InvoiceSpecificationBuilder {
     return this
   }
 
-  withProductId(productId?: number) {
-    if (productId !== undefined) {
-      this.where.products = {
-        some: { productId },
-      }
-    }
-    return this
-  }
-
   withCreatedAtBetween(fromDate?: string, toDate?: string) {
     if (fromDate || toDate) {
       this.where.createdAt = {
