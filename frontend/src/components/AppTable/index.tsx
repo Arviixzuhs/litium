@@ -4,6 +4,7 @@ import { TopContent } from './components/TopContent'
 import { RenderCell } from './components/RenderCell'
 import { useLocation } from 'react-router-dom'
 import { AddItemModal } from './components/AddItemModal'
+import { EmptyContent } from './components/EmptyContent'
 import { EditItemModal } from './components/EditItemModal'
 import { TablePagination } from './components/Pagination'
 import { ConfirmDeleteModal } from './components/ConfirmDeleteModal'
@@ -51,7 +52,7 @@ export const AppTable = ({ tableActions, modalExtension }: AppTableProps) => {
             </TableColumn>
           )}
         </TableHeader>
-        <TableBody items={table.data}>
+        <TableBody items={table.data} emptyContent={<EmptyContent />}>
           {(item: any) => (
             <TableRow key={String(item.id)}>
               {(columnKey) => (
