@@ -7,7 +7,7 @@ import { InvoicePageResponseDto } from './dto/invoice-page-response.dto'
 import { ApiBearerAuth, ApiOperation, ApiResponse, ApiTags } from '@nestjs/swagger'
 
 @ApiTags('Invoices')
-@Controller('invoices')
+@Controller('invoice')
 @ApiBearerAuth()
 export class InvoiceController {
   constructor(private readonly invoiceService: InvoiceService) {}
