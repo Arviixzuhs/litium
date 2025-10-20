@@ -219,6 +219,7 @@ model Reply {
 enum ShoppingCartStatus {
   PENDING // Carrito creado pero aún no pagado
   PAID // Carrito pagado, confirmado como venta
+  CANCELED // Carrito cancelado
 }
 
 model ShoppingCart {
@@ -232,19 +233,20 @@ model ShoppingCart {
   isDeleted Boolean?              @default(false)
   deletedAt DateTime?
   createdAt DateTime              @default(now())
+
+  invoiceId Int?
+  invoice   Invoice? @relation(fields: [invoiceId], references: [id])
 }
 
 model ShoppingCartProduct {
-  id             Int  @id @default(autoincrement())
+  id             Int      @id @default(autoincrement())
   quantity       Int
-  invoiceId      Int?
   productId      Int
+  createdAt      DateTime @default(now())
   shoppingCartId Int
 
   product      Product      @relation(fields: [productId], references: [id], onDelete: Cascade)
-  invoice      Invoice?     @relation(fields: [invoiceId], references: [id])
   shoppingCart ShoppingCart @relation(fields: [shoppingCartId], references: [id], onDelete: Cascade)
-  createdAt    DateTime     @default(now())
 }
 
 model Invoice {
@@ -256,11 +258,11 @@ model Invoice {
   address  String? @db.VarChar(200)
   sellerId Int
 
-  seller    User                  @relation("SellerInvoices", fields: [sellerId], references: [id], onDelete: Cascade)
-  products  ShoppingCartProduct[]
-  isDeleted Boolean?              @default(false)
-  deletedAt DateTime?
-  createdAt DateTime              @default(now())
+  seller       User           @relation("SellerInvoices", fields: [sellerId], references: [id], onDelete: Cascade)
+  isDeleted    Boolean?       @default(false)
+  deletedAt    DateTime?
+  createdAt    DateTime       @default(now())
+  shoppingCart ShoppingCart[]
 }
 
 // =======================
