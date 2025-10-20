@@ -42,6 +42,7 @@ export class ProductsService {
       .withName(filters.name)
       .withCatalogId(filters.catalogId)
       .withIsDeleted(false)
+      .withNotInCatalogId(filters.excludeCatalogId)
       .withOrderBy({ createdAt: 'desc' })
       .withInclude({
         images: true,
