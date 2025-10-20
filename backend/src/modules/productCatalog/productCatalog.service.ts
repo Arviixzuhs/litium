@@ -1,10 +1,10 @@
 import { Page } from '@/types/Page'
-import { Catalog } from '@prisma/client'
-import { CatalogDto } from './dto/catalog.dto'
 import { PrismaService } from '@/prisma/prisma.service'
-import { ProductsService } from '@/modules/product/product.service'
+import { CatalogMapper } from './mapper/productCatalog.mapper'
+import { CreateCatalogDto } from './dto/create-catalog.dto'
 import { UpdateCatalogDto } from './dto/update-catalog.dto'
 import { CatalogFiltersDto } from './dto/catalog-filters.dto'
+import { CatalogResponseDto } from './dto/catalog-response.dto'
 import { Injectable, NotFoundException } from '@nestjs/common'
 import {
   ProductCatalogSpecificationBuild,
@@ -13,12 +13,11 @@ import {
 
 @Injectable()
 export class ProductCatalogService {
-  constructor(
-    private readonly prisma: PrismaService,
-    private readonly productsService: ProductsService,
-  ) {}
+  constructor(private readonly prisma: PrismaService) {}
 
-  async findAll(filters: CatalogFiltersDto): Promise<Page<Catalog>> {
+  private readonly catalogMapper = new CatalogMapper()
+
+  async findAll(filters: CatalogFiltersDto): Promise<Page<CatalogResponseDto>> {
     const query = new ProductCatalogSpecificationBuilder()
       .withName(filters.name)
       .withIsDeleted(false)
@@ -29,25 +28,19 @@ export class ProductCatalogService {
     return this.page(query, filters)
   }
 
-  create(data: CatalogDto) {
-    return this.prisma.catalog.create({
+  async create(newCatalog: CreateCatalogDto): Promise<CatalogResponseDto> {
+    const { productIds, ...data } = newCatalog
+
+    const saved = await this.prisma.catalog.create({
       data,
     })
+
+    await this.assignProductsToCatalog(saved.id, productIds)
+
+    return this.catalogMapper.modelToDto(saved)
   }
 
-  async assignProductToCatalog(catalogId: number, productId: number) {
-    await this.productsService.findBy(productId)
-    await this.findBy(catalogId)
-
-    return this.prisma.product_x_Catalog.create({
-      data: {
-        productId,
-        catalogId,
-      },
-    })
-  }
-
-  async findBy(id: number) {
+  async findBy(id: number): Promise<CatalogResponseDto> {
     const catalog = await this.prisma.catalog.findFirst({
       where: {
         id,
@@ -55,27 +48,32 @@ export class ProductCatalogService {
     })
 
     if (!catalog) throw new NotFoundException('Catálogo no encontrado')
-    return catalog
+    return this.catalogMapper.modelToDto(catalog)
   }
 
-  async update(catalogId: number, dto: UpdateCatalogDto) {
+  async update(catalogId: number, dto: UpdateCatalogDto): Promise<CatalogResponseDto> {
     await this.findBy(catalogId)
+    const { productIds, ...data } = dto
 
-    return this.prisma.catalog.update({
+    await this.updateProductCatalogs(catalogId, productIds)
+
+    const edited = await this.prisma.catalog.update({
       where: {
         id: catalogId,
       },
       data: {
-        ...dto,
+        ...data,
         updatedAt: new Date(),
       },
     })
+
+    return this.catalogMapper.modelToDto(edited)
   }
 
-  async delete(catalogId: number) {
+  async delete(catalogId: number): Promise<CatalogResponseDto> {
     await this.findBy(catalogId)
 
-    return this.prisma.catalog.update({
+    const deleted = await this.prisma.catalog.update({
       where: {
         id: catalogId,
       },
@@ -84,12 +82,37 @@ export class ProductCatalogService {
         deletedAt: new Date(),
       },
     })
+
+    return this.catalogMapper.modelToDto(deleted)
+  }
+
+  private async updateProductCatalogs(catalogId: number, productIds: number[]) {
+    await this.findBy(catalogId)
+    await this.removeAllProductsFromCatalog(catalogId)
+    await this.assignProductsToCatalog(catalogId, productIds)
+  }
+
+  private removeAllProductsFromCatalog(catalogId: number) {
+    return this.prisma.product_x_Catalog.deleteMany({
+      where: {
+        catalogId,
+      },
+    })
+  }
+
+  private assignProductsToCatalog(catalogId: number, productIds: number[]) {
+    return this.prisma.product_x_Catalog.createMany({
+      data: productIds.map((productId) => ({
+        catalogId,
+        productId,
+      })),
+    })
   }
 
   private async page(
     query: ProductCatalogSpecificationBuild,
     filters: CatalogFiltersDto,
-  ): Promise<Page<Catalog>> {
+  ): Promise<Page<CatalogResponseDto>> {
     const [catalogs, totalItems] = await this.prisma.$transaction([
       this.prisma.catalog.findMany(query),
       this.prisma.catalog.count({
@@ -102,7 +125,7 @@ export class ProductCatalogService {
     const totalPages = Math.ceil(totalItems / size)
 
     return {
-      content: catalogs,
+      content: this.catalogMapper.modelsToDtos(catalogs),
       totalPages,
       totalItems,
       currentPage: page,

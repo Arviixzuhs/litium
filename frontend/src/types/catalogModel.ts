@@ -1,7 +1,11 @@
 export interface CatalogModel {
   id: number
   name: string
-  isDeleted: boolean
-  deletedAt?: string | null
+  createdAt?: string
+  updatedAt?: string
   description?: string | null
+}
+
+export interface CatalogDto extends Partial<CatalogModel> {
+  productIds: number[]
 }

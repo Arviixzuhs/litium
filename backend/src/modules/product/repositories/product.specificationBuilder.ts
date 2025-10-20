@@ -25,7 +25,23 @@ export class ProductSpecificationBuilder {
 
   withCatalogId(catalogId?: number) {
     if (catalogId) {
-      this.where.product_x_catalog.some.id = catalogId
+      this.where.product_x_catalog = {
+        some: {
+          catalogId: catalogId,
+        },
+      }
+    }
+
+    return this
+  }
+
+  withNotInCatalogId(catalogId?: number) {
+    if (catalogId) {
+      this.where.product_x_catalog = {
+        none: {
+          id: catalogId,
+        },
+      }
     }
 
     return this
