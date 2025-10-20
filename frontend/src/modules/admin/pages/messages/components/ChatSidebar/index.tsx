@@ -5,6 +5,7 @@ import { usePurchasesSearch } from '@/modules/purchases/hooks/usePurchasesSearch
 import { Input, ScrollShadow } from '@heroui/react'
 import { getFormattedDateTime } from '@/utils/getFormattedDateTime'
 import { MessageSquare, Search } from 'lucide-react'
+import { ChoppingCartStatusChip } from '../ChoppingCartStatusChip'
 
 export const ChatSidebar = () => {
   const navigate = useNavigate()
@@ -22,7 +23,6 @@ export const ChatSidebar = () => {
         <div className='flex h-full flex-col gap-2'>
           <div className='relative'>
             <Input
-              type='search'
               startContent={<Search />}
               placeholder='Buscar chats...'
               value={searchQuery}
@@ -30,7 +30,7 @@ export const ChatSidebar = () => {
             />
           </div>
           <ScrollShadow>
-            <div className='w-full flex flex-col  gap-2'>
+            <div className='w-full flex flex-col gap-2 scrollShadow'>
               {purchases.map((chat) => (
                 <button
                   key={chat.id}
@@ -53,7 +53,7 @@ export const ChatSidebar = () => {
                           <span className='h-2 w-2 shrink-0 rounded-full bg-blue-500' />
                         )} */}
                       </div>
-                      <p className='mt-1 text-xs text-muted-foreground'>
+                      <p className='mt-1 flex gap-4 justify-between text-xs text-muted-foreground'>
                         {getFormattedDateTime({
                           value: chat.createdAt,
                           format: {
@@ -64,6 +64,7 @@ export const ChatSidebar = () => {
                             minute: 'numeric',
                           },
                         })}
+                        <ChoppingCartStatusChip status={chat.status} />
                       </p>
                     </div>
                   </div>
