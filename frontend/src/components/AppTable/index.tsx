@@ -30,6 +30,7 @@ export const AppTable = ({ tableActions, modalExtension }: AppTableProps) => {
   return (
     <>
       <Table
+        shadow='none'
         isCompact
         isHeaderSticky
         topContent={<TopContent />}
