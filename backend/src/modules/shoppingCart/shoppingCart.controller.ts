@@ -1,16 +1,15 @@
+import { Body, Controller, Delete, Get, Param, Post, Query, Req } from '@nestjs/common'
+import { ApiBearerAuth, ApiOperation, ApiResponse, ApiTags } from '@nestjs/swagger'
 import { Request } from 'express'
-import { ShoppingCartService } from './shoppingCart.service'
 import { CreateShoppingCartDto } from './dto/create-shoppingcart.dto'
 import { ShoppingCartFiltersDto } from './dto/shoppingcart-filters.dto'
-import { EditProductQuantityDto } from './dto/edit-product-quantity.dto'
-import { ApiTags, ApiBearerAuth, ApiOperation, ApiResponse } from '@nestjs/swagger'
-import { Req, Get, Post, Body, Param, Query, Delete, Patch, Controller } from '@nestjs/common'
+import { ShoppingCartService } from './shoppingCart.service'
 
 @ApiTags('Shopping Cart')
 @ApiBearerAuth()
 @Controller('/shopping-cart')
 export class ShoppingCartController {
-  constructor(private readonly shoppingCartService: ShoppingCartService) {}
+  constructor(private readonly shoppingCartService: ShoppingCartService) { }
 
   @Post()
   @ApiOperation({ summary: 'Crear un nuevo carrito de compras' })
@@ -34,11 +33,11 @@ export class ShoppingCartController {
 
   @Get()
   @ApiOperation({ summary: 'Obtener carritos de compras del usuario con filtros opcionales' })
-  findAll(@Query() query: ShoppingCartFiltersDto, @Req() req: Request) {
-    return this.shoppingCartService.findAll(req.user.userId, query)
+  findAll(@Query() query: ShoppingCartFiltersDto) {
+    return this.shoppingCartService.findAll(query)
   }
 
-  @Patch('/product/quantity')
+  /* @Patch('/product/quantity')
   @ApiOperation({ summary: 'Editar cantidad de un producto en el carrito' })
   @ApiResponse({ status: 200, description: 'Cantidad actualizada correctamente.' })
   editQuantity(@Body() dto: EditProductQuantityDto, @Req() req: Request) {
@@ -47,7 +46,7 @@ export class ShoppingCartController {
       dto.productId,
       dto.editType,
     )
-  }
+  } */
 
   @Delete('/product/:shoppingCartProductId')
   @ApiOperation({ summary: 'Eliminar un producto del carrito' })
@@ -56,11 +55,11 @@ export class ShoppingCartController {
     return this.shoppingCartService.removeProduct(shoppingCartProductId)
   }
 
-  @Patch('/confirm')
+  /* @Patch('/confirm')
   @ApiOperation({ summary: 'Confirmar el carrito de compras actual del usuario' })
   @ApiResponse({ status: 200, description: 'Carrito confirmado correctamente.' })
   @ApiResponse({ status: 409, description: 'El carrito ya está confirmado.' })
   confirm(@Req() req: Request) {
     return this.shoppingCartService.confirmShoppingCart(req.user.userId)
-  }
+  } */
 }

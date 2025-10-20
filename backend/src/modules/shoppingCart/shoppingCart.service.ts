@@ -1,11 +1,10 @@
 import { Page } from '@/types/Page'
-import { EditType } from './dto/edit-product-quantity.dto'
 import { PrismaService } from '@/prisma/prisma.service'
 import { ProductsService } from '@/modules/product/product.service'
 import { CreateShoppingCartDto } from './dto/create-shoppingcart.dto'
 import { ShoppingCartFiltersDto } from './dto/shoppingcart-filters.dto'
 import { ShoppingCartProductDto } from './dto/shoppingcart-product.dto'
-import { ShoppingCart, ShoppingCartStatus } from '@prisma/client'
+import { ShoppingCart } from '@prisma/client'
 import { HttpException, HttpStatus, Injectable, NotFoundException } from '@nestjs/common'
 import {
   ShoppingCartSpecificationBuild,
@@ -17,11 +16,10 @@ export class ShoppingCartService {
   constructor(
     private readonly prisma: PrismaService,
     private readonly productService: ProductsService,
-  ) {}
+  ) { }
 
-  findAll(userId: number, filters: ShoppingCartFiltersDto) {
+  findAll(filters: ShoppingCartFiltersDto) {
     const query = new ShoppingCartSpecificationBuilder()
-      .withUserId(userId)
       .withIsDeleted(false)
       .withProductName(filters.productName)
       .withPagination(filters.page, filters.size)
@@ -36,23 +34,6 @@ export class ShoppingCartService {
       .build()
 
     return this.page(query, filters)
-  }
-
-  async confirmShoppingCart(userId: number) {
-    const currentShoppingCart = await this.findCurrentShoppingCart(userId)
-
-    if (currentShoppingCart.status === ShoppingCartStatus.CONFIRMED) {
-      throw new HttpException('El carrito ya está confirmado', HttpStatus.CONFLICT)
-    }
-
-    return this.prisma.shoppingCart.update({
-      where: {
-        id: currentShoppingCart.id,
-      },
-      data: {
-        status: ShoppingCartStatus.CONFIRMED,
-      },
-    })
   }
 
   async findBy(id: number, userId: number) {
@@ -78,33 +59,33 @@ export class ShoppingCartService {
     return shoppingCart
   }
 
-  async editProductQuantity(userId: number, productId: number, editType: EditType) {
-    const currentShoppingCart = await this.findCurrentShoppingCart(userId)
-
-    const cartProduct = await this.prisma.shoppingCartProduct.findFirst({
-      where: {
-        shoppingCartId: currentShoppingCart.id,
-        productId,
-      },
-    })
-
-    if (!cartProduct) {
-      throw new NotFoundException('Producto no encontrado en el carrito')
-    }
-
-    let newQuantity = cartProduct.quantity
-
-    if (editType === EditType.INCREMENT) {
-      newQuantity += 1
-    } else if (editType === EditType.DECREMENT) {
-      newQuantity = Math.max(0, newQuantity - 1)
-    }
-
-    return this.prisma.shoppingCartProduct.update({
-      where: { id: cartProduct.id },
-      data: { quantity: newQuantity },
-    })
-  }
+  /*   async editProductQuantity(userId: number, productId: number, editType: EditType) {
+      const currentShoppingCart = await this.findCurrentShoppingCart(userId)
+  
+      const cartProduct = await this.prisma.shoppingCartProduct.findFirst({
+        where: {
+          shoppingCartId: currentShoppingCart.id,
+          productId,
+        },
+      })
+  
+      if (!cartProduct) {
+        throw new NotFoundException('Producto no encontrado en el carrito')
+      }
+  
+      let newQuantity = cartProduct.quantity
+  
+      if (editType === EditType.INCREMENT) {
+        newQuantity += 1
+      } else if (editType === EditType.DECREMENT) {
+        newQuantity = Math.max(0, newQuantity - 1)
+      }
+  
+      return this.prisma.shoppingCartProduct.update({
+        where: { id: cartProduct.id },
+        data: { quantity: newQuantity },
+      })
+    } */
 
   async removeProduct(shoppingCartProductId: number) {
     const product = await this.prisma.shoppingCartProduct.findUnique({
@@ -166,7 +147,7 @@ export class ShoppingCartService {
     return this.prisma.shoppingCartProduct.createMany({ data })
   }
 
-  private async findCurrentShoppingCart(userId: number) {
+  /* private async findCurrentShoppingCart(userId: number) {
     const query = new ShoppingCartSpecificationBuilder()
       .withIsDeleted(false)
       .withUserId(userId)
@@ -180,7 +161,7 @@ export class ShoppingCartService {
     const shoppingCart = await this.prisma.shoppingCart.findFirst(query)
     if (!shoppingCart) throw new NotFoundException('Carrito no encontrado')
     return shoppingCart
-  }
+  } */
 
   private async page(
     query: ShoppingCartSpecificationBuild,
