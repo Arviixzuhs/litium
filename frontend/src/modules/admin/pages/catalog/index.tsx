@@ -3,7 +3,9 @@ import toast from 'react-hot-toast'
 import { AppTable } from '@/components/AppTable'
 import { RootState } from '@/store'
 import { useDebounce } from 'use-debounce'
+import { ModalExtension } from './components/ModalExtension'
 import { AppTableActions } from '@/components/AppTable/interfaces/appTable'
+import { AutocompleteChip } from '@/components/Autocomplete'
 import { useDispatch, useSelector } from 'react-redux'
 import { tableColumns, modalInputs } from './data'
 import { reqCreateCatalog, reqDeleteCatalog, reqGetCatalogs, reqUpdateCatalog } from './services'
@@ -43,23 +45,29 @@ export const AdminCatalogPage = () => {
     dispatch(setTableColumns(tableColumns))
   }, [])
 
+  const { products, ...data } = table.formData
+  const tableFormData = {
+    ...data,
+    productIds: (products as AutocompleteChip[])?.map((item) => item.id) || [],
+  }
+
   const tableActions: AppTableActions = {
     create: async () => {
-      const response = await reqCreateCatalog(table.formData)
+      const response = await reqCreateCatalog(tableFormData)
       dispatch(addItem(response.data))
-      toast.success('Catalogo creado correctamente')
+      toast.success('Catálogo creado correctamente')
     },
     delete: async () => {
       await reqDeleteCatalog(table.currentItemToDelete)
       dispatch(deleteItem(table.currentItemToDelete))
-      toast.success('Catalogo eliminado correctamente')
+      toast.success('Catálogo eliminado correctamente')
     },
     update: async () => {
-      await reqUpdateCatalog(table.currentItemToUpdate, table.formData)
-      dispatch(updateItem({ id: table.currentItemToUpdate, newData: table.formData }))
-      toast.success('Catalogo actualizado correctamente')
+      await reqUpdateCatalog(table.currentItemToUpdate, tableFormData)
+      dispatch(updateItem({ id: table.currentItemToUpdate, newData: tableFormData }))
+      toast.success('Catálogo actualizado correctamente')
     },
   }
 
-  return <AppTable tableActions={tableActions} />
+  return <AppTable tableActions={tableActions} modalExtension={<ModalExtension />} />
 }

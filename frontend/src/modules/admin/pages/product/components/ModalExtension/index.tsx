@@ -1,14 +1,15 @@
 import { Divider } from '@heroui/react'
+import { Autocomplete } from '@/components/Autocomplete'
 import { reqGetSuppliers } from '@/modules/admin/pages/supplier/services'
 import { reqGetCategories } from '@/modules/admin/pages/category/services'
-import { AutocompleteWithChips } from '@/components/AutocompleteWithChips'
 import { ProductSpecificationsInput } from '../ProductSpecificationInput'
 
 export const ModalExtension = () => {
   return (
     <>
       <Divider />
-      <AutocompleteWithChips
+      <Autocomplete
+        chips
         label='Categorías'
         formDataKey='categories'
         placeholder='Busca una categoría'
@@ -20,7 +21,8 @@ export const ModalExtension = () => {
           }).then((res) => res.data.content)
         }
       />
-      <AutocompleteWithChips
+      <Autocomplete
+        chips
         label='Proveedores'
         formDataKey='suppliers'
         placeholder='Busca a un proveedor'
