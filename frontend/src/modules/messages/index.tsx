@@ -110,7 +110,7 @@ export const Messages = () => {
       <div className='flex flex-col md:flex-row h-full w-full gap-4 bg-card rounded-2xl p-4'>
         <div className='flex-1 flex flex-col h-full'>
           <div ref={scrollRef} className='flex-1 overflow-y-auto space-y-4 pr-2 hoverScrollbar'>
-            {messages.length === 0 && (
+            {messages.length === 0 && !params.cartId && (
               <EmptyContent
                 title={`Bienvenido al chat, ${user?.name}`}
                 description='Aquí estarán los mensajes'
@@ -125,7 +125,7 @@ export const Messages = () => {
                   msg.senderId === user?.id ? 'justify-end' : 'justify-start',
                 )}
               >
-                {msg.senderId !== user?.id && <Avatar src='/other.png' size='sm' />}
+                {msg.senderId !== user?.id && <Avatar size='sm' name={msg.sender?.name} />}
                 <div
                   className={cn(
                     'rounded-xl px-4 py-2 text-sm max-w-full md:max-w-[70%] relative break-words',
@@ -190,30 +190,37 @@ export const Messages = () => {
               </div>
             ))}
           </div>
-          <div className='mt-4 flex flex-wrap gap-2'>
-            <Textarea
-              value={input}
-              onChange={(e) => setInput(e.target.value)}
-              placeholder={editingId ? 'Edita tu mensaje...' : 'Escribe un mensaje...'}
-              className='flex-1 min-w-[150px]'
-              size='sm'
-            />
-            <Button onPress={handleSend} color='primary' size='sm' isDisabled={input.trim() === ''}>
-              {editingId ? 'Guardar' : 'Enviar'}
-            </Button>
-            {editingId && (
-              <Button
-                onPress={() => {
-                  setEditingId(null)
-                  setInput('')
-                }}
-                color='default'
+          {params.cartId && (
+            <div className='mt-4 flex flex-wrap gap-2'>
+              <Textarea
+                value={input}
+                onChange={(e) => setInput(e.target.value)}
+                placeholder={editingId ? 'Edita tu mensaje...' : 'Escribe un mensaje...'}
+                className='flex-1 min-w-[150px]'
                 size='sm'
+              />
+              <Button
+                onPress={handleSend}
+                color='primary'
+                size='sm'
+                isDisabled={input.trim() === ''}
               >
-                Cancelar
+                {editingId ? 'Guardar' : 'Enviar'}
               </Button>
-            )}
-          </div>
+              {editingId && (
+                <Button
+                  onPress={() => {
+                    setEditingId(null)
+                    setInput('')
+                  }}
+                  color='default'
+                  size='sm'
+                >
+                  Cancelar
+                </Button>
+              )}
+            </div>
+          )}
         </div>
       </div>
     </>
