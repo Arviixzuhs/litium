@@ -25,7 +25,7 @@ export class ProductSupplierService {
       .withPagination(filters.page, filters.size)
       .build()
 
-    return this.page(query, filters)
+    return this.page(query)
   }
 
   async create(dto: CreateSupplierDto) {
@@ -77,10 +77,7 @@ export class ProductSupplierService {
     return this.supplierMapper.modelToDto(deleted)
   }
 
-  private async page(
-    query: ProductSupplierSpecificationBuild,
-    filters: SupplierFiltersDto,
-  ): Promise<Page<SupplierResponseDto>> {
+  private async page(query: ProductSupplierSpecificationBuild): Promise<Page<SupplierResponseDto>> {
     const [suppliers, totalItems] = await this.prisma.$transaction([
       this.prisma.supplier.findMany(query),
       this.prisma.supplier.count({
@@ -88,8 +85,8 @@ export class ProductSupplierService {
       }),
     ])
 
-    const page = filters.page ?? 1
-    const size = filters.size ?? 10
+    const page = query.skip !== undefined ? Math.floor(query.skip / (query.take ?? 10)) : 0
+    const size = query.take ?? 10
     const totalPages = Math.ceil(totalItems / size)
 
     return {

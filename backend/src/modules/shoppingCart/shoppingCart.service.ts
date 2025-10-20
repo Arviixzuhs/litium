@@ -33,7 +33,7 @@ export class ShoppingCartService {
       .withOrderBy({ createdAt: 'desc' })
       .build()
 
-    return this.page(query, filters)
+    return this.page(query)
   }
 
   async findBy(id: number, userId: number) {
@@ -105,10 +105,7 @@ export class ShoppingCartService {
     return this.prisma.shoppingCartProduct.createMany({ data })
   }
 
-  private async page(
-    query: ShoppingCartSpecificationBuild,
-    filters: ShoppingCartFiltersDto,
-  ): Promise<Page<ShoppingCart>> {
+  private async page(query: ShoppingCartSpecificationBuild): Promise<Page<ShoppingCart>> {
     const [categories, totalItems] = await this.prisma.$transaction([
       this.prisma.shoppingCart.findMany(query),
       this.prisma.shoppingCart.count({
@@ -116,8 +113,8 @@ export class ShoppingCartService {
       }),
     ])
 
-    const page = filters.page ?? 1
-    const size = filters.size ?? 10
+    const page = query.skip !== undefined ? Math.floor(query.skip / (query.take ?? 10)) : 0
+    const size = query.take ?? 10
     const totalPages = Math.ceil(totalItems / size)
 
     return {

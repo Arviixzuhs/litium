@@ -44,7 +44,7 @@ export class ProductCommentService {
       .withOrderBy({ createdAt: 'desc' })
       .build()
 
-    return this.page(query, filters)
+    return this.page(query)
   }
 
   async findBy(id: number) {
@@ -102,10 +102,7 @@ export class ProductCommentService {
     return avgQualification._avg.qualification ?? 0
   }
 
-  private async page(
-    query: ProductCommentSpecificationBuild,
-    filters: CommentFiltersDto,
-  ): Promise<Page<Comment>> {
+  private async page(query: ProductCommentSpecificationBuild): Promise<Page<Comment>> {
     const [categories, totalItems] = await this.prisma.$transaction([
       this.prisma.comment.findMany(query),
       this.prisma.comment.count({
@@ -113,8 +110,8 @@ export class ProductCommentService {
       }),
     ])
 
-    const page = filters.page ?? 1
-    const size = filters.size ?? 10
+    const page = query.skip !== undefined ? Math.floor(query.skip / (query.take ?? 10)) : 0
+    const size = query.take ?? 10
     const totalPages = Math.ceil(totalItems / size)
 
     return {

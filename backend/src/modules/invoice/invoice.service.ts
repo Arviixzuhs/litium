@@ -49,7 +49,7 @@ export class InvoiceService {
       }),
     ])
 
-    const page = query.skip ?? 1
+    const page = query.skip !== undefined ? Math.floor(query.skip / (query.take ?? 10)) : 0
     const size = query.take ?? 10
     const totalPages = Math.ceil(totalItems / size)
 

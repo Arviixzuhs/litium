@@ -25,7 +25,7 @@ export class ProductCatalogService {
       .withOrderBy({ createdAt: 'desc' })
       .build()
 
-    return this.page(query, filters)
+    return this.page(query)
   }
 
   async create(newCatalog: CreateCatalogDto): Promise<CatalogResponseDto> {
@@ -109,19 +109,15 @@ export class ProductCatalogService {
     })
   }
 
-  private async page(
-    query: ProductCatalogSpecificationBuild,
-    filters: CatalogFiltersDto,
-  ): Promise<Page<CatalogResponseDto>> {
+  private async page(query: ProductCatalogSpecificationBuild): Promise<Page<CatalogResponseDto>> {
     const [catalogs, totalItems] = await this.prisma.$transaction([
       this.prisma.catalog.findMany(query),
       this.prisma.catalog.count({
         where: query.where,
       }),
     ])
-
-    const page = filters.page ?? 1
-    const size = filters.size ?? 10
+    const page = query.skip !== undefined ? Math.floor(query.skip / (query.take ?? 10)) : 0
+    const size = query.take ?? 10
     const totalPages = Math.ceil(totalItems / size)
 
     return {
