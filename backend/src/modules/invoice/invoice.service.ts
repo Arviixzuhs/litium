@@ -3,6 +3,7 @@ import { Injectable } from '@nestjs/common'
 import { PrismaService } from '@/prisma/prisma.service'
 import { InvoiceMapper } from './mapper/invoice.mapper'
 import { InvoiceFilterDto } from './dto/invoice-filters.dto'
+import { CreateInvoiceDto } from './dto/create-invoice.dto'
 import { InvoiceResponseDto } from './dto/invoice-reponse.dto'
 import {
   InvoiceSpecificationBuild,
@@ -21,24 +22,42 @@ export class InvoiceService {
       .withRif(filters.rif)
       .withName(filters.name)
       .withPhone(filters.phone)
-      .withTotalBetween(filters.minTotal, filters.maxTotal)
-      .withSellerId(filters.sellerId)
-      .withProductId(filters.productId)
-      .withCreatedAtBetween(filters.fromDate, filters.toDate)
-      .withIsDeleted(filters.isDeleted)
-      .withPagination(filters.page, filters.size)
       .withInclude({
-        products: {
+        shoppingCart: {
           include: {
-            product: true,
+            products: {
+              include: {
+                product: true,
+              },
+            },
+            user: true,
           },
         },
         seller: true,
       })
+      .withTotalBetween(filters.minTotal, filters.maxTotal)
+      .withSellerId(filters.sellerId)
+      .withCreatedAtBetween(filters.fromDate, filters.toDate)
+      .withIsDeleted(filters.isDeleted)
+      .withPagination(filters.page, filters.size)
       .withOrderBy({ createdAt: 'desc' })
       .build()
 
     return this.page(query)
+  }
+
+  create(dto: CreateInvoiceDto) {
+    return this.prisma.invoice.create({
+      data: {
+        name: dto.name ?? new Date().getTime().toString(),
+        sellerId: dto.sellerId,
+        total: dto.total ?? 0,
+        rif: dto.rif ?? null,
+        phone: dto.phone ?? null,
+        address: dto.address ?? null,
+        shoppingCart: { connect: { id: dto.shoppingCartId } },
+      },
+    })
   }
 
   private async page(query: InvoiceSpecificationBuild): Promise<Page<InvoiceResponseDto>> {
