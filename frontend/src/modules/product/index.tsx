@@ -2,15 +2,16 @@ import React from 'react'
 import toast from 'react-hot-toast'
 import { Back } from '@/components/Back'
 import { useParams } from 'react-router-dom'
+import { StarRating } from './components/starRating'
 import { useDispatch } from 'react-redux'
 import { ProductSpecs } from './components/productSpecs'
-import { ProductModel } from '@/types/productModel'
 import { addItemToCart } from '@/features/shoppingCartSlice'
 import { ProductComment } from './components/productComment'
 import { reqGetProductById } from '../admin/pages/product/services'
+import type { ProductModel } from '@/types/productModel'
 import { ProductImageGallery } from './components/productGallery'
+import { ShieldCheck, ShoppingCart, Truck } from 'lucide-react'
 import { Button, Divider, Snippet, Spinner } from '@heroui/react'
-import { ShieldCheck, ShoppingCart, Star, Truck } from 'lucide-react'
 
 export const ProductPage = () => {
   const params = useParams<{ productId: string }>()
@@ -64,16 +65,12 @@ export const ProductPage = () => {
             <div>
               <h1 className='mb-2 text-balance text-3xl font-bold md:text-4xl'>{product.name}</h1>
               <div className='mb-4 flex items-center gap-2'>
-                <div className='flex items-center gap-1'>
-                  {[...Array(5)].map((_, i) => (
-                    <Star
-                      key={i}
-                      className={`h-5 w-5 ${i < Math.floor(4) ? 'fill-accent text-accent' : 'fill-muted text-muted'}`}
-                    />
-                  ))}
-                </div>
-                <span className='font-medium'>4</span>
-                <span className='text-muted-foreground'>(3 reseñas)</span>
+                <StarRating rating={product.qualification} size={20} />
+                <span className='font-medium'>{product.qualification?.toFixed(1)}</span>
+                <span className='text-muted-foreground'>
+                  ({product.commentsCount}{' '}
+                  {product.commentsCount === 1 ? 'comentario' : 'comentarios'})
+                </span>
               </div>
               <div className='mb-6'>
                 <span className='text-4xl font-bold'>${product.price.toLocaleString()}</span>

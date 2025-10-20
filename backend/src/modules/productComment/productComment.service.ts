@@ -4,7 +4,14 @@ import { PrismaService } from '@/prisma/prisma.service'
 import { CommentFiltersDto } from './dto/comment-filters.dto'
 import { ProductsService } from '@/modules/product/product.service'
 import { CreateCommentDto } from './dto/create-comment.dto'
-import { HttpException, HttpStatus, Injectable, NotFoundException } from '@nestjs/common'
+import {
+  forwardRef,
+  HttpException,
+  HttpStatus,
+  Inject,
+  Injectable,
+  NotFoundException,
+} from '@nestjs/common'
 import {
   ProductCommentSpecificationBuild,
   ProductCommentSpecificationBuilder,
@@ -14,6 +21,8 @@ import {
 export class ProductCommentService {
   constructor(
     private readonly prisma: PrismaService,
+
+    @Inject(forwardRef(() => ProductsService))
     private readonly productService: ProductsService,
   ) {}
 
@@ -82,6 +91,15 @@ export class ProductCommentService {
         deletedAt: new Date(),
       },
     })
+  }
+
+  async calcQualification(productId: number): Promise<number> {
+    const avgQualification = await this.prisma.comment.aggregate({
+      where: { productId },
+      _avg: { qualification: true },
+    })
+
+    return avgQualification._avg.qualification ?? 0
   }
 
   private async page(

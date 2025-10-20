@@ -14,6 +14,8 @@ export interface ProductModel {
   deletedAt?: string | null
   isDeleted?: boolean | null
   description?: string | null
+  commentsCount: number
+  qualification: number
 
   // Relaciones
   images?: ImageProductModel[]

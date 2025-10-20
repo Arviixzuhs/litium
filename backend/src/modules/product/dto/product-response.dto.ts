@@ -31,6 +31,9 @@ export class ProductResponseDto {
   @ApiProperty({ description: 'Fecha de última actualización', required: false })
   updatedAt?: Date
 
+  @ApiProperty({ description: 'Número total de comentarios', required: false })
+  commentsCount?: number
+
   @ApiProperty({ type: () => [SupplierResponseDto], required: false })
   suppliers?: SupplierResponseDto[]
 
@@ -39,4 +42,7 @@ export class ProductResponseDto {
 
   @ApiProperty({ type: () => [ProductSpecificationDto], required: false })
   specifications?: ProductSpecificationDto[]
+
+  @ApiProperty({ description: 'Calificación promedio del producto', required: false })
+  qualification?: number
 }

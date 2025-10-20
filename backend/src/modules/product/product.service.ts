@@ -6,15 +6,20 @@ import { UpdateProductDto } from './dto/update-product.dto'
 import { ProductFilterDto } from './dto/product-filters.dto'
 import { ProductResponseDto } from './dto/product-response.dto'
 import { ProductSpecificationDto } from './dto/product-specification.dto'
-import { Injectable, NotFoundException } from '@nestjs/common'
+import { forwardRef, Inject, Injectable, NotFoundException } from '@nestjs/common'
 import {
   ProductSpecificationBuild,
   ProductSpecificationBuilder,
 } from './repositories/product.specificationBuilder'
+import { ProductCommentService } from '../productComment/productComment.service'
 
 @Injectable()
 export class ProductsService {
-  constructor(private readonly prisma: PrismaService) {}
+  constructor(
+    private readonly prisma: PrismaService,
+    @Inject(forwardRef(() => ProductCommentService))
+    private readonly productCommentService: ProductCommentService,
+  ) {}
 
   private productMapper = new ProductMapper()
 
@@ -50,6 +55,11 @@ export class ProductsService {
             category: true,
           },
         },
+        _count: {
+          select: {
+            comments: true,
+          },
+        },
         specifications: true,
       })
       .withPagination(filters.page, filters.size)
@@ -61,6 +71,13 @@ export class ProductsService {
     return this.page(query, filters)
   }
 
+  async existsById(id: number) {
+    const product = await this.prisma.product.findFirst({
+      where: { id },
+    })
+    if (!product) throw new NotFoundException('Producto no encontrado')
+  }
+
   async findBy(id: number): Promise<ProductResponseDto> {
     const product = await this.prisma.product.findUnique({
       where: {
@@ -69,15 +86,22 @@ export class ProductsService {
       },
       include: {
         specifications: true,
+        _count: {
+          select: {
+            comments: true,
+          },
+        },
       },
     })
 
+    const qualification = await this.productCommentService.calcQualification(id)
+
     if (!product) throw new NotFoundException('Producto no encontrado')
-    return this.productMapper.modelToDto(product)
+    return this.productMapper.modelToDto(product, qualification)
   }
 
   async update(id: number, dto: UpdateProductDto) {
-    await this.findBy(id)
+    await this.existsById(id)
     const { categoryIds, supplierIds, specifications, ...newData } = dto
 
     await this.updateProductCategories(id, categoryIds)
@@ -101,7 +125,7 @@ export class ProductsService {
     productId: number,
     specifications: ProductSpecificationDto[],
   ) {
-    await this.findBy(productId)
+    await this.existsById(productId)
     await this.deleteAllSpecificationsFromProduct(productId)
     await this.asignSpecificationsToProduct(productId, specifications)
   }
@@ -128,7 +152,7 @@ export class ProductsService {
   }
 
   private async updateProductCategories(productId: number, categoryIds: number[]) {
-    await this.findBy(productId)
+    await this.existsById(productId)
     await this.deleteAllCategoriesFromProduct(productId)
     await this.assignCategoriesToProduct(productId, categoryIds)
   }
@@ -151,7 +175,7 @@ export class ProductsService {
   }
 
   private async updateProductSuppliers(productId: number, supplierIds: number[]) {
-    await this.findBy(productId)
+    await this.existsById(productId)
     await this.deleteAllSuppliersFromProduct(productId)
     await this.assignSuppliersToProduct(productId, supplierIds)
   }
@@ -174,7 +198,7 @@ export class ProductsService {
   }
 
   async remove(id: number) {
-    await this.findBy(id)
+    await this.existsById(id)
     const deleted = await this.prisma.product.update({
       where: { id },
       data: {

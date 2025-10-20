@@ -16,6 +16,11 @@ export type ProductWithRelations = Prisma.ProductGetPayload<{
         category: true
       }
     }
+    _count: {
+      select: {
+        comments: true
+      }
+    }
     specifications: true
   }
 }>
@@ -24,7 +29,7 @@ export class ProductMapper extends BaseMapper<Product | ProductWithRelations, Pr
   private supplierMapper = new SupplierMapper()
   private categoryMapper = new CategoryMapper()
 
-  modelToDto(model: Product | ProductWithRelations): ProductResponseDto {
+  modelToDto(model: Product | ProductWithRelations, qualification?: number): ProductResponseDto {
     return {
       id: model.id,
       name: model.name,
@@ -43,6 +48,8 @@ export class ProductMapper extends BaseMapper<Product | ProductWithRelations, Pr
       createdAt: model.createdAt,
       updatedAt: model.updatedAt,
       description: model.description,
+      qualification: qualification || 0,
+      commentsCount: '_count' in model && model._count ? model._count.comments : 0,
       specifications: 'specifications' in model ? model.specifications : [],
     }
   }

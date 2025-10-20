@@ -1,9 +1,9 @@
 import toast from 'react-hot-toast'
 import { Link } from 'react-router-dom'
 import { useDispatch } from 'react-redux'
+import { ShoppingCart } from 'lucide-react'
 import { ProductModel } from '@/types/productModel'
 import { addItemToCart } from '@/features/shoppingCartSlice'
-import { ShoppingCart, Star } from 'lucide-react'
 import { Badge, Button, Card, CardBody, Image } from '@heroui/react'
 
 interface ProductCardProps {
@@ -45,11 +45,6 @@ export const ProductCard = ({ product }: ProductCardProps) => {
         </div>
         <div className='p-4 flex flex-col gap-4'>
           <div className='flex flex-col gap-1'>
-            <div className='flex items-center gap-1'>
-              <Star className='h-4 w-4 fill-accent text-accent' />
-              <span className='text-sm font-medium'>4</span>
-              <span className='text-sm text-muted-foreground'>(4)</span>
-            </div>
             <Link to={`/product/${product.id}`}>
               <h3 className='mb-1 line-clamp-2 text-balance font-semibold leading-tight'>
                 {product.name}
