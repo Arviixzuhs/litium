@@ -76,7 +76,7 @@ export const DashboardPage = () => {
         {stats.map((stat) => {
           const Icon = stat.icon
           return (
-            <Card key={stat.title}>
+            <Card key={stat.title} shadow='none' className='bg-white'>
               <CardHeader className='flex flex-row items-center justify-between space-y-0 pb-3'>
                 <h3 className='text-sm font-medium text-muted-foreground'>{stat.title}</h3>
                 <div className='rounded-lg bg-primary/10 p-2'>
@@ -105,7 +105,7 @@ export const DashboardPage = () => {
         })}
       </div>
       <div className='grid gap-6 lg:grid-cols-2'>
-        <Card>
+        <Card shadow='none'>
           <CardHeader className='font-bold'>Ventas Mensuales</CardHeader>
           <CardBody>
             <div className='h-[300px] w-full'>
@@ -158,7 +158,7 @@ export const DashboardPage = () => {
             </div>
           </CardBody>
         </Card>
-        <Card>
+        <Card shadow='none'>
           <CardHeader className='font-bold'>Ventas por Categoría</CardHeader>
           <CardBody>
             <div className='h-[300px] w-full'>
