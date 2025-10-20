@@ -1,6 +1,5 @@
 import { ProductResponseDto } from '@/modules/product/dto/product-response.dto'
 import { ApiProperty } from '@nestjs/swagger'
-import { User } from '@prisma/client'
 
 export class InvoiceResponseDto {
   @ApiProperty({ example: 1, description: 'Unique identifier of the invoice' })
@@ -28,12 +27,11 @@ export class InvoiceResponseDto {
   @ApiProperty({ example: 5, description: 'Seller user ID associated with this invoice' })
   sellerId: number
 
-  @ApiProperty({
-    description: 'Seller user data (relation)',
-    type: () => Object, // puedes usar un DTO de User si lo tienes
-    required: false,
-  })
-  seller?: User
+  @ApiProperty({ example: 'Juan Pérez', description: 'Full name of the seller', nullable: true })
+  sellerName?: string
+
+  @ApiProperty({ example: 'Carlos López', description: 'Full name of the buyer', nullable: true })
+  buyerName?: string
 
   @ApiProperty({
     description: 'Products included in this invoice',
