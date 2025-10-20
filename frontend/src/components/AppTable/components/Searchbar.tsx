@@ -19,6 +19,10 @@ export const Searchbar = () => {
       placeholder='Buscar productos...'
       startContent={<Search />}
       className='w-full'
+      classNames={{
+        input: 'bg-card',
+        inputWrapper: 'bg-card',
+      }}
     />
   )
 }
