@@ -217,8 +217,8 @@ model Reply {
 // =======================
 
 enum ShoppingCartStatus {
-  CONFIRMED
-  EDITING
+  PENDING // Carrito creado pero aún no pagado
+  PAID // Carrito pagado, confirmado como venta
 }
 
 model ShoppingCart {
@@ -226,7 +226,7 @@ model ShoppingCart {
   user      User                  @relation(fields: [userId], references: [id], onDelete: Cascade)
   name      String                @db.VarChar(50)
   userId    Int
-  status    ShoppingCartStatus    @default(EDITING)
+  status    ShoppingCartStatus    @default(PENDING)
   products  ShoppingCartProduct[]
   messages  Message[]
   isDeleted Boolean?              @default(false)
