@@ -14,11 +14,12 @@ import { setFilterValue, type TableColumnInterface } from '@/features/appTableSl
 import { Table, TableBody, TableCell, TableColumn, TableHeader, TableRow } from '@heroui/react'
 
 export interface AppTableProps {
+  hiddeAdd?: boolean
   tableActions?: AppTableActions
   modalExtension?: React.ReactElement
 }
 
-export const AppTable = ({ tableActions, modalExtension }: AppTableProps) => {
+export const AppTable = ({ tableActions, modalExtension, hiddeAdd }: AppTableProps) => {
   const location = useLocation()
   const dispatch = useDispatch()
   const table = useSelector((state: RootState) => state.appTable)
@@ -33,7 +34,7 @@ export const AppTable = ({ tableActions, modalExtension }: AppTableProps) => {
         shadow='none'
         isCompact
         isHeaderSticky
-        topContent={<TopContent />}
+        topContent={<TopContent hiddeAdd={hiddeAdd} />}
         bottomContent={<TablePagination />}
         topContentPlacement='outside'
         bottomContentPlacement='outside'
