@@ -63,7 +63,7 @@ export const Shopping = () => {
                     <h3 className='font-semibold'>{item.product?.name}</h3>
                     <p className='text-gray-500 dark:text-gray-400'>${item.product?.price}</p>
                     <p className='font-bold dark:text-gray-200'>
-                      ${item.product?.price || 0 * item.quantity} ({item.quantity})
+                      ${item.product?.price * item.quantity} ({item.quantity})
                     </p>
                   </div>
                 </div>
