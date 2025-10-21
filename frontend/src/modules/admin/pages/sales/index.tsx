@@ -18,6 +18,8 @@ export const AdminInvoicePage = () => {
         name: debounceValue,
         page: table.currentPage,
         size: table.rowsPerPage,
+        toDate: table.dateFilter.end,
+        fromDate: table.dateFilter.start,
       })
       dispatch(setTableData(response.data))
     } catch (error) {
@@ -31,7 +33,7 @@ export const AdminInvoicePage = () => {
 
   React.useEffect(() => {
     loadData()
-  }, [debounceValue, table.currentPage, table.rowsPerPage])
+  }, [debounceValue, table.currentPage, table.rowsPerPage, table.dateFilter])
 
-  return <AppTable hiddeAdd />
+  return <AppTable hiddeAdd filterByDate />
 }

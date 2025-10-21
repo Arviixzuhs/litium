@@ -1,4 +1,4 @@
-import { Type } from 'class-transformer'
+import { Transform, Type } from 'class-transformer'
 import { PaginationDto } from '@/common/dto/pagination.dto'
 import { ApiPropertyOptional } from '@nestjs/swagger'
 import { IsInt, IsString, IsNumber, IsOptional, IsDateString } from 'class-validator'
@@ -54,11 +54,13 @@ export class InvoiceFilterDto extends PaginationDto {
   @ApiPropertyOptional({ description: 'Filtra facturas creadas desde esta fecha (YYYY-MM-DD)' })
   @IsOptional()
   @IsDateString()
+  @Transform(({ value }) => (value === '' ? undefined : value))
   fromDate?: string
 
   @ApiPropertyOptional({ description: 'Filtra facturas creadas hasta esta fecha (YYYY-MM-DD)' })
   @IsOptional()
   @IsDateString()
+  @Transform(({ value }) => (value === '' ? undefined : value))
   toDate?: string
 
   @ApiPropertyOptional({ description: 'Indica si la factura fue eliminada' })

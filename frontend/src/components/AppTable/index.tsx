@@ -15,11 +15,17 @@ import { Table, TableBody, TableCell, TableColumn, TableHeader, TableRow } from 
 
 export interface AppTableProps {
   hiddeAdd?: boolean
+  filterByDate?: boolean
   tableActions?: AppTableActions
   modalExtension?: React.ReactElement
 }
 
-export const AppTable = ({ tableActions, modalExtension, hiddeAdd }: AppTableProps) => {
+export const AppTable = ({
+  hiddeAdd,
+  tableActions,
+  filterByDate,
+  modalExtension,
+}: AppTableProps) => {
   const location = useLocation()
   const dispatch = useDispatch()
   const table = useSelector((state: RootState) => state.appTable)
@@ -34,7 +40,7 @@ export const AppTable = ({ tableActions, modalExtension, hiddeAdd }: AppTablePro
         shadow='none'
         isCompact
         isHeaderSticky
-        topContent={<TopContent hiddeAdd={hiddeAdd} />}
+        topContent={<TopContent hiddeAdd={hiddeAdd} filterByDate={filterByDate} />}
         bottomContent={<TablePagination />}
         topContentPlacement='outside'
         bottomContentPlacement='outside'
