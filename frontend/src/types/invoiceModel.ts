@@ -1,5 +1,5 @@
 import { UserModel } from './userModel'
-import { ShoppingCartModel } from './shoppingCartModel'
+import { ShoppingCartProductModel } from './shoppingCartModel'
 
 export interface InvoiceModel {
   id: number
@@ -14,5 +14,8 @@ export interface InvoiceModel {
   isDeleted?: boolean
   deletedAt?: Date
   createdAt: Date
-  shoppingCart: ShoppingCartModel[]
+  buyerName: string
+  sellerName: string
+
+  products: ShoppingCartProductModel[]
 }
