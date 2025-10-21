@@ -29,8 +29,8 @@ export const ChatSidebar = () => {
               onChange={(e) => setSearchQuery(e.target.value)}
             />
           </div>
-          <ScrollShadow>
-            <div className='w-full flex flex-col gap-2 scrollShadow'>
+          <ScrollShadow className='hoverScrollbar'>
+            <div className='w-full flex flex-col gap-2 pr-2'>
               {purchases.map((chat) => (
                 <button
                   key={chat.id}
