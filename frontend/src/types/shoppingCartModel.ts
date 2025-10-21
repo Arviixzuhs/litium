@@ -12,7 +12,6 @@ export enum ShoppingCartStatus {
 export interface ShoppingCartProductModel {
   id: number
   quantity: number
-  invoiceId?: number | null
   productId: number
   shoppingCartId: number
   createdAt: Date
