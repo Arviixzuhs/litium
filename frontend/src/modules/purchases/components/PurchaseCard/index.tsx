@@ -4,7 +4,8 @@ import { useNavigate } from 'react-router-dom'
 import { ShoppingCartModel } from '@/types/shoppingCartModel'
 import { MessagesSquareIcon } from 'lucide-react'
 import { getFormattedDateTime } from '@/utils/getFormattedDateTime'
-import { Chip, Card, Image, Button, CardBody } from '@heroui/react'
+import { ChoppingCartStatusChip } from '@/modules/admin/pages/messages/components/ChoppingCartStatusChip'
+import { Card, Image, Button, CardBody } from '@heroui/react'
 
 interface PurchaseCardProps {
   purchase: ShoppingCartModel
@@ -33,9 +34,7 @@ export function PurchaseCard({ purchase, setCurrentIdToView }: PurchaseCardProps
                 <Image src={'/placeholder.svg'} className='object-cover' />
               </div>
               <div className='flex flex-1 flex-col gap-2'>
-                <Chip color='success' variant='flat' size='sm' className='w-fit'>
-                  {purchase.status}
-                </Chip>
+                <ChoppingCartStatusChip status={purchase.status} />
                 <h3 className='line-clamp-2 text-sm text-default-600 leading-relaxed'>
                   {purchase?.products?.[0]?.product?.name}
                 </h3>
