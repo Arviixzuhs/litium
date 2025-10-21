@@ -8,6 +8,7 @@ import { EmptyContent } from './components/EmptyContent'
 import { EditItemModal } from './components/EditItemModal'
 import { TablePagination } from './components/Pagination'
 import { ConfirmDeleteModal } from './components/ConfirmDeleteModal'
+import { DropdownItemInteface } from './components/DropdownAction'
 import type { AppTableActions } from './interfaces/appTable'
 import { useDispatch, useSelector } from 'react-redux'
 import { setFilterValue, type TableColumnInterface } from '@/features/appTableSlice'
@@ -17,6 +18,7 @@ export interface AppTableProps {
   hiddeAdd?: boolean
   filterByDate?: boolean
   tableActions?: AppTableActions
+  dropdownItems?: DropdownItemInteface[]
   modalExtension?: React.ReactElement
 }
 
@@ -24,6 +26,7 @@ export const AppTable = ({
   hiddeAdd,
   tableActions,
   filterByDate,
+  dropdownItems,
   modalExtension,
 }: AppTableProps) => {
   const location = useLocation()
@@ -61,11 +64,16 @@ export const AppTable = ({
           )}
         </TableHeader>
         <TableBody items={table.data} emptyContent={<EmptyContent />}>
-          {(item: any) => (
+          {(item) => (
             <TableRow key={String(item.id)}>
               {(columnKey) => (
                 <TableCell className='default-text-color'>
-                  <RenderCell column={columnKey} value={item[columnKey]} itemId={item.id} />
+                  <RenderCell
+                    column={columnKey}
+                    value={item[columnKey]}
+                    itemId={item.id}
+                    dropdownItems={dropdownItems}
+                  />
                 </TableCell>
               )}
             </TableRow>
