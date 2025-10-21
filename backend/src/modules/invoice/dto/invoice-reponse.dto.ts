@@ -1,5 +1,5 @@
-import { ProductResponseDto } from '@/modules/product/dto/product-response.dto'
 import { ApiProperty } from '@nestjs/swagger'
+import { ShoppingCartProduct } from '@prisma/client'
 
 export class InvoiceResponseDto {
   @ApiProperty({ example: 1, description: 'Unique identifier of the invoice' })
@@ -35,10 +35,10 @@ export class InvoiceResponseDto {
 
   @ApiProperty({
     description: 'Products included in this invoice',
-    type: () => [ProductResponseDto],
+
     required: false,
   })
-  products?: ProductResponseDto[]
+  products?: ShoppingCartProduct[]
 
   @ApiProperty({
     example: false,
