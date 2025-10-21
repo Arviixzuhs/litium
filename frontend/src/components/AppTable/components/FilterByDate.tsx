@@ -70,10 +70,7 @@ export const FilterByDatePicker = () => {
         isInvisible={!isFilterActive}
       >
         <Button onPress={onOpen} isIconOnly color='primary' variant='flat'>
-          <Calendar
-            size={18}
-            className='text-xl pointer-events-none flex-shrink-0'
-          />
+          <Calendar size={18} className='text-xl pointer-events-none flex-shrink-0' />
         </Button>
       </Badge>
       <Modal isOpen={isOpen} placement='center' onOpenChange={onOpenChange}>
