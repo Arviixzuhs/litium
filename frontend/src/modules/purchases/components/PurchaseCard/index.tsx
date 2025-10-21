@@ -1,16 +1,24 @@
+import { useModal } from '@/hooks/useModal'
+import { modalTypes } from '@/hooks/useModal'
 import { useNavigate } from 'react-router-dom'
 import { ShoppingCartModel } from '@/types/shoppingCartModel'
-import { ViewPurchaseModal } from './components/ViewPurchaseModal'
 import { MessagesSquareIcon } from 'lucide-react'
 import { getFormattedDateTime } from '@/utils/getFormattedDateTime'
 import { Chip, Card, Image, Button, CardBody } from '@heroui/react'
 
 interface PurchaseCardProps {
   purchase: ShoppingCartModel
+  setCurrentIdToView: React.Dispatch<React.SetStateAction<number>>
 }
 
-export function PurchaseCard({ purchase }: PurchaseCardProps) {
+export function PurchaseCard({ purchase, setCurrentIdToView }: PurchaseCardProps) {
   const navigate = useNavigate()
+  const [_isOpen, toggleOpen] = useModal(modalTypes.viewPurchases)
+
+  const handleOpen = () => {
+    setCurrentIdToView(purchase.id)
+    toggleOpen()
+  }
 
   return (
     <div>
@@ -47,7 +55,9 @@ export function PurchaseCard({ purchase }: PurchaseCardProps) {
                 </Button>
               </div>
               <div className='flex w-full flex-col gap-2 md:w-auto'>
-                <ViewPurchaseModal purchaseProducts={purchase.products || []} />
+                <Button radius='sm' color='primary' onPress={handleOpen}>
+                  Ver compra
+                </Button>
               </div>
             </div>
           </div>
