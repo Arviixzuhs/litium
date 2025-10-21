@@ -1,16 +1,43 @@
-import { cn } from '@heroui/react'
-import { useState } from 'react'
+import React from 'react'
+import { RootState } from '@/store'
+import { useDebounce } from 'use-debounce'
 import { useNavigate } from 'react-router-dom'
-import { usePurchasesSearch } from '@/modules/purchases/hooks/usePurchasesSearch'
-import { Input, ScrollShadow } from '@heroui/react'
+import { setPurchases } from '@/modules/purchases/slices/purchaseSlice'
+import { reqGetShoppingCart } from '@/modules/purchases/services'
 import { getFormattedDateTime } from '@/utils/getFormattedDateTime'
 import { MessageSquare, Search } from 'lucide-react'
 import { ChoppingCartStatusChip } from '../ChoppingCartStatusChip'
+import { cn, Input, ScrollShadow } from '@heroui/react'
+import { useDispatch, useSelector } from 'react-redux'
 
 export const ChatSidebar = () => {
   const navigate = useNavigate()
-  const [selectedChat, setSelectedChat] = useState<number>(-1)
-  const { purchases, searchQuery, setSearchQuery } = usePurchasesSearch()
+  const [selectedChat, setSelectedChat] = React.useState<number>(-1)
+  const dispatch = useDispatch()
+  const purchases = useSelector((state: RootState) => state.purchase.data)
+
+  const [_isLoading, setIsLoading] = React.useState<boolean>(true)
+  const [searchQuery, setSearchQuery] = React.useState<string>('')
+  const [debounceValue] = useDebounce(searchQuery, 300)
+
+  React.useEffect(() => {
+    const loadData = async () => {
+      try {
+        setIsLoading(true)
+        const response = await reqGetShoppingCart({
+          page: 0,
+          size: 50,
+          productName: debounceValue,
+        })
+        dispatch(setPurchases(response.data.content))
+      } catch (error) {
+        console.error(error)
+      } finally {
+        setIsLoading(false)
+      }
+    }
+    loadData()
+  }, [debounceValue])
 
   const handleSelectChat = (cartId: number) => {
     setSelectedChat(cartId)

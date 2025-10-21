@@ -1,12 +1,15 @@
 import React from 'react'
 import toast from 'react-hot-toast'
 import { useParams } from 'react-router-dom'
-import { ShoppingCartModel, ShoppingCartStatus } from '@/types/shoppingCartModel'
+import { useDispatch } from 'react-redux'
+import { updateStatus } from '@/modules/purchases/slices/purchaseSlice'
 import { reqGetShoppingCartById } from '@/api/requests'
+import { ShoppingCartModel, ShoppingCartStatus } from '@/types/shoppingCartModel'
 import { Button, Card, CardBody, CardHeader, Image, Spinner } from '@heroui/react'
 import { reqConfirmShoppingCart, reqUpdateShoppingCartStatus } from '../../services'
 
 export const Shopping = () => {
+  const dispatch = useDispatch()
   const params = useParams<{ cartId: string }>()
   const [isLoading, setIsLoading] = React.useState<boolean>(true)
   const [shoppingCart, setShoppingCart] = React.useState<ShoppingCartModel | null>(null)
@@ -21,10 +24,20 @@ export const Shopping = () => {
 
   if (!params.cartId) return
 
+  const updateLocalPurchaseStatus = (status: ShoppingCartStatus) => {
+    if (!shoppingCart) return
+    setShoppingCart({
+      ...shoppingCart,
+      status,
+    })
+  }
+
   const handleConfirm = async () => {
     try {
       if (!shoppingCart) return
-      reqConfirmShoppingCart(shoppingCart?.id)
+      await reqConfirmShoppingCart(shoppingCart?.id)
+      dispatch(updateStatus({ id: shoppingCart.id, status: ShoppingCartStatus.PAID }))
+      updateLocalPurchaseStatus(ShoppingCartStatus.PAID)
       toast.success('Carrito confirmado correctamente')
     } catch (error) {
       console.log(error)
@@ -35,6 +48,8 @@ export const Shopping = () => {
     try {
       if (!shoppingCart) return
       await reqUpdateShoppingCartStatus(shoppingCart?.id, ShoppingCartStatus.CANCELED)
+      dispatch(updateStatus({ id: shoppingCart.id, status: ShoppingCartStatus.CANCELED }))
+      updateLocalPurchaseStatus(ShoppingCartStatus.CANCELED)
       toast.success('Carrito cancelado correctamente')
     } catch (error) {
       console.log(error)
