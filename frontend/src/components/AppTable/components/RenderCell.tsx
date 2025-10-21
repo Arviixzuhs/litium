@@ -1,11 +1,12 @@
 import { Key } from 'react'
-import { DropdownAction } from './DropdownAction'
 import { getFormattedDateTime } from '@/utils/getFormattedDateTime'
+import { DropdownAction, DropdownItemInteface, PersonalizeDropdownAction } from './DropdownAction'
 
 export interface RenderCellProps {
-  column: Key
   value: string
+  column: Key
   itemId: number
+  dropdownItems?: DropdownItemInteface[]
 }
 
 export const RenderCell = (props: RenderCellProps) => {
@@ -26,8 +27,18 @@ export const RenderCell = (props: RenderCellProps) => {
         </>
       )
 
-    case 'actions':
-      return <DropdownAction itemId={props.itemId} />
+    case 'actions': {
+      if (!props.dropdownItems) {
+        return <DropdownAction itemId={props.itemId} />
+      } else {
+        return (
+          <PersonalizeDropdownAction
+            itemId={props.itemId}
+            dropdownItems={props.dropdownItems || []}
+          />
+        )
+      }
+    }
 
     default:
       return <>{props.value}</>
