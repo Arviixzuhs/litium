@@ -17,4 +17,8 @@ export const tableColumns: TableColumnInterface[] = [
     name: 'Fecha',
     uid: 'createdAt',
   },
+  {
+    name: 'Acciones',
+    uid: 'actions',
+  },
 ]
