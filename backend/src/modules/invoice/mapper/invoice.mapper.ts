@@ -1,6 +1,5 @@
-import { Invoice, Prisma } from '@prisma/client'
 import { BaseMapper } from '@/common/utils/base.mapper'
-import { ProductMapper } from '@/modules/product/mapper/product.mapper'
+import { Invoice, Prisma } from '@prisma/client'
 import { InvoiceResponseDto } from '../dto/invoice-reponse.dto'
 
 export type InvoiceWithRelations = Prisma.InvoiceGetPayload<{
@@ -20,8 +19,6 @@ export type InvoiceWithRelations = Prisma.InvoiceGetPayload<{
 }>
 
 export class InvoiceMapper extends BaseMapper<Invoice | InvoiceWithRelations, InvoiceResponseDto> {
-  private productMapper = new ProductMapper()
-
   modelToDto(model: Invoice | InvoiceWithRelations): InvoiceResponseDto {
     const firstCart =
       'shoppingCart' in model && model.shoppingCart.length > 0 ? model.shoppingCart[0] : null
@@ -41,9 +38,7 @@ export class InvoiceMapper extends BaseMapper<Invoice | InvoiceWithRelations, In
       sellerName,
       buyerName,
       address: model.address ?? null,
-      products: firstCart
-        ? this.productMapper.modelsToDtos(firstCart.products.map((item) => item.product))
-        : [],
+      products: firstCart ? firstCart.products : [],
       createdAt: model.createdAt,
     }
   }
