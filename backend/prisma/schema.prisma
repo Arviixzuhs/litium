@@ -35,7 +35,7 @@ model Role {
   name        String            @db.VarChar(50)
   users       RoleUser[]
   createdAt   DateTime          @default(now())
-  permissions RolePermissions[]
+  permissions RolePermission[]
 }
 
 model RoleUser {
@@ -46,7 +46,7 @@ model RoleUser {
   roleId Int
 }
 
-model RolePermissions {
+model RolePermission {
   id     Int    @id @default(autoincrement())
   name   String @db.VarChar(50)
   role   Role   @relation(fields: [roleId], references: [id], onDelete: Cascade)
