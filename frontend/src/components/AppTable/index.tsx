@@ -8,17 +8,27 @@ import { EmptyContent } from './components/EmptyContent'
 import { EditItemModal } from './components/EditItemModal'
 import { TablePagination } from './components/Pagination'
 import { ConfirmDeleteModal } from './components/ConfirmDeleteModal'
+import { DropdownItemInteface } from './components/DropdownAction'
 import type { AppTableActions } from './interfaces/appTable'
 import { useDispatch, useSelector } from 'react-redux'
 import { setFilterValue, type TableColumnInterface } from '@/features/appTableSlice'
 import { Table, TableBody, TableCell, TableColumn, TableHeader, TableRow } from '@heroui/react'
 
 export interface AppTableProps {
+  hiddeAdd?: boolean
+  filterByDate?: boolean
   tableActions?: AppTableActions
+  dropdownItems?: DropdownItemInteface[]
   modalExtension?: React.ReactElement
 }
 
-export const AppTable = ({ tableActions, modalExtension }: AppTableProps) => {
+export const AppTable = ({
+  hiddeAdd,
+  tableActions,
+  filterByDate,
+  dropdownItems,
+  modalExtension,
+}: AppTableProps) => {
   const location = useLocation()
   const dispatch = useDispatch()
   const table = useSelector((state: RootState) => state.appTable)
@@ -33,7 +43,7 @@ export const AppTable = ({ tableActions, modalExtension }: AppTableProps) => {
         shadow='none'
         isCompact
         isHeaderSticky
-        topContent={<TopContent />}
+        topContent={<TopContent hiddeAdd={hiddeAdd} filterByDate={filterByDate} />}
         bottomContent={<TablePagination />}
         topContentPlacement='outside'
         bottomContentPlacement='outside'
@@ -54,11 +64,16 @@ export const AppTable = ({ tableActions, modalExtension }: AppTableProps) => {
           )}
         </TableHeader>
         <TableBody items={table.data} emptyContent={<EmptyContent />}>
-          {(item: any) => (
+          {(item) => (
             <TableRow key={String(item.id)}>
               {(columnKey) => (
                 <TableCell className='default-text-color'>
-                  <RenderCell column={columnKey} value={item[columnKey]} itemId={item.id} />
+                  <RenderCell
+                    column={columnKey}
+                    value={item[columnKey]}
+                    itemId={item.id}
+                    dropdownItems={dropdownItems}
+                  />
                 </TableCell>
               )}
             </TableRow>

@@ -1,23 +1,32 @@
+import { useModal } from '@/hooks/useModal'
+import { modalTypes } from '@/hooks/useModal'
 import { useNavigate } from 'react-router-dom'
 import { ShoppingCartModel } from '@/types/shoppingCartModel'
-import { ViewPurchaseModal } from './components/ViewPurchaseModal'
 import { MessagesSquareIcon } from 'lucide-react'
 import { getFormattedDateTime } from '@/utils/getFormattedDateTime'
-import { Chip, Card, Image, Button, CardBody } from '@heroui/react'
+import { ChoppingCartStatusChip } from '@/modules/admin/pages/messages/components/ChoppingCartStatusChip'
+import { Card, Image, Button, CardBody } from '@heroui/react'
 
 interface PurchaseCardProps {
   purchase: ShoppingCartModel
+  setCurrentIdToView: React.Dispatch<React.SetStateAction<number>>
 }
 
-export function PurchaseCard({ purchase }: PurchaseCardProps) {
+export function PurchaseCard({ purchase, setCurrentIdToView }: PurchaseCardProps) {
   const navigate = useNavigate()
+  const [_isOpen, toggleOpen] = useModal(modalTypes.viewPurchases)
+
+  const handleOpen = () => {
+    setCurrentIdToView(purchase.id)
+    toggleOpen()
+  }
 
   return (
     <div>
       <div className='mb-4 text-sm font-medium'>
         {getFormattedDateTime({ value: purchase.createdAt })}
       </div>
-      <Card shadow='sm'>
+      <Card shadow='none'>
         <CardBody>
           <div className='flex flex-col gap-4 md:flex-row md:items-center md:justify-between'>
             <div className='flex flex-1 gap-4'>
@@ -25,9 +34,7 @@ export function PurchaseCard({ purchase }: PurchaseCardProps) {
                 <Image src={'/placeholder.svg'} className='object-cover' />
               </div>
               <div className='flex flex-1 flex-col gap-2'>
-                <Chip color='success' variant='flat' size='sm' className='w-fit'>
-                  {purchase.status}
-                </Chip>
+                <ChoppingCartStatusChip status={purchase.status} />
                 <h3 className='line-clamp-2 text-sm text-default-600 leading-relaxed'>
                   {purchase?.products?.[0]?.product?.name}
                 </h3>
@@ -47,7 +54,9 @@ export function PurchaseCard({ purchase }: PurchaseCardProps) {
                 </Button>
               </div>
               <div className='flex w-full flex-col gap-2 md:w-auto'>
-                <ViewPurchaseModal purchaseProducts={purchase.products || []} />
+                <Button radius='sm' color='primary' onPress={handleOpen}>
+                  Ver compra
+                </Button>
               </div>
             </div>
           </div>

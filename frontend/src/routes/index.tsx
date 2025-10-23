@@ -10,6 +10,7 @@ import { DashboardPage } from '@/modules/admin/pages/dashboard'
 import { PurchasesPage } from '@/modules/purchases'
 import { AdminProductPage } from '@/modules/admin/pages/product'
 import { AdminCatalogPage } from '@/modules/admin/pages/catalog'
+import { AdminInvoicePage } from '@/modules/admin/pages/sales'
 import { AdminSupplierPage } from '@/modules/admin/pages/supplier'
 import { AdminCategoryPage } from '@/modules/admin/pages/category'
 import { MessagesAdminPage } from '@/modules/admin/pages/messages'
@@ -33,7 +34,7 @@ export const Router = () => {
           <Route element={<AdminSupplierPage />} path='/proveedores' />
           <Route element={<AdminCategoryPage />} path='/categorias' />
           <Route element={<AdminCatalogPage />} path='/catalogos' />
-          <Route element={<AdminProductPage />} path='/ventas' />
+          <Route element={<AdminInvoicePage />} path='/ventas' />
         </Route>
       </Route>
       <Route element={<ProtectedRouteAuth />}>

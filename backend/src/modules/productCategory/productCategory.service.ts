@@ -24,7 +24,7 @@ export class ProductCategoryService {
       .withPagination(filters.page, filters.size)
       .build()
 
-    return this.page(query, filters)
+    return this.page(query)
   }
 
   async findBy(id: number): Promise<CategoryResponseDto> {
@@ -77,10 +77,7 @@ export class ProductCategoryService {
     return this.categoryMapper.modelToDto(deleted)
   }
 
-  private async page(
-    query: CategorySpecificationBuild,
-    filters: CategoryFiltersDto,
-  ): Promise<Page<CategoryResponseDto>> {
+  private async page(query: CategorySpecificationBuild): Promise<Page<CategoryResponseDto>> {
     const [categories, totalItems] = await this.prisma.$transaction([
       this.prisma.category.findMany(query),
       this.prisma.category.count({
@@ -88,8 +85,8 @@ export class ProductCategoryService {
       }),
     ])
 
-    const page = filters.page ?? 1
-    const size = filters.size ?? 10
+    const page = query.skip !== undefined ? Math.floor(query.skip / (query.take ?? 10)) : 0
+    const size = query.take ?? 10
     const totalPages = Math.ceil(totalItems / size)
 
     return {

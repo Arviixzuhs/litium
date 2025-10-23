@@ -1,19 +1,21 @@
 import { UserModel } from './userModel'
-import { ShoppingCartProduct } from './shoppingCartModel'
+import { ShoppingCartProductModel } from './shoppingCartModel'
 
 export interface InvoiceModel {
   id: number
-  rif?: string | null
+  rif?: string
   name: string
-  phone?: string | null
-  total?: number | null
-  address?: string | null
+  phone?: string
+  total?: number
+  address?: string
   sellerId: number
-  isDeleted?: boolean
-  deletedAt?: Date | null
-  createdAt: Date
 
-  // Relaciones
-  seller?: UserModel
-  products?: ShoppingCartProduct[]
+  seller: UserModel
+  isDeleted?: boolean
+  deletedAt?: Date
+  createdAt: Date
+  buyerName: string
+  sellerName: string
+
+  products: ShoppingCartProductModel[]
 }

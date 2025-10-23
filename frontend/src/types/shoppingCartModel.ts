@@ -4,14 +4,14 @@ import { ProductModel } from './productModel'
 import { UserModel } from './userModel'
 
 export enum ShoppingCartStatus {
-  CONFIRMED = 'CONFIRMED',
-  EDITING = 'EDITING',
+  PAID = 'PAID',
+  PENDING = 'PENDING',
+  CANCELED = 'CANCELED',
 }
 
 export interface ShoppingCartProductModel {
   id: number
   quantity: number
-  invoiceId?: number | null
   productId: number
   shoppingCartId: number
   createdAt: Date

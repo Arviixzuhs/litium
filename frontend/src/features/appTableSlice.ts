@@ -6,6 +6,11 @@ export interface TableColumnInterface {
   sortable?: boolean
 }
 
+export interface DateFilter {
+  end: string
+  start: string
+}
+
 export interface ModalInput {
   name: string
   type?: string
@@ -18,6 +23,7 @@ export interface AppTableInterface<T> {
   data: T[]
   columns: TableColumnInterface[]
   formData: Record<string, string | unknown>
+  dateFilter: DateFilter
   filterValue: string
   totalPages: number
   currentPage: number
@@ -46,6 +52,10 @@ export const manageAppTableSlice = createSlice({
     currentItemToDelete: -1,
     currentItemToUpdate: -1,
     isConfirmDeleteModalOpen: false,
+    dateFilter: {
+      end: '',
+      start: '',
+    },
   } as AppTableInterface<any>,
   reducers: {
     setTableData: (
@@ -119,6 +129,11 @@ export const manageAppTableSlice = createSlice({
     setCurrentItemToUpdate: (state, action) => {
       state.currentItemToUpdate = action.payload
     },
+    setDateFilter: (state, action) => {
+      const { start, end } = action.payload
+      state.dateFilter.end = end?.toString() || ''
+      state.dateFilter.start = start?.toString() || ''
+    },
   },
 })
 
@@ -126,6 +141,7 @@ export const {
   setTableData,
   setTableColumns,
   setFilterValue,
+  setDateFilter,
   setCurrentPage,
   toggleEditItemModal,
   setModalInputs,

@@ -1,11 +1,15 @@
 import { manageUserSlice } from '@/features/userSlice'
 import { shoppingCartSlice } from '@/features/shoppingCartSlice'
+import { manageModalsSlice } from '@/features/currentModalSlice'
 import { manageAppTableSlice } from '@/features/appTableSlice'
+import { managePurchaseSlice } from '@/modules/purchases/slices/purchaseSlice'
 import { combineReducers, configureStore } from '@reduxjs/toolkit'
 
 const appReducer = combineReducers({
   user: manageUserSlice.reducer,
+  modal: manageModalsSlice.reducer,
   appTable: manageAppTableSlice.reducer,
+  purchase: managePurchaseSlice.reducer,
   shoppingCart: shoppingCartSlice.reducer,
 })
 
