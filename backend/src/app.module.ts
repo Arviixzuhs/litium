@@ -22,6 +22,8 @@ import { ProductCommentReplyModule } from '@/modules/productCommentReply/product
 import { ProductSupplierController } from '@/modules/productSupplier/productSupplier.controller'
 import { ProductCommentReplyController } from '@/modules/productCommentReply/productCommentReply.controller'
 import { MiddlewareConsumer, Module, NestModule } from '@nestjs/common'
+import { DashboardController } from './modules/dashboard/dashboard.controller'
+import { DashboardModule } from './modules/dashboard/dashboard.module'
 
 @Module({
   imports: [
@@ -36,6 +38,7 @@ import { MiddlewareConsumer, Module, NestModule } from '@nestjs/common'
     ProductCategoryModule,
     ProductCommentReplyModule,
     ProductSupplierModule,
+    DashboardModule
   ],
   controllers: [AppController],
   providers: [],
@@ -54,6 +57,7 @@ export class AppModule implements NestModule {
         ProductCategoryController,
         ProductCommentReplyController,
         ProductSupplierController,
+        DashboardController,
       )
     consumer.apply(RequestLoggerMiddleware).forRoutes('*')
   }
