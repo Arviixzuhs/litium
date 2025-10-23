@@ -16,6 +16,7 @@ import { AdminCategoryPage } from '@/modules/admin/pages/category'
 import { MessagesAdminPage } from '@/modules/admin/pages/messages'
 import { ProtectedRouteAuth } from './middlewares/ProtectedRouteAuth'
 import { ProtectedRouteSession } from './middlewares/ProtectedRouteSession'
+import { CheckPermissionByComponent } from '@/components/CheckPermissionByComponent'
 
 export const Router = () => {
   return (
@@ -23,11 +24,17 @@ export const Router = () => {
       <Route element={<ProtectedRouteSession />}>
         <Route element={<Layout />}>
           <Route element={<HomePage />} path='/' />
+          <Route element={<Messages />} path='/messages/:cartId' />
           <Route element={<ProductPage />} path='/product/:productId' />
           <Route element={<PurchasesPage />} path='/purchases' />
-          <Route element={<Messages />} path='/messages/:cartId' />
         </Route>
-        <Route element={<AdminLayout />}>
+        <Route
+          element={
+            <CheckPermissionByComponent permission={'*'} mode='remove'>
+              <AdminLayout />
+            </CheckPermissionByComponent>
+          }
+        >
           <Route element={<DashboardPage />} path='/dashboard' />
           <Route element={<MessagesAdminPage />} path='/messages/cart/:cartId?' />
           <Route element={<AdminProductPage />} path='/productos' />

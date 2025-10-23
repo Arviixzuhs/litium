@@ -1,14 +1,28 @@
 import { Request } from 'express'
+import { PermissionGuard } from '@/guards/permission.guard'
+import { Permissions, perm } from '@/common/decorators/permissions.decorator'
 import { ShoppingCartStatus } from '@prisma/client'
 import { ShoppingCartService } from './shoppingCart.service'
 import { CreateShoppingCartDto } from './dto/create-shoppingcart.dto'
 import { ShoppingCartFiltersDto } from './dto/shoppingcart-filters.dto'
 import { ApiBearerAuth, ApiOperation, ApiResponse, ApiTags } from '@nestjs/swagger'
-import { Body, Controller, Delete, Get, Param, Patch, Post, Query, Req } from '@nestjs/common'
+import {
+  Body,
+  Controller,
+  Delete,
+  Get,
+  Param,
+  Patch,
+  Post,
+  Query,
+  Req,
+  UseGuards,
+} from '@nestjs/common'
 
 @ApiTags('Shopping Cart')
 @ApiBearerAuth()
 @Controller('/shopping-cart')
+@UseGuards(PermissionGuard)
 export class ShoppingCartController {
   constructor(private readonly shoppingCartService: ShoppingCartService) {}
 
@@ -50,6 +64,7 @@ export class ShoppingCartController {
   @Post(':shoppingCartId/confirm')
   @ApiOperation({ summary: 'Confirmar pago de un carrito de compras' })
   @ApiResponse({ status: 200, description: 'Pago confirmado y carrito actualizado.' })
+  @Permissions(perm.advanced.administrator)
   async confirmCart(@Param('shoppingCartId') shoppingCartId: number, @Req() req: Request) {
     return this.shoppingCartService.confirmPay(shoppingCartId, req.user.userId)
   }

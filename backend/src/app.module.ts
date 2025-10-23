@@ -1,3 +1,4 @@
+import { RoleModule } from '@/modules/role/role.module'
 import { UserModule } from '@/modules/user/user.module'
 import { AuthModule } from '@/modules/auth/auth.module'
 import { PrismaModule } from '@/prisma/prisma.module'
@@ -6,6 +7,7 @@ import { InvoiceModule } from '@/modules/invoice/invoice.module'
 import { AuthMiddleware } from '@/middlewares/auth.middleware'
 import { ProductsModule } from '@/modules/product/product.module'
 import { UserController } from '@/modules/user/user.controller'
+import { RoleController } from '@/modules/role/role.controller'
 import { MessagesModule } from '@/modules/messages/message.module'
 import { InvoiceController } from '@/modules/invoice/invoice.controller'
 import { ShoppingCartModule } from '@/modules/shoppingCart/shoppingCart.module'
@@ -28,6 +30,7 @@ import { MiddlewareConsumer, Module, NestModule } from '@nestjs/common'
 @Module({
   imports: [
     AuthModule,
+    RoleModule,
     UserModule,
     PrismaModule,
     InvoiceModule,
@@ -48,6 +51,7 @@ export class AppModule implements NestModule {
     consumer
       .apply(AuthMiddleware)
       .forRoutes(
+        RoleController,
         UserController,
         InvoiceController,
         ProductsController,

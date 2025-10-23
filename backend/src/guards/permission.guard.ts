@@ -11,10 +11,10 @@ export class PermissionGuard implements CanActivate {
 
   async canActivate(context: ExecutionContext): Promise<boolean> {
     const request = context.switchToHttp().getRequest()
-    const userId = request.user.userId
+    const userId = request?.user?.userId
     const requiredPermissions = this.reflector.get<string[]>('permissions', context.getHandler())
 
-    if (!requiredPermissions) return true
+    if (!requiredPermissions || !userId) return true
 
     const user = await this.prisma.user.findUnique({
       where: {

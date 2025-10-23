@@ -1,8 +1,10 @@
 import { RootState } from '@/store'
 import { useSelector } from 'react-redux'
 import { ExternalLink } from 'lucide-react'
+import { NavbarUserOptions } from './components/UserOptions'
 import { ShoppingCartSidebar } from '../ShoppingCartSidebar'
 import { ShoppingCartTrigger } from '../ShoppingCartSidebar/components/ShoppingCartTrigger'
+import { CheckPermissionByComponent } from '@/components/CheckPermissionByComponent'
 import {
   Link,
   Button,
@@ -11,7 +13,6 @@ import {
   NavbarBrand,
   NavbarContent,
 } from '@heroui/react'
-import { NavbarUserOptions } from './components/UserOptions'
 
 export const LitiumLogo = () => {
   return (
@@ -41,10 +42,12 @@ export const Navbar = () => {
         <NavbarContent justify='end'>
           {user && (
             <NavbarItem>
-              <Link href='/dashboard' target='_blank' className='flex gap-2'>
-                Dasboard
-                <ExternalLink size={15} />
-              </Link>
+              <CheckPermissionByComponent permission={'*'} mode='remove'>
+                <Link href='/dashboard' target='_blank' className='flex gap-2'>
+                  Dasboard
+                  <ExternalLink size={15} />
+                </Link>
+              </CheckPermissionByComponent>
             </NavbarItem>
           )}
           {user && (

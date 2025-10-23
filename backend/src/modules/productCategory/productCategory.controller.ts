@@ -1,5 +1,6 @@
 import { Page } from '@/types/Page'
 import { CategoryDto } from './dto/category.dto'
+import { Permissions, perm } from '@/common/decorators/permissions.decorator'
 import { CategoryFiltersDto } from './dto/category-filters.dto'
 import { CategoryResponseDto } from './dto/category-response.dto'
 import { ProductCategoryService } from './productCategory.service'
@@ -15,11 +16,14 @@ import {
   Delete,
   Controller,
   ParseIntPipe,
+  UseGuards,
 } from '@nestjs/common'
+import { PermissionGuard } from '@/guards/permission.guard'
 
 @ApiTags('Products Category')
 @Controller('/category')
 @ApiBearerAuth()
+@UseGuards(PermissionGuard)
 export class ProductCategoryController {
   constructor(private readonly productCategoryService: ProductCategoryService) {}
 
@@ -30,6 +34,7 @@ export class ProductCategoryController {
     description: 'Categoría creado correctamente.',
     type: CategoryResponseDto,
   })
+  @Permissions(perm.advanced.administrator)
   create(@Body() dto: CategoryDto) {
     return this.productCategoryService.create(dto)
   }

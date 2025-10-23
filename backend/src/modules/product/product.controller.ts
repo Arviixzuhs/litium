@@ -1,7 +1,12 @@
+import { Page } from '@/types/Page'
+import { PermissionGuard } from '@/guards/permission.guard'
 import { ProductsService } from './product.service'
 import { ProductFilterDto } from './dto/product-filters.dto'
 import { CreateProductDto } from './dto/create-product.dto'
 import { UpdateProductDto } from './dto/update-product.dto'
+import { Permissions, perm } from '@/common/decorators/permissions.decorator'
+import { ProductResponseDto } from './dto/product-response.dto'
+import { ProductPageResponseDto } from './dto/product-page-response.dto'
 import { ApiTags, ApiOperation, ApiResponse, ApiParam, ApiBearerAuth } from '@nestjs/swagger'
 import {
   Get,
@@ -11,16 +16,15 @@ import {
   Param,
   Query,
   Delete,
+  UseGuards,
   Controller,
   ParseIntPipe,
 } from '@nestjs/common'
-import { Page } from '@/types/Page'
-import { ProductResponseDto } from './dto/product-response.dto'
-import { ProductPageResponseDto } from './dto/product-page-response.dto'
 
 @ApiTags('Products')
 @Controller('product')
 @ApiBearerAuth()
+@UseGuards(PermissionGuard)
 export class ProductsController {
   constructor(private readonly productsService: ProductsService) {}
 
@@ -31,6 +35,7 @@ export class ProductsController {
     description: 'Producto creado correctamente.',
     type: ProductResponseDto,
   })
+  @Permissions(perm.advanced.administrator)
   create(@Body() dto: CreateProductDto) {
     return this.productsService.create(dto)
   }
@@ -63,6 +68,7 @@ export class ProductsController {
     description: 'Producto actualizado correctamente.',
     type: ProductResponseDto,
   })
+  @Permissions(perm.advanced.administrator)
   update(@Param('id', ParseIntPipe) id: number, @Body() dto: UpdateProductDto) {
     return this.productsService.update(id, dto)
   }
@@ -75,6 +81,7 @@ export class ProductsController {
     description: 'Producto marcado como eliminado.',
     type: ProductResponseDto,
   })
+  @Permissions(perm.advanced.administrator)
   remove(@Param('id', ParseIntPipe) id: number) {
     return this.productsService.remove(id)
   }

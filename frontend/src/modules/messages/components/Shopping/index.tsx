@@ -7,6 +7,7 @@ import { reqGetShoppingCartById } from '@/api/requests'
 import { ShoppingCartModel, ShoppingCartStatus } from '@/types/shoppingCartModel'
 import { Button, Card, CardBody, CardHeader, Image, Spinner } from '@heroui/react'
 import { reqConfirmShoppingCart, reqUpdateShoppingCartStatus } from '../../services'
+import { CheckPermissionByComponent } from '@/components/CheckPermissionByComponent'
 
 export const Shopping = () => {
   const dispatch = useDispatch()
@@ -91,9 +92,11 @@ export const Shopping = () => {
           <Button size='sm' color='danger' variant='flat' onPress={handleCancel}>
             Cancelar compra
           </Button>
-          <Button size='sm' color='success' variant='flat' onPress={handleConfirm}>
-            Confirmar compra
-          </Button>
+          <CheckPermissionByComponent permission={'*'} mode='remove'>
+            <Button size='sm' color='success' variant='flat' onPress={handleConfirm}>
+              Confirmar compra
+            </Button>
+          </CheckPermissionByComponent>
         </div>
       )}
     </div>

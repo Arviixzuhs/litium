@@ -1,7 +1,9 @@
 import { Page } from '@/types/Page'
+import { PermissionGuard } from '@/guards/permission.guard'
 import { CreateCatalogDto } from './dto/create-catalog.dto'
 import { UpdateCatalogDto } from './dto/update-catalog.dto'
 import { CatalogFiltersDto } from './dto/catalog-filters.dto'
+import { perm, Permissions } from '@/common/decorators/permissions.decorator'
 import { CatalogResponseDto } from './dto/catalog-response.dto'
 import { ProductCatalogService } from './productCatalog.service'
 import { CatalogPageResponseDto } from './dto/catalog-page-response.dto'
@@ -14,6 +16,7 @@ import {
   Query,
   Patch,
   Delete,
+  UseGuards,
   Controller,
   ParseIntPipe,
 } from '@nestjs/common'
@@ -21,6 +24,7 @@ import {
 @ApiTags('Products Catalog')
 @Controller('/catalog')
 @ApiBearerAuth()
+@UseGuards(PermissionGuard)
 export class ProductCatalogController {
   constructor(private readonly productCatalogService: ProductCatalogService) {}
 
@@ -39,9 +43,10 @@ export class ProductCatalogController {
   @ApiOperation({ summary: 'Crear un nuevo catálogo' })
   @ApiResponse({
     status: 201,
-    description: 'Catalogo creado correctamente.',
+    description: 'Catálogo creado correctamente.',
     type: CatalogResponseDto,
   })
+  @Permissions(perm.advanced.administrator)
   create(@Body() dto: CreateCatalogDto) {
     return this.productCatalogService.create(dto)
   }
@@ -53,6 +58,7 @@ export class ProductCatalogController {
     description: 'Catalogo eliminado correctamente.',
     type: CatalogResponseDto,
   })
+  @Permissions(perm.advanced.administrator)
   delete(@Param('catalogId', ParseIntPipe) catalogId: number) {
     return this.productCatalogService.delete(catalogId)
   }
@@ -64,6 +70,7 @@ export class ProductCatalogController {
     description: 'Catalogo actualizado correctamente.',
     type: CatalogResponseDto,
   })
+  @Permissions(perm.advanced.administrator)
   update(@Param('catalogId') catalogId: number, @Body() dto: UpdateCatalogDto) {
     return this.productCatalogService.update(catalogId, dto)
   }
