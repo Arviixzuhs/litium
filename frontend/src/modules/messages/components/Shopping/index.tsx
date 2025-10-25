@@ -69,7 +69,7 @@ export const Shopping = () => {
                 <div className='flex gap-2 items-center'>
                   <div className='bg-muted-2 rounded-sm'>
                     <Image
-                      src={item.product?.images?.[0].imageURL || ''}
+                      src={item.product?.images?.[0]?.imageURL || ''}
                       alt={item.product?.name}
                       radius='sm'
                       className='object-cover max-w-25 transition-transform duration-300 group-hover:scale-105'

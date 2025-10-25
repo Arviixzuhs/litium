@@ -21,7 +21,7 @@ export const ViewPurchaseModal = ({ purchaseProducts }: ViewPurchaseModalProps) 
             <PurchaseProductItem
               id={item.id}
               name={item.product.name}
-              image={item.product?.images?.[0].imageURL || ''}
+              image={item.product?.images?.[0]?.imageURL || ''}
               price={item.product.price}
               quantity={item.quantity}
             />
