@@ -1,7 +1,6 @@
 @import 'tailwindcss';
 @import 'tw-animate-css';
 
-/* Updated theme with blue color scheme for Litium C.A. */
 :root {
   --scrollbar-bg: #e1e1e4;
   --scrollbar-bg-hover: #ceced1;
@@ -15,7 +14,8 @@
   --primary-foreground: rgb(249, 252, 255);
   --secondary: oklch(0.92 0.02 240);
   --secondary-foreground: oklch(0.15 0.02 240);
-  --muted: rgb(212, 229, 243);
+  --muted: rgb(244, 244, 245, 1);
+  --muted-2: rgb(212, 229, 243);
   --muted-foreground: oklch(0.5 0.02 240);
   --accent: oklch(0.55 0.18 250);
   --accent-foreground: oklch(0.15 0.02 240);
@@ -89,6 +89,7 @@
   --color-secondary: var(--secondary);
   --color-secondary-foreground: var(--secondary-foreground);
   --color-muted: var(--muted);
+  --color-muted-2: var(--muted-2);
   --color-muted-foreground: var(--muted-foreground);
   --color-accent: var(--accent);
   --color-accent-foreground: var(--accent-foreground);

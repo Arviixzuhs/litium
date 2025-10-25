@@ -16,7 +16,7 @@ export const StarRating = ({ rating, maxStars = 5, size = 20 }: StarRatingProps)
           <div key={index} className='relative' style={{ width: size, height: size }}>
             {/* Background star (empty) */}
             <Star
-              className='absolute inset-0 text-muted fill-muted'
+              className='absolute inset-0 text-muted-2 fill-muted-2'
               style={{ width: size, height: size }}
             />
             {/* Foreground star (filled) with clip */}

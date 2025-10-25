@@ -103,7 +103,7 @@ export const ProductComment = () => {
                         className={`h-8 w-8 ${
                           star <= (hoveredRating || rating)
                             ? 'fill-accent text-accent'
-                            : 'fill-muted text-muted'
+                            : 'fill-muted-2 text-muted-2'
                         }`}
                       />
                     </button>
