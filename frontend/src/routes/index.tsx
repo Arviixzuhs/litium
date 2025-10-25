@@ -8,6 +8,7 @@ import { AdminLayout } from '@/modules/admin/layout'
 import { Route, Routes } from 'react-router-dom'
 import { DashboardPage } from '@/modules/admin/pages/dashboard'
 import { PurchasesPage } from '@/modules/purchases'
+import { MessagesLayout } from '@/modules/messages/layout'
 import { AdminProductPage } from '@/modules/admin/pages/product'
 import { AdminCatalogPage } from '@/modules/admin/pages/catalog'
 import { AdminInvoicePage } from '@/modules/admin/pages/sales'
@@ -24,7 +25,9 @@ export const Router = () => {
       <Route element={<ProtectedRouteSession />}>
         <Route element={<Layout />}>
           <Route element={<HomePage />} path='/' />
-          <Route element={<Messages />} path='/messages/:cartId' />
+          <Route element={<MessagesLayout />}>
+            <Route element={<Messages />} path='/messages/:cartId' />
+          </Route>
           <Route element={<ProductPage />} path='/product/:productId' />
           <Route element={<PurchasesPage />} path='/purchases' />
         </Route>
