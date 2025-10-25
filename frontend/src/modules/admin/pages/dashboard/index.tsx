@@ -1,13 +1,17 @@
-import { useEffect, useState } from 'react'
+import React from 'react'
+import { RootState } from '@/store'
+import { setDashboardData } from '@/features/dashboardSlice'
+import { reqGetDashboardData } from './services'
+import { useDispatch, useSelector } from 'react-redux'
 import { Card, CardBody, CardHeader } from '@heroui/react'
 import {
-  Package,
   Truck,
-  FolderTree,
+  Package,
   BookOpen,
+  DollarSign,
+  FolderTree,
   ShoppingCart,
   MessagesSquareIcon,
-  DollarSign,
 } from 'lucide-react'
 import {
   Bar,
@@ -19,14 +23,13 @@ import {
   CartesianGrid,
   ResponsiveContainer,
 } from 'recharts'
-import { reqGetDashboardData } from './services'
-import { DashboardModel } from '@/types/dashboardModel'
 
 export const DashboardPage = () => {
-  const [dashboardData, setDashboardData] = useState<DashboardModel | null>(null)
+  const dispatch = useDispatch()
+  const dashboardData = useSelector((state: RootState) => state.dashboard)
 
-  useEffect(() => {
-    reqGetDashboardData().then(setDashboardData)
+  React.useEffect(() => {
+    reqGetDashboardData().then((res) => dispatch(setDashboardData(res)))
   }, [])
 
   const stats = dashboardData
