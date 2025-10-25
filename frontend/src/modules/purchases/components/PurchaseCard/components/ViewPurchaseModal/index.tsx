@@ -19,6 +19,7 @@ export const ViewPurchaseModal = ({ purchaseProducts }: ViewPurchaseModalProps) 
         <ModalBody className='flex flex-col gap-4'>
           {purchaseProducts?.map((item) => (
             <PurchaseProductItem
+              id={item.id}
               name={item.product.name}
               image={item.product?.images?.[0].imageURL || ''}
               price={item.product.price}
