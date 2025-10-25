@@ -171,6 +171,11 @@ export class DashboardService {
       _sum: {
         quantity: true,
       },
+      where: {
+        shoppingCart: {
+          status: ShoppingCartStatus.PAID,
+        },
+      },
       orderBy: {
         _sum: {
           quantity: 'desc',

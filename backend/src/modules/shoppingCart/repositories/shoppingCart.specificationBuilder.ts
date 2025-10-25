@@ -47,7 +47,7 @@ export class ShoppingCartSpecificationBuilder {
 
   withUserId(userId?: number) {
     if (userId !== undefined) {
-      this.where.userId === userId
+      this.where.userId = userId
     }
 
     return this

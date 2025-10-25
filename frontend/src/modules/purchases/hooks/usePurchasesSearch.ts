@@ -16,6 +16,7 @@ export function usePurchasesSearch() {
         const response = await reqGetShoppingCart({
           page: 0,
           size: 50,
+          mine: true,
           productName: debounceValue,
         })
         setPurchases(response.data.content)

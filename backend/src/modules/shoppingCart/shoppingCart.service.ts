@@ -20,11 +20,12 @@ export class ShoppingCartService {
     private readonly invoiceService: InvoiceService,
   ) {}
 
-  findAll(filters: ShoppingCartFiltersDto) {
+  findAll(filters: ShoppingCartFiltersDto, userId: number) {
     const query = new ShoppingCartSpecificationBuilder()
       .withIsDeleted(false)
       .withProductName(filters.productName)
       .withPagination(filters.page, filters.size)
+      .withUserId(filters.mine && userId)
       .withInclude({
         products: {
           include: {

@@ -48,8 +48,8 @@ export class ShoppingCartController {
 
   @Get()
   @ApiOperation({ summary: 'Obtener carritos de compras del usuario con filtros opcionales' })
-  findAll(@Query() query: ShoppingCartFiltersDto) {
-    return this.shoppingCartService.findAll(query)
+  findAll(@Query() query: ShoppingCartFiltersDto, @Req() req: Request) {
+    return this.shoppingCartService.findAll(query, req.user.userId)
   }
 
   @Patch(':shoppingCartId')
