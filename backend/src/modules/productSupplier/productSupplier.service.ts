@@ -19,7 +19,7 @@ export class ProductSupplierService {
 
   async findAll(filters: SupplierFiltersDto) {
     const query = new ProductSupplierSpecificationBuilder()
-      .withName(filters.name)
+      .withSearchValue(filters.searchValue)
       .withIsDeleted(false)
       .withOrderBy({ createdAt: 'desc' })
       .withPagination(filters.page, filters.size)

@@ -15,9 +15,13 @@ export class ProductSupplierSpecificationBuilder {
   private include?: Prisma.SupplierInclude
   private orderBy?: Prisma.SupplierOrderByWithRelationInput
 
-  withName(name?: string) {
-    if (name !== undefined) {
-      this.where.name = { contains: name }
+  withSearchValue(search?: string) {
+    if (search !== undefined && search.trim() !== '') {
+      this.where.OR = [
+        { name: { contains: search } },
+        { phone: { contains: search } },
+        { email: { contains: search } },
+      ]
     }
 
     return this
