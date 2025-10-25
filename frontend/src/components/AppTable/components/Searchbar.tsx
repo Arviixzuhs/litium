@@ -4,7 +4,11 @@ import { RootState } from '@/store'
 import { setFilterValue } from '@/features/appTableSlice'
 import { useDispatch, useSelector } from 'react-redux'
 
-export const Searchbar = () => {
+interface SearchbarProps {
+  searchbarPlaceholder?: string
+}
+
+export const Searchbar = ({ searchbarPlaceholder }: SearchbarProps) => {
   const table = useSelector((state: RootState) => state.appTable)
   const dispatch = useDispatch()
 
@@ -16,7 +20,7 @@ export const Searchbar = () => {
       type='search'
       value={table.filterValue}
       onChange={handleChange}
-      placeholder='Buscar productos...'
+      placeholder={searchbarPlaceholder ? searchbarPlaceholder : 'Buscar...'}
       startContent={<Search />}
       className='w-full'
       classNames={{

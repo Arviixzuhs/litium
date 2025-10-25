@@ -8,15 +8,16 @@ import { FilterByDatePicker } from './FilterByDate'
 interface TopContentProps {
   hiddeAdd?: boolean
   filterByDate?: boolean
+  searchbarPlaceholder?: string
 }
 
-export const TopContent = ({ hiddeAdd, filterByDate }: TopContentProps) => {
+export const TopContent = ({ hiddeAdd, filterByDate, searchbarPlaceholder }: TopContentProps) => {
   const dispatch = useDispatch()
 
   return (
     <div className='flex gap-2 w-full'>
       {filterByDate && <FilterByDatePicker />}
-      <Searchbar />
+      <Searchbar searchbarPlaceholder={searchbarPlaceholder} />
       {!hiddeAdd && (
         <Button
           onPress={() => dispatch(toggleAddItemModal(null))}

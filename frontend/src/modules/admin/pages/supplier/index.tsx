@@ -29,9 +29,9 @@ export const AdminSupplierPage = () => {
   const loadData = async () => {
     try {
       const response = await reqGetSuppliers({
-        name: debounceValue,
         page: table.currentPage,
         size: table.rowsPerPage,
+        searchValue: debounceValue,
       })
       dispatch(setTableData(response.data))
     } catch (error) {
@@ -66,5 +66,10 @@ export const AdminSupplierPage = () => {
     },
   }
 
-  return <AppTable tableActions={tableActions} />
+  return (
+    <AppTable
+      tableActions={tableActions}
+      searchbarPlaceholder='Buscar proveedor por nombre, email o teléfono'
+    />
+  )
 }

@@ -20,6 +20,7 @@ export interface AppTableProps {
   tableActions?: AppTableActions
   dropdownItems?: DropdownItemInteface[]
   modalExtension?: React.ReactElement
+  searchbarPlaceholder?: string
 }
 
 export const AppTable = ({
@@ -28,6 +29,7 @@ export const AppTable = ({
   filterByDate,
   dropdownItems,
   modalExtension,
+  searchbarPlaceholder,
 }: AppTableProps) => {
   const location = useLocation()
   const dispatch = useDispatch()
@@ -43,7 +45,13 @@ export const AppTable = ({
         shadow='none'
         isCompact
         isHeaderSticky
-        topContent={<TopContent hiddeAdd={hiddeAdd} filterByDate={filterByDate} />}
+        topContent={
+          <TopContent
+            hiddeAdd={hiddeAdd}
+            filterByDate={filterByDate}
+            searchbarPlaceholder={searchbarPlaceholder}
+          />
+        }
         bottomContent={<TablePagination />}
         topContentPlacement='outside'
         bottomContentPlacement='outside'
