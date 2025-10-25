@@ -79,6 +79,7 @@ export class ProductsService {
       .withIsDeleted(false)
       .withNotInCatalogId(filters.excludeCatalogId)
       .withOrderBy({ createdAt: 'desc' })
+      .withCategoryIds(filters.categoryIds)
       .withInclude({
         images: true,
         product_x_supplier: {

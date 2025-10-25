@@ -9,5 +9,6 @@ export interface ReqGetProductParams extends QueryParams {
   category?: string
   fromDate?: string
   catalogId?: string
+  categoryIds?: number[]
   excludeCatalogId?: string
 }

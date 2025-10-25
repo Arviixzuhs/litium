@@ -23,6 +23,20 @@ export class ProductSpecificationBuilder {
     return this
   }
 
+  withCategoryIds(categoryIds?: number[]) {
+    if (categoryIds && categoryIds.length > 0) {
+      this.where.categories = {
+        some: {
+          category: {
+            id: { in: categoryIds },
+            isDeleted: false,
+          },
+        },
+      }
+    }
+    return this
+  }
+
   withCatalogId(catalogId?: number) {
     if (catalogId) {
       this.where.product_x_catalog = {

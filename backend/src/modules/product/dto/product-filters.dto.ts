@@ -1,7 +1,7 @@
-import { Type } from 'class-transformer'
 import { PaginationDto } from '@/common/dto/pagination.dto'
 import { ApiPropertyOptional } from '@nestjs/swagger'
-import { IsInt, IsString, IsNumber, IsOptional, IsDateString } from 'class-validator'
+import { Transform, Type } from 'class-transformer'
+import { IsDateString, IsInt, IsNumber, IsOptional, IsString } from 'class-validator'
 
 export class ProductFilterDto extends PaginationDto {
   @ApiPropertyOptional({ description: 'Filtra productos por nombre' })
@@ -52,4 +52,10 @@ export class ProductFilterDto extends PaginationDto {
   @Type(() => Number)
   @IsInt()
   excludeCatalogId?: number
+
+  @ApiPropertyOptional({ description: 'IDs de categorías para filtrar', type: [Number] })
+  @IsOptional()
+  @Transform(({ value }) => (Array.isArray(value) ? value.map(Number) : [Number(value)]))
+  @IsInt({ each: true })
+  categoryIds?: number[]
 }
