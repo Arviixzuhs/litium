@@ -142,9 +142,9 @@ export class ProductsService {
     await this.existsById(id)
     const { categoryIds, supplierIds, specifications, existingImageURLs, ...newData } = dto
 
-    await this.updateProductCategories(id, categoryIds)
-    await this.updateProductSuppliers(id, supplierIds)
-    await this.updateProductSpecifications(id, specifications)
+    await this.updateProductCategories(id, categoryIds || [])
+    await this.updateProductSuppliers(id, supplierIds || [])
+    await this.updateProductSpecifications(id, specifications || [])
     await this.updateProductImages(id, existingImageURLs, images)
 
     const updated = await this.prisma.product.update({
