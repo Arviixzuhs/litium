@@ -1,5 +1,6 @@
 import React from 'react'
 import { Star } from 'lucide-react'
+import { pluralize } from '@/utils/pluralize'
 import { reqGindUnreviewedProductsCount } from './services'
 import { Card, CardBody } from '@heroui/react'
 
@@ -27,7 +28,8 @@ export const PendingReviewNotice = () => {
             </div>
             <p className='text-sm'>
               <span className='font-medium'>
-                {pendingCount} {pendingCount === 1 ? 'producto' : 'productos'} esperan tu opinión
+                {pendingCount} {pluralize(pendingCount, 'producto', 'productos')}{' '}
+                {pluralize(pendingCount, 'espera', 'esperan')} tu opinión
               </span>
             </p>
           </div>
