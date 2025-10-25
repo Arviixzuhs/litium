@@ -214,7 +214,7 @@ export const ProductComment = () => {
                         <div className='flex-1'>
                           <div className='mb-1 flex items-center gap-2'>
                             <span className='text-sm font-semibold'>
-                              {review.user?.name} {review.user?.lastName}
+                              {reply.user?.name} {reply.user?.lastName}
                             </span>
                             <span className='text-xs text-muted-foreground'>
                               {formatDate(reply.createdAt)}
