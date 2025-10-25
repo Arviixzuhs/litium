@@ -20,7 +20,7 @@ export class InvoiceService {
     const query = new InvoiceSpecificationBuilder()
       .withId(filters.id)
       .withRif(filters.rif)
-      .withName(filters.name)
+      .withSearchValue(filters.searchValue)
       .withPhone(filters.phone)
       .withInclude({
         shoppingCart: {

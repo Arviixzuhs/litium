@@ -13,7 +13,7 @@ export class InvoiceFilterDto extends PaginationDto {
   @ApiPropertyOptional({ description: 'Filtra facturas por nombre del cliente' })
   @IsOptional()
   @IsString()
-  name?: string
+  searchValue?: string
 
   @ApiPropertyOptional({ description: 'Filtra facturas por RIF del cliente' })
   @IsOptional()

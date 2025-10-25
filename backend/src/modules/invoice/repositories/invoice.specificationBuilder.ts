@@ -15,6 +15,56 @@ export class InvoiceSpecificationBuilder {
   private include?: Prisma.InvoiceInclude
   private orderBy?: Prisma.InvoiceOrderByWithRelationInput
 
+  withSearchValue(search?: string) {
+    if (search && search.trim() !== '') {
+      this.where.OR = [
+        {
+          seller: {
+            name: { contains: search },
+          },
+        },
+        {
+          seller: {
+            lastName: { contains: search },
+          },
+        },
+        {
+          seller: {
+            email: { contains: search },
+          },
+        },
+        {
+          shoppingCart: {
+            some: {
+              user: {
+                name: { contains: search },
+              },
+            },
+          },
+        },
+        {
+          shoppingCart: {
+            some: {
+              user: {
+                lastName: { contains: search },
+              },
+            },
+          },
+        },
+        {
+          shoppingCart: {
+            some: {
+              user: {
+                email: { contains: search },
+              },
+            },
+          },
+        },
+      ]
+    }
+    return this
+  }
+
   withId(id?: number) {
     if (id !== undefined) {
       this.where.id = id

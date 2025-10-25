@@ -9,7 +9,7 @@ export interface ReqGetSupplierParams extends QueryParams {
 
 export interface ReqGetSalesParams extends QueryParams {
   id?: number
-  name?: string
+  searchValue?: string
   rif?: string
   phone?: string
   sellerId?: number
