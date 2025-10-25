@@ -5,7 +5,7 @@ services:
     restart: always
     environment:
       MYSQL_ROOT_PASSWORD: arviixzuh
-      MYSQL_DATABASE: plumbing
+      MYSQL_DATABASE: litiumca
     ports:
       - "3307:3306"
     volumes:
