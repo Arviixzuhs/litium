@@ -1,29 +1,31 @@
-import { Permissions, perm } from '@/common/decorators/permissions.decorator'
-import { PermissionGuard } from '@/guards/permission.guard'
 import { Page } from '@/types/Page'
+import { Request } from 'express'
+import { diskStorage } from 'multer'
+import { ProductsService } from './product.service'
+import { PermissionGuard } from '@/guards/permission.guard'
+import { ProductFilterDto } from './dto/product-filters.dto'
+import { CreateProductDto } from './dto/create-product.dto'
+import { FilesInterceptor } from '@nestjs/platform-express'
+import { UpdateProductDto } from './dto/update-product.dto'
+import { Permissions, perm } from '@/common/decorators/permissions.decorator'
+import { ProductResponseDto } from './dto/product-response.dto'
+import { ProductPageResponseDto } from './dto/product-page-response.dto'
+import { ApiBearerAuth, ApiOperation, ApiParam, ApiResponse, ApiTags } from '@nestjs/swagger'
 import {
-  Body,
-  Controller,
-  Delete,
+  Req,
   Get,
-  Param,
-  ParseIntPipe,
-  Patch,
+  Body,
   Post,
+  Patch,
   Query,
-  UploadedFiles,
+  Param,
+  Delete,
   UseGuards,
+  Controller,
+  ParseIntPipe,
+  UploadedFiles,
   UseInterceptors,
 } from '@nestjs/common'
-import { FilesInterceptor } from '@nestjs/platform-express'
-import { ApiBearerAuth, ApiOperation, ApiParam, ApiResponse, ApiTags } from '@nestjs/swagger'
-import { diskStorage } from 'multer'
-import { CreateProductDto } from './dto/create-product.dto'
-import { ProductFilterDto } from './dto/product-filters.dto'
-import { ProductPageResponseDto } from './dto/product-page-response.dto'
-import { ProductResponseDto } from './dto/product-response.dto'
-import { UpdateProductDto } from './dto/update-product.dto'
-import { ProductsService } from './product.service'
 
 @ApiTags('Products')
 @Controller('product')
@@ -36,7 +38,6 @@ export class ProductsController {
   @Permissions(perm.advanced.administrator)
   @UseInterceptors(
     FilesInterceptor('images', 10, {
-      // 'images' es el nombre del campo en FormData, 10 es el maximo de archivos
       storage: diskStorage({
         destination: './uploads',
         filename: (_req, file, callback) => {
@@ -47,10 +48,7 @@ export class ProductsController {
       }),
     }),
   )
-  create(
-    @Body() dto: CreateProductDto,
-    @UploadedFiles() images: Express.Multer.File[], // ahora sí recibirás un array
-  ) {
+  create(@Body() dto: CreateProductDto, @UploadedFiles() images: Express.Multer.File[]) {
     return this.productsService.create(dto, images)
   }
 
@@ -63,6 +61,20 @@ export class ProductsController {
   })
   findAll(@Query() filters?: ProductFilterDto): Promise<Page<ProductResponseDto>> {
     return this.productsService.findAll(filters)
+  }
+
+  @Get('pending-comments/count')
+  @ApiOperation({ summary: 'Cantidad de productos comprados que no han sido comentados' })
+  @ApiResponse({
+    status: 200,
+    description: 'Cantidad de productos pendientes de comentario',
+    schema: {
+      example: { count: 5 },
+    },
+  })
+  async getPendingCommentsCount(@Req() req: Request) {
+    const count = await this.productsService.findUnreviewedProductsCount(req.user.userId)
+    return { count }
   }
 
   @Get(':id')

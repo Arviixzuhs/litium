@@ -5,6 +5,7 @@ import { ProductMapper } from './mapper/product.mapper'
 import { CreateProductDto } from './dto/create-product.dto'
 import { UpdateProductDto } from './dto/update-product.dto'
 import { ProductFilterDto } from './dto/product-filters.dto'
+import { ShoppingCartStatus } from '@prisma/client'
 import { ProductResponseDto } from './dto/product-response.dto'
 import { ProductCommentService } from '../productComment/productComment.service'
 import { ProductSpecificationDto } from './dto/product-specification.dto'
@@ -49,6 +50,26 @@ export class ProductsService {
     }
 
     return this.productMapper.modelToDto(savedProduct)
+  }
+
+  async findUnreviewedProductsCount(userId: number) {
+    return this.prisma.product.count({
+      where: {
+        shoppingCarts: {
+          some: {
+            shoppingCart: {
+              userId,
+              status: ShoppingCartStatus.PAID,
+            },
+          },
+        },
+        comments: {
+          none: {
+            userId,
+          },
+        },
+      },
+    })
   }
 
   async findAll(filters: ProductFilterDto): Promise<Page<ProductResponseDto>> {

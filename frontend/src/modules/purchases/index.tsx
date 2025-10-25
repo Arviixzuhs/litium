@@ -1,11 +1,11 @@
 import React from 'react'
 import { Back } from '@/components/Back'
+import { Spinner } from '@heroui/react'
 import { SearchInput } from '@/components/SearchInput'
 import { PurchaseCard } from './components/PurchaseCard'
 import { ViewPurchaseModal } from './components/PurchaseCard/components/ViewPurchaseModal'
 import { usePurchasesSearch } from './hooks/usePurchasesSearch'
 import { PendingReviewNotice } from './components/PendingReviewNotice'
-import { Card, CardBody, Spinner } from '@heroui/react'
 
 export const PurchasesPage = () => {
   const { purchases, searchQuery, isLoading, setSearchQuery } = usePurchasesSearch()
@@ -21,11 +21,7 @@ export const PurchasesPage = () => {
       <div className='mb-6 md:items-center md:justify-between'>
         <SearchInput onChange={setSearchQuery} searchValue={searchQuery} />
       </div>
-      <Card className='mb-6' shadow='none'>
-        <CardBody>
-          <PendingReviewNotice />
-        </CardBody>
-      </Card>
+      <PendingReviewNotice />
       <div className='space-y-6'>
         {isLoading && <Spinner />}
         {!isLoading &&
