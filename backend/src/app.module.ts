@@ -26,12 +26,18 @@ import { ProductCommentReplyModule } from '@/modules/productCommentReply/product
 import { ProductSupplierController } from '@/modules/productSupplier/productSupplier.controller'
 import { ProductCommentReplyController } from '@/modules/productCommentReply/productCommentReply.controller'
 import { MiddlewareConsumer, Module, NestModule } from '@nestjs/common'
+import { ServeStaticModule } from '@nestjs/serve-static'
+
+import { FileModule } from './modules/file/file.module'
+import { FileController } from './modules/file/file.controller'
+import { join } from 'path'
 
 @Module({
   imports: [
     AuthModule,
     RoleModule,
     UserModule,
+    FileModule,
     PrismaModule,
     InvoiceModule,
     MessagesModule,
@@ -42,6 +48,25 @@ import { MiddlewareConsumer, Module, NestModule } from '@nestjs/common'
     ProductCategoryModule,
     ProductSupplierModule,
     ProductCommentReplyModule,
+    ServeStaticModule.forRoot({
+      rootPath: join(process.cwd(), 'uploads'), // <-- aquí
+      serveRoot: '/uploads',
+      serveStaticOptions: {
+        setHeaders: (res, path) => {
+          const ext = path.split('.').pop()?.toLowerCase()
+          const mimeTypes: Record<string, string> = {
+            jpg: 'image/jpeg',
+            jpeg: 'image/jpeg',
+            png: 'image/png',
+            webp: 'image/webp',
+            gif: 'image/gif',
+          }
+          if (ext && mimeTypes[ext]) {
+            res.setHeader('Content-Type', mimeTypes[ext])
+          }
+        },
+      },
+    }),
   ],
   controllers: [AppController],
   providers: [],
@@ -51,6 +76,7 @@ export class AppModule implements NestModule {
     consumer
       .apply(AuthMiddleware)
       .forRoutes(
+        FileController,
         RoleController,
         UserController,
         InvoiceController,
@@ -60,8 +86,8 @@ export class AppModule implements NestModule {
         ProductCommentController,
         ProductCatalogController,
         ProductCategoryController,
-        ProductCommentReplyController,
         ProductSupplierController,
+        ProductCommentReplyController,
       )
     consumer.apply(RequestLoggerMiddleware).forRoutes('*')
   }

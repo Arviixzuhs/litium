@@ -66,12 +66,14 @@ export const ShoppingCartSidebar = () => {
         <ul className='flex flex-col gap-2  max-h-96 overflow-y-auto hoverScrollbar'>
           {cartItems.map((item, index) => (
             <li key={index} className='justify-between flex gap-2  items-center'>
-              <div className='flex gap-2  items-center'>
-                <div>
+              <div className='flex gap-2 items-center'>
+                <div className='bg-muted-2 max-w-25 rounded-sm'>
                   <Image
-                    src={'https://heroui.com/images/hero-card-complete.jpeg'}
+                    src={item.image}
                     alt={item.name}
                     radius='sm'
+                    height={70}
+                    width={90}
                     className='object-cover max-w-25 transition-transform duration-300 group-hover:scale-105'
                   />
                 </div>

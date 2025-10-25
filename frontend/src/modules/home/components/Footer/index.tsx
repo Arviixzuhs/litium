@@ -1,3 +1,4 @@
+import { appConfig } from '@/config'
 import { Link } from 'react-router-dom'
 
 export const Footer = () => {
@@ -6,7 +7,7 @@ export const Footer = () => {
       <div className='mx-auto max-w-7xl px-4 py-12'>
         <div className='grid gap-8 md:grid-cols-4'>
           <div>
-            <h3 className='mb-4 font-bold'>Litium C.A</h3>
+            <h3 className='mb-4 font-bold'>{appConfig.company}</h3>
             <p className='text-sm text-muted-foreground'>
               Tu tienda de tecnología de confianza con los mejores productos del mercado.
             </p>
@@ -100,7 +101,9 @@ export const Footer = () => {
           </div>
         </div>
         <div className='mt-8 border-t border-gray-200 pt-8 text-center text-sm text-muted-foreground'>
-          <p>&copy; {new Date().getFullYear()} Litium C.A. Todos los derechos reservados.</p>
+          <p>
+            &copy; {new Date().getFullYear()} {appConfig.company}. Todos los derechos reservados.
+          </p>
         </div>
       </div>
     </footer>

@@ -1,38 +1,52 @@
 import { Page } from '@/types/Page'
+import { FileService } from '@/modules/file/file.service'
 import { PrismaService } from '@/prisma/prisma.service'
 import { ProductMapper } from './mapper/product.mapper'
 import { CreateProductDto } from './dto/create-product.dto'
 import { UpdateProductDto } from './dto/update-product.dto'
 import { ProductFilterDto } from './dto/product-filters.dto'
 import { ProductResponseDto } from './dto/product-response.dto'
+import { ProductCommentService } from '../productComment/productComment.service'
 import { ProductSpecificationDto } from './dto/product-specification.dto'
 import { forwardRef, Inject, Injectable, NotFoundException } from '@nestjs/common'
 import {
   ProductSpecificationBuild,
   ProductSpecificationBuilder,
 } from './repositories/product.specificationBuilder'
-import { ProductCommentService } from '../productComment/productComment.service'
 
 @Injectable()
 export class ProductsService {
   constructor(
     private readonly prisma: PrismaService,
+    private readonly fileService: FileService,
     @Inject(forwardRef(() => ProductCommentService))
     private readonly productCommentService: ProductCommentService,
   ) {}
 
   private productMapper = new ProductMapper()
 
-  async create(dto: CreateProductDto) {
+  async create(dto: CreateProductDto, images?: Express.Multer.File[]) {
     const { categoryIds, supplierIds, specifications, ...data } = dto
 
     const savedProduct = await this.prisma.product.create({
       data,
     })
 
-    await this.assignCategoriesToProduct(savedProduct.id, categoryIds)
-    await this.assignSuppliersToProduct(savedProduct.id, supplierIds)
-    await this.asignSpecificationsToProduct(savedProduct.id, specifications)
+    if (categoryIds && categoryIds.length > 0) {
+      await this.assignCategoriesToProduct(savedProduct.id, categoryIds)
+    }
+
+    if (supplierIds && supplierIds.length > 0) {
+      await this.assignSuppliersToProduct(savedProduct.id, supplierIds)
+    }
+
+    if (specifications && specifications.length > 0) {
+      await this.asignSpecificationsToProduct(savedProduct.id, specifications)
+    }
+
+    if (images && images.length > 0) {
+      await this.asignProductImages(savedProduct.id, images)
+    }
 
     return this.productMapper.modelToDto(savedProduct)
   }
@@ -86,6 +100,7 @@ export class ProductsService {
         isDeleted: false,
       },
       include: {
+        images: true,
         specifications: true,
         _count: {
           select: {
@@ -101,25 +116,40 @@ export class ProductsService {
     return this.productMapper.modelToDto(product, qualification)
   }
 
-  async update(id: number, dto: UpdateProductDto) {
+  async update(id: number, dto: UpdateProductDto, images?: Express.Multer.File[]) {
     await this.existsById(id)
-    const { categoryIds, supplierIds, specifications, ...newData } = dto
+    const { categoryIds, supplierIds, specifications, existingImageURLs, ...newData } = dto
 
     await this.updateProductCategories(id, categoryIds)
     await this.updateProductSuppliers(id, supplierIds)
     await this.updateProductSpecifications(id, specifications)
+    await this.updateProductImages(id, existingImageURLs, images)
 
     const updated = await this.prisma.product.update({
-      where: {
-        id,
-      },
-      data: {
-        ...newData,
-        updatedAt: new Date(),
-      },
+      where: { id },
+      data: { ...newData, updatedAt: new Date() },
     })
 
     return this.productMapper.modelToDto(updated)
+  }
+
+  private async updateProductImages(
+    productId: number,
+    existingImageURLs: string[],
+    images?: Express.Multer.File[],
+  ) {
+    await this.prisma.imageProduct.deleteMany({ where: { productId } })
+    if (images && images.length > 0) {
+      await this.asignProductImages(productId, images)
+    }
+    if (existingImageURLs && existingImageURLs.length > 0) {
+      await this.prisma.imageProduct.createMany({
+        data: existingImageURLs.map((url) => ({
+          productId,
+          imageURL: url,
+        })),
+      })
+    }
   }
 
   private async updateProductSpecifications(
@@ -136,6 +166,21 @@ export class ProductsService {
       where: {
         productId,
       },
+    })
+  }
+
+  private async asignProductImages(productId: number, images: Express.Multer.File[]) {
+    const imageData = images.map((file) => {
+      this.fileService.validateFileType(file, ['image/jpeg', 'image/png', 'image/webp'])
+      const url = this.fileService.generateFileUrl(file.filename) // ya existe en disco
+      return {
+        productId,
+        imageURL: url,
+      }
+    })
+
+    await this.prisma.imageProduct.createMany({
+      data: imageData,
     })
   }
 

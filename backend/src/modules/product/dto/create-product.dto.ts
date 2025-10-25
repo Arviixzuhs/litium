@@ -1,4 +1,4 @@
-import { Type } from 'class-transformer'
+import { Transform, Type } from 'class-transformer'
 import { ApiProperty } from '@nestjs/swagger'
 import { IsString, IsOptional, IsNumber, MaxLength, IsArray } from 'class-validator'
 import { ProductSpecificationDto } from './product-specification.dto'
@@ -71,7 +71,24 @@ export class CreateProductDto {
     type: [ProductSpecificationDto],
   })
   @IsOptional()
+  @Transform(({ value }) => {
+    if (typeof value === 'string') {
+      return JSON.parse(value)
+    }
+    return value
+  })
   @IsArray()
   @Type(() => ProductSpecificationDto)
   specifications?: ProductSpecificationDto[]
+
+  @ApiProperty({
+    description: 'URLs de imágenes existentes a mantener',
+    example: ['https://cdn.tienda.com/camisa1.jpg', 'https://cdn.tienda.com/camisa2.jpg'],
+    required: false,
+    type: [String],
+  })
+  @IsOptional()
+  @IsArray()
+  @IsString({ each: true })
+  existingImageURLs?: string[]
 }

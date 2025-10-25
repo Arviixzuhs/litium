@@ -2,6 +2,7 @@ import { CategoryResponseDto } from '@/modules/productCategory/dto/category-resp
 import { SupplierResponseDto } from '@/modules/productSupplier/dto/supplier-response.dto'
 import { ApiProperty } from '@nestjs/swagger'
 import { ProductSpecificationDto } from './product-specification.dto'
+import { ImageProduct } from '@prisma/client'
 
 export class ProductResponseDto {
   @ApiProperty({ description: 'ID del producto' })
@@ -36,6 +37,8 @@ export class ProductResponseDto {
 
   @ApiProperty({ type: () => [SupplierResponseDto], required: false })
   suppliers?: SupplierResponseDto[]
+
+  images?: ImageProduct[]
 
   @ApiProperty({ type: () => [CategoryResponseDto], required: false })
   categories?: CategoryResponseDto[]

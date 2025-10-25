@@ -67,9 +67,9 @@ export const Shopping = () => {
             shoppingCart?.products?.map((item, index) => (
               <li key={index} className='justify-between flex gap-2 items-center'>
                 <div className='flex gap-2 items-center'>
-                  <div>
+                  <div className='bg-muted-2 rounded-sm'>
                     <Image
-                      src={'https://heroui.com/images/hero-card-complete.jpeg'}
+                      src={item.product?.images?.[0].imageURL || ''}
                       alt={item.product?.name}
                       radius='sm'
                       className='object-cover max-w-25 transition-transform duration-300 group-hover:scale-105'

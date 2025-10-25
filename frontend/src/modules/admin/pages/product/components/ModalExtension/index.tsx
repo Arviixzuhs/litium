@@ -1,5 +1,6 @@
 import { Divider } from '@heroui/react'
 import { Autocomplete } from '@/components/Autocomplete'
+import { ImageUploader } from '@/components/ImageUploader'
 import { reqGetSuppliers } from '@/modules/admin/pages/supplier/services'
 import { reqGetCategories } from '@/modules/admin/pages/category/services'
 import { ProductSpecificationsInput } from '../ProductSpecificationInput'
@@ -36,6 +37,8 @@ export const ModalExtension = () => {
       />
       <Divider />
       <ProductSpecificationsInput />
+      <Divider />
+      <ImageUploader />
     </>
   )
 }

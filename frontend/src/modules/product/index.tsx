@@ -52,12 +52,7 @@ export const ProductPage = () => {
         <div className='grid gap-8 lg:grid-cols-2'>
           <div>
             <ProductImageGallery
-              images={[
-                'https://heroui.com/images/hero-card-complete.jpeg',
-                'https://heroui.com/images/album-cover.png',
-                'https://heroui.com/images/fruit-1.jpeg',
-                'https://app.requestly.io/delay/1000/https://heroui.com/images/fruit-4.jpeg',
-              ]}
+              images={product.images?.map((item) => item.imageURL) || []}
               productName={product.name}
             />
           </div>

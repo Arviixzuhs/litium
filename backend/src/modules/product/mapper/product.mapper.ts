@@ -6,6 +6,7 @@ import { ProductResponseDto } from '../dto/product-response.dto'
 
 export type ProductWithRelations = Prisma.ProductGetPayload<{
   include: {
+    images: true
     product_x_supplier: {
       include: {
         supplier: true
@@ -36,6 +37,7 @@ export class ProductMapper extends BaseMapper<Product | ProductWithRelations, Pr
       show: model.show,
       stock: model.stock,
       image: model.image,
+      images: 'images' in model ? model.images : [],
       price: model.price,
       suppliers:
         'product_x_supplier' in model

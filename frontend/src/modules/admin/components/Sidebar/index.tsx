@@ -15,6 +15,7 @@ import { cn } from '@heroui/theme'
 import { Button } from '@heroui/button'
 import { RootState } from '@/store'
 import { useSelector } from 'react-redux'
+import { appConfig } from '@/config'
 
 const menuItems = [
   {
@@ -67,7 +68,7 @@ export const AdminSidebar = () => {
       )}
     >
       <div className='flex h-16 items-center justify-between border-gray-300 border-b px-4'>
-        {!isCollapsed && <h2 className='text-lg font-semibold text-nowrap'>Litium C.A</h2>}
+        {!isCollapsed && <h2 className='text-lg font-semibold text-nowrap'>{appConfig.company}</h2>}
         <Button
           size='sm'
           variant='light'
