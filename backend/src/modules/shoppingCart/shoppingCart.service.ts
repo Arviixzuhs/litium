@@ -28,7 +28,11 @@ export class ShoppingCartService {
       .withInclude({
         products: {
           include: {
-            product: true,
+            product: {
+              include: {
+                images: true,
+              },
+            },
           },
         },
       })
@@ -54,7 +58,11 @@ export class ShoppingCartService {
       include: {
         products: {
           include: {
-            product: true,
+            product: {
+              include: {
+                images: true,
+              },
+            },
           },
         },
       },

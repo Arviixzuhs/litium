@@ -31,7 +31,10 @@ export function PurchaseCard({ purchase, setCurrentIdToView }: PurchaseCardProps
           <div className='flex flex-col gap-4 md:flex-row md:items-center md:justify-between'>
             <div className='flex flex-1 gap-4'>
               <div className='relative size-20 shrink-0 overflow-hidden rounded-md border border-divider bg-default-100'>
-                <Image src={'/placeholder.svg'} className='object-cover' />
+                <Image
+                  src={purchase.products?.[0].product.images?.[0]?.imageURL}
+                  className='object-cover'
+                />
               </div>
               <div className='flex flex-1 flex-col gap-2'>
                 <ChoppingCartStatusChip status={purchase.status} />

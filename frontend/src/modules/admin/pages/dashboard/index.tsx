@@ -156,7 +156,7 @@ export const DashboardPage = () => {
                     fontSize={12}
                     tickLine={false}
                     axisLine={false}
-                    tickFormatter={(value) => `${value}%`}
+                    // tickFormatter={(value) => `${value}`}
                   />
                   <Bar dataKey='value' fill='rgb(96, 165, 250)' radius={[8, 8, 0, 0]} />
                 </BarChart>
