@@ -73,6 +73,7 @@ model Product {
   stock       Int?
   image       String?   @db.VarChar(250)
   price       Float?
+  costPrice   Float?
   createdAt   DateTime? @default(now())
   updatedAt   DateTime?
   deletedAt   DateTime?

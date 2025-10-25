@@ -1,6 +1,8 @@
+import { join } from 'path'
 import { RoleModule } from '@/modules/role/role.module'
 import { UserModule } from '@/modules/user/user.module'
 import { AuthModule } from '@/modules/auth/auth.module'
+import { FileModule } from '@/modules/file/file.module'
 import { PrismaModule } from '@/prisma/prisma.module'
 import { AppController } from '@/app.controller'
 import { InvoiceModule } from '@/modules/invoice/invoice.module'
@@ -9,10 +11,14 @@ import { ProductsModule } from '@/modules/product/product.module'
 import { UserController } from '@/modules/user/user.controller'
 import { RoleController } from '@/modules/role/role.controller'
 import { MessagesModule } from '@/modules/messages/message.module'
+import { FileController } from '@/modules/file/file.controller'
+import { DashboardModule } from '@/modules/dashboard/dashboard.module'
 import { InvoiceController } from '@/modules/invoice/invoice.controller'
+import { ServeStaticModule } from '@nestjs/serve-static'
 import { ShoppingCartModule } from '@/modules/shoppingCart/shoppingCart.module'
 import { ProductsController } from '@/modules/product/product.controller'
 import { MessagesController } from '@/modules/messages/message.controller'
+import { DashboardController } from '@/modules/dashboard/dashboard.controller'
 import { ProductCommentModule } from '@/modules/productComment/productComment.module'
 import { ProductCatalogModule } from '@/modules/productCatalog/productCatalog.module'
 import { ProductCategoryModule } from '@/modules/productCategory/productCategory.module'
@@ -26,11 +32,6 @@ import { ProductCommentReplyModule } from '@/modules/productCommentReply/product
 import { ProductSupplierController } from '@/modules/productSupplier/productSupplier.controller'
 import { ProductCommentReplyController } from '@/modules/productCommentReply/productCommentReply.controller'
 import { MiddlewareConsumer, Module, NestModule } from '@nestjs/common'
-import { ServeStaticModule } from '@nestjs/serve-static'
-
-import { FileModule } from './modules/file/file.module'
-import { FileController } from './modules/file/file.controller'
-import { join } from 'path'
 
 @Module({
   imports: [
@@ -42,6 +43,7 @@ import { join } from 'path'
     InvoiceModule,
     MessagesModule,
     ProductsModule,
+    DashboardModule,
     ShoppingCartModule,
     ProductCommentModule,
     ProductCatalogModule,
@@ -49,7 +51,7 @@ import { join } from 'path'
     ProductSupplierModule,
     ProductCommentReplyModule,
     ServeStaticModule.forRoot({
-      rootPath: join(process.cwd(), 'uploads'), // <-- aquí
+      rootPath: join(process.cwd(), 'uploads'),
       serveRoot: '/uploads',
       serveStaticOptions: {
         setHeaders: (res, path) => {
@@ -82,6 +84,7 @@ export class AppModule implements NestModule {
         InvoiceController,
         ProductsController,
         MessagesController,
+        DashboardController,
         ShoppingCartController,
         ProductCommentController,
         ProductCatalogController,
