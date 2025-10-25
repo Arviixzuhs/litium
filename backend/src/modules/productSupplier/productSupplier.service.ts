@@ -9,7 +9,7 @@ import { Injectable, NotFoundException } from '@nestjs/common'
 import {
   ProductSupplierSpecificationBuild,
   ProductSupplierSpecificationBuilder,
-} from './repositories/productsupplier.specificationBuilder'
+} from './repositories/productSupplier.specificationBuilder'
 
 @Injectable()
 export class ProductSupplierService {
