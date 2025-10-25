@@ -69,7 +69,7 @@ export const AdminSupplierPage = () => {
   return (
     <AppTable
       tableActions={tableActions}
-      searchbarPlaceholder='Buscar proveedor por nombre, email o teléfono'
+      searchbarPlaceholder='Buscar proveedor por nombre, email o teléfono...'
     />
   )
 }

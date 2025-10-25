@@ -84,5 +84,11 @@ export const AdminProductPage = () => {
     },
   }
 
-  return <AppTable tableActions={tableActions} modalExtension={<ModalExtension />} />
+  return (
+    <AppTable
+      tableActions={tableActions}
+      modalExtension={<ModalExtension />}
+      searchbarPlaceholder='Buscar producto por nombre...'
+    />
+  )
 }

@@ -23,11 +23,11 @@ export const AdminInvoicePage = () => {
   const loadData = async () => {
     try {
       const response = await reqGetInvoices({
-        name: debounceValue,
         page: table.currentPage,
         size: table.rowsPerPage,
         toDate: table.dateFilter.end,
         fromDate: table.dateFilter.start,
+        searchValue: debounceValue,
       })
       dispatch(setTableData(response.data))
     } catch (error) {
@@ -62,7 +62,12 @@ export const AdminInvoicePage = () => {
 
   return (
     <>
-      <AppTable hiddeAdd filterByDate dropdownItems={dropdownItems} />
+      <AppTable
+        hiddeAdd
+        filterByDate
+        dropdownItems={dropdownItems}
+        searchbarPlaceholder='Buscar venta por comprador o vendedor (nombre o email)...'
+      />
       <ViewPurchaseModal purchaseProducts={purchaseProducts || []} />
     </>
   )

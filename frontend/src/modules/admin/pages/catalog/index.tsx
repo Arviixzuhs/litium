@@ -69,5 +69,11 @@ export const AdminCatalogPage = () => {
     },
   }
 
-  return <AppTable tableActions={tableActions} modalExtension={<ModalExtension />} />
+  return (
+    <AppTable
+      tableActions={tableActions}
+      modalExtension={<ModalExtension />}
+      searchbarPlaceholder='Buscar catálogo por nombre...'
+    />
+  )
 }

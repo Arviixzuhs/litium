@@ -66,5 +66,7 @@ export const AdminCategoryPage = () => {
     },
   }
 
-  return <AppTable tableActions={tableActions} />
+  return (
+    <AppTable tableActions={tableActions} searchbarPlaceholder='Buscar categoría por nombre...' />
+  )
 }
