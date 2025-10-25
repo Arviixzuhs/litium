@@ -29,7 +29,7 @@ export const ModalExtension = () => {
         placeholder='Busca a un proveedor'
         fetchItems={(search) =>
           reqGetSuppliers({
-            name: search,
+            searchValue: search,
             page: 0,
             size: 10,
           }).then((res) => res.data.content)
