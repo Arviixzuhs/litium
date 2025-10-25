@@ -1,7 +1,8 @@
 import { ApiProperty } from '@nestjs/swagger'
 import { IsNumber } from 'class-validator'
+import { DashboardSalesSummaryDto } from './dashboard-sales-summary.dto'
 
-export class DashboardMetricsDto {
+export class DashboardMetricsDto extends DashboardSalesSummaryDto {
   @ApiProperty({ example: 187, description: 'Total de productos' })
   @IsNumber()
   totalProducts: number
@@ -21,4 +22,8 @@ export class DashboardMetricsDto {
   @ApiProperty({ example: 5, description: 'Total de catálogos' })
   @IsNumber()
   totalCatalogs: number
+
+  @ApiProperty({ example: 5, description: 'Total de ordenes pendientes' })
+  @IsNumber()
+  totalPendingOrders: number
 }
