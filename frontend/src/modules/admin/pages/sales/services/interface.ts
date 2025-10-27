@@ -19,3 +19,8 @@ export interface ReqGetSalesParams extends QueryParams {
   fromDate?: string
   toDate?: string
 }
+
+export interface ReqDownloadSalesReportParams {
+  fromDate?: string
+  toDate?: string
+}
