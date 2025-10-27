@@ -7,6 +7,7 @@ import { tableColumns } from './data'
 import { InvoiceModel } from '@/types/invoiceModel'
 import { reqGetInvoices } from './services'
 import { ViewPurchaseModal } from '@/modules/purchases/components/PurchaseCard/components/ViewPurchaseModal'
+import { TopContentExtension } from './components/TopContentExtension'
 import { modalTypes, useModal } from '@/hooks/useModal'
 import { DropdownItemInteface } from '@/components/AppTable/components/DropdownAction'
 import { ShoppingCartProductModel } from '@/types/shoppingCartModel'
@@ -66,6 +67,7 @@ export const AdminInvoicePage = () => {
         hiddeAdd
         filterByDate
         dropdownItems={dropdownItems}
+        topContentExtension={<TopContentExtension />}
         searchbarPlaceholder='Buscar venta por comprador o vendedor (nombre o email)...'
       />
       <ViewPurchaseModal purchaseProducts={purchaseProducts || []} />
