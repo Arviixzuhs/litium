@@ -20,6 +20,7 @@ export interface AppTableProps {
   tableActions?: AppTableActions
   dropdownItems?: DropdownItemInteface[]
   modalExtension?: React.ReactElement
+  topContentExtension?: React.ReactElement
   searchbarPlaceholder?: string
 }
 
@@ -29,6 +30,7 @@ export const AppTable = ({
   filterByDate,
   dropdownItems,
   modalExtension,
+  topContentExtension,
   searchbarPlaceholder,
 }: AppTableProps) => {
   const location = useLocation()
@@ -49,6 +51,7 @@ export const AppTable = ({
           <TopContent
             hiddeAdd={hiddeAdd}
             filterByDate={filterByDate}
+            topContentExtension={topContentExtension}
             searchbarPlaceholder={searchbarPlaceholder}
           />
         }

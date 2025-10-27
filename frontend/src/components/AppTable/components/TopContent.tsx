@@ -8,24 +8,33 @@ import { FilterByDatePicker } from './FilterByDate'
 interface TopContentProps {
   hiddeAdd?: boolean
   filterByDate?: boolean
+  topContentExtension?: React.ReactElement
   searchbarPlaceholder?: string
 }
 
-export const TopContent = ({ hiddeAdd, filterByDate, searchbarPlaceholder }: TopContentProps) => {
+export const TopContent = ({
+  hiddeAdd,
+  filterByDate,
+  topContentExtension,
+  searchbarPlaceholder,
+}: TopContentProps) => {
   const dispatch = useDispatch()
 
   return (
     <div className='flex gap-2 w-full'>
-      {filterByDate && <FilterByDatePicker />}
       <Searchbar searchbarPlaceholder={searchbarPlaceholder} />
+      {filterByDate && <FilterByDatePicker />}
+      {topContentExtension && topContentExtension}
       {!hiddeAdd && (
-        <Button
-          onPress={() => dispatch(toggleAddItemModal(null))}
-          color='primary'
-          startContent={<Plus />}
-        >
-          Agregar
-        </Button>
+        <div>
+          <Button
+            onPress={() => dispatch(toggleAddItemModal(null))}
+            color='primary'
+            startContent={<Plus size={14} />}
+          >
+            Agregar
+          </Button>
+        </div>
       )}
     </div>
   )
