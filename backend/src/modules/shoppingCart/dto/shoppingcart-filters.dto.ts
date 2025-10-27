@@ -15,6 +15,16 @@ export class ShoppingCartFiltersDto extends PaginationDto {
   productName?: string
 
   @ApiProperty({
+    example: 'Victor Pandolfi',
+    description: 'Nombre del producto o nombre de cliente',
+    required: false,
+  })
+  @IsOptional()
+  @IsString()
+  @MaxLength(50)
+  searchValue?: string
+
+  @ApiProperty({
     example: true,
     description: 'Filtrar solo los carritos del usuario actual',
     required: false,

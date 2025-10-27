@@ -30,6 +30,36 @@ export class ShoppingCartSpecificationBuilder {
     return this
   }
 
+  withSearchValue(search?: string) {
+    if (search !== undefined && search.trim() !== '') {
+      this.where.OR = [
+        {
+          user: {
+            name: { contains: search },
+          },
+        },
+        {
+          user: {
+            lastName: { contains: search },
+          },
+        },
+        {
+          products: {
+            some: {
+              product: {
+                name: {
+                  contains: search,
+                },
+              },
+            },
+          },
+        },
+      ]
+    }
+
+    return this
+  }
+
   withProductName(productName?: string) {
     if (productName !== undefined) {
       this.where.products = {
@@ -42,6 +72,7 @@ export class ShoppingCartSpecificationBuilder {
         },
       }
     }
+
     return this
   }
 

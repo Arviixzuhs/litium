@@ -24,9 +24,11 @@ export class ShoppingCartService {
     const query = new ShoppingCartSpecificationBuilder()
       .withIsDeleted(false)
       .withProductName(filters.productName)
+      .withSearchValue(filters.searchValue)
       .withPagination(filters.page, filters.size)
       .withUserId(filters.mine && userId)
       .withInclude({
+        user: true,
         products: {
           include: {
             product: {

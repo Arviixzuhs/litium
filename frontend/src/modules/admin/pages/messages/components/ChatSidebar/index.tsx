@@ -27,7 +27,7 @@ export const ChatSidebar = () => {
         const response = await reqGetShoppingCart({
           page: 0,
           size: 50,
-          productName: debounceValue,
+          searchValue: debounceValue,
         })
         dispatch(setPurchases(response.data.content))
       } catch (error) {
@@ -74,6 +74,7 @@ export const ChatSidebar = () => {
                     <div className='min-w-0 flex-1'>
                       <div className='flex items-center justify-between gap-2'>
                         <h3 className='truncate text-sm font-medium text-sidebar-foreground'>
+                          {chat.user?.name} {chat.user?.lastName} •{' '}
                           {chat?.products?.[0].product.name}
                         </h3>
                         {/* {chat.unread && (
