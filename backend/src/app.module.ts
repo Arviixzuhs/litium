@@ -32,6 +32,8 @@ import { ProductCommentReplyModule } from '@/modules/productCommentReply/product
 import { ProductSupplierController } from '@/modules/productSupplier/productSupplier.controller'
 import { ProductCommentReplyController } from '@/modules/productCommentReply/productCommentReply.controller'
 import { MiddlewareConsumer, Module, NestModule } from '@nestjs/common'
+import { ReportModule } from './modules/report/report.module'
+import { ReportController } from './modules/report/report.controller'
 
 @Module({
   imports: [
@@ -39,6 +41,7 @@ import { MiddlewareConsumer, Module, NestModule } from '@nestjs/common'
     RoleModule,
     UserModule,
     FileModule,
+    ReportModule,
     PrismaModule,
     InvoiceModule,
     MessagesModule,
@@ -81,6 +84,7 @@ export class AppModule implements NestModule {
         FileController,
         RoleController,
         UserController,
+        ReportController,
         InvoiceController,
         ProductsController,
         MessagesController,
