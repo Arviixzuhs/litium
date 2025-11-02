@@ -27,7 +27,11 @@ export class InvoiceService {
           include: {
             products: {
               include: {
-                product: true,
+                product: {
+                  include: {
+                    images: true,
+                  },
+                },
               },
             },
             user: true,

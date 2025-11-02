@@ -8,7 +8,11 @@ export type InvoiceWithRelations = Prisma.InvoiceGetPayload<{
       include: {
         products: {
           include: {
-            product: true
+            product: {
+              include: {
+                images: true
+              }
+            }
           }
         }
         user: true
