@@ -1,5 +1,6 @@
 import { Page } from '@/types/Page'
 import { PrismaService } from '@/prisma/prisma.service'
+import { InvoiceMapper } from '@/modules/invoice/mapper/invoice.mapper'
 import { InvoiceService } from '../invoice/invoice.service'
 import { ProductsService } from '@/modules/product/product.service'
 import { CreateShoppingCartDto } from './dto/create-shoppingcart.dto'
@@ -20,6 +21,8 @@ export class ShoppingCartService {
     private readonly invoiceService: InvoiceService,
   ) {}
 
+  private invoiceMapper = new InvoiceMapper()
+
   findAll(filters: ShoppingCartFiltersDto, userId: number) {
     const query = new ShoppingCartSpecificationBuilder()
       .withIsDeleted(false)
@@ -29,6 +32,7 @@ export class ShoppingCartService {
       .withUserId(filters.mine && userId)
       .withInclude({
         user: true,
+        invoice: true,
         products: {
           include: {
             product: {
@@ -59,6 +63,7 @@ export class ShoppingCartService {
         isDeleted: false,
       },
       include: {
+        invoice: true,
         products: {
           include: {
             product: {
@@ -78,17 +83,17 @@ export class ShoppingCartService {
   async confirmPay(shoppingCartId: number, sellerId: number) {
     const shoppingCart = await this.findBy(shoppingCartId)
 
-    const updated = await this.updateShoppingCartStatus(shoppingCartId, ShoppingCartStatus.PAID)
+    await this.updateShoppingCartStatus(shoppingCartId, ShoppingCartStatus.PAID)
     const total = await this.calcTotal(shoppingCartId)
 
-    await this.invoiceService.create({
+    const invoice = await this.invoiceService.create({
       name: shoppingCart.name,
       total,
       sellerId,
       shoppingCartId,
     })
 
-    return updated
+    return this.invoiceMapper.modelToDto(invoice)
   }
 
   async updateShoppingCartStatus(shoppingCartId: number, newStatus: ShoppingCartStatus) {
@@ -175,7 +180,7 @@ export class ShoppingCartService {
   }
 
   private async page(query: ShoppingCartSpecificationBuild): Promise<Page<ShoppingCart>> {
-    const [categories, totalItems] = await this.prisma.$transaction([
+    const [shoppingCarts, totalItems] = await this.prisma.$transaction([
       this.prisma.shoppingCart.findMany(query),
       this.prisma.shoppingCart.count({
         where: query.where,
@@ -187,7 +192,7 @@ export class ShoppingCartService {
     const totalPages = Math.ceil(totalItems / size)
 
     return {
-      content: categories,
+      content: shoppingCarts,
       totalPages,
       totalItems,
       currentPage: page,
