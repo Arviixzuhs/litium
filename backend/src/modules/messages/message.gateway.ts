@@ -54,4 +54,13 @@ export class MessagesGateway {
     this.server.to(`cart-${deleted.shoppingCartId}`).emit('messageDeleted', { id: deleted.id })
     return deleted
   }
+
+  @SubscribeMessage('confirm')
+  async confirmOrder(
+    @MessageBody() data: { invoiceId: number; cartId: number },
+    @ConnectedSocket() _client: Socket,
+  ) {
+    const { invoiceId, cartId } = data
+    this.server.to(`cart-${cartId}`).emit('orderConfirmed', invoiceId)
+  }
 }
