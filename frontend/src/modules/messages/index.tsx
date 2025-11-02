@@ -1,12 +1,17 @@
 import React from 'react'
-import { io } from 'socket.io-client'
 import { cn } from '@heroui/theme'
+import { socket } from '@/api/socket'
+import { Shopping } from './components/Shopping'
 import { useParams } from 'react-router-dom'
 import { RootState } from '@/store'
-import { useSelector } from 'react-redux'
 import { MessageModel } from '@/types/messageModal'
+import { setInvoiceId } from './slices/chatSlice'
+import { EmptyContent } from '@/components/AppTable/components/EmptyContent'
 import { EllipsisVertical } from 'lucide-react'
+import { DownaloadInvoice } from './components/DownloadInvoice'
 import { reqGetMessagesByCartId } from './services'
+import { reqGetShoppingCartById } from '@/api/requests'
+import { useDispatch, useSelector } from 'react-redux'
 import {
   Avatar,
   Button,
@@ -16,18 +21,27 @@ import {
   DropdownMenu,
   DropdownTrigger,
 } from '@heroui/react'
-import { EmptyContent } from '@/components/AppTable/components/EmptyContent'
-import { Shopping } from './components/Shopping'
-
-const socket = io(import.meta.env.VITE_SERVER_API, { transports: ['websocket'] })
+import { updateStatus } from '../purchases/slices/purchaseSlice'
+import { ShoppingCartStatus } from '@/types/shoppingCartModel'
 
 export const Messages = () => {
   const params = useParams<{ cartId: string }>()
+  const dispatch = useDispatch()
   const user = useSelector((state: RootState) => state.user)
   const [input, setInput] = React.useState('')
   const [messages, setMessages] = React.useState<MessageModel[]>([])
   const [editingId, setEditingId] = React.useState<number | null>(null)
   const scrollRef = React.useRef<HTMLDivElement>(null)
+
+  React.useEffect(() => {
+    if (!params.cartId) return
+    const loadShoppingCart = async () => {
+      const response = await reqGetShoppingCartById(Number(params.cartId))
+      console.log(response.data)
+      dispatch(setInvoiceId(response?.data?.invoice?.id))
+    }
+    loadShoppingCart()
+  }, [params.cartId])
 
   React.useEffect(() => {
     if (!params.cartId) {
@@ -59,12 +73,17 @@ export const Messages = () => {
     socket.on('messageDeleted', ({ id }) =>
       setMessages((prev) => prev.filter((msg) => msg.id !== id)),
     )
+    socket.on('orderConfirmed', (invoiceId: number) => {
+      dispatch(setInvoiceId(invoiceId))
+      dispatch(updateStatus({ id: Number(params.cartId), status: ShoppingCartStatus.PAID }))
+    })
 
     return () => {
       socket.emit('leaveCart', params.cartId)
       socket.off('newMessage')
       socket.off('messageEdited')
       socket.off('messageDeleted')
+      socket.off('orderConfirmed')
     }
   }, [params.cartId])
 
@@ -191,34 +210,37 @@ export const Messages = () => {
             ))}
           </div>
           {params.cartId && (
-            <div className='mt-4 flex flex-wrap gap-2'>
-              <Textarea
-                value={input}
-                onChange={(e) => setInput(e.target.value)}
-                placeholder={editingId ? 'Edita tu mensaje...' : 'Escribe un mensaje...'}
-                className='flex-1 min-w-[150px]'
-                size='sm'
-              />
-              <Button
-                onPress={handleSend}
-                color='primary'
-                size='sm'
-                isDisabled={input.trim() === ''}
-              >
-                {editingId ? 'Guardar' : 'Enviar'}
-              </Button>
-              {editingId && (
-                <Button
-                  onPress={() => {
-                    setEditingId(null)
-                    setInput('')
-                  }}
-                  color='default'
+            <div className='mt-4 flex flex-wrap gap-2 flex-col'>
+              <DownaloadInvoice />
+              <div className='flex flex-wrap gap-2'>
+                <Textarea
+                  value={input}
+                  onChange={(e) => setInput(e.target.value)}
+                  placeholder={editingId ? 'Edita tu mensaje...' : 'Escribe un mensaje...'}
+                  className='flex-1 min-w-[150px]'
                   size='sm'
+                />
+                <Button
+                  onPress={handleSend}
+                  color='primary'
+                  size='sm'
+                  isDisabled={input.trim() === ''}
                 >
-                  Cancelar
+                  {editingId ? 'Guardar' : 'Enviar'}
                 </Button>
-              )}
+                {editingId && (
+                  <Button
+                    onPress={() => {
+                      setEditingId(null)
+                      setInput('')
+                    }}
+                    color='default'
+                    size='sm'
+                  >
+                    Cancelar
+                  </Button>
+                )}
+              </div>
             </div>
           )}
         </div>
