@@ -17,7 +17,6 @@ export interface ShoppingCartProductModel {
   createdAt: Date
 
   product: ProductModel
-  invoice?: InvoiceModel
   shoppingCart?: ShoppingCartModel
 }
 
@@ -32,6 +31,7 @@ export interface ShoppingCartModel {
 
   // Relaciones
   user?: UserModel
+  invoice?: InvoiceModel
   products?: ShoppingCartProductModel[]
   messages?: MessageModel[]
 }
