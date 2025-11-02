@@ -1,5 +1,6 @@
 import { manageHomeSlice } from '@/features/homeSlice'
 import { manageUserSlice } from '@/features/userSlice'
+import { manageChatSlice } from '@/modules/messages/slices/chatSlice'
 import { shoppingCartSlice } from '@/features/shoppingCartSlice'
 import { manageModalsSlice } from '@/features/currentModalSlice'
 import { manageAppTableSlice } from '@/features/appTableSlice'
@@ -10,6 +11,7 @@ import { combineReducers, configureStore } from '@reduxjs/toolkit'
 const appReducer = combineReducers({
   user: manageUserSlice.reducer,
   home: manageHomeSlice.reducer,
+  chat: manageChatSlice.reducer,
   modal: manageModalsSlice.reducer,
   appTable: manageAppTableSlice.reducer,
   purchase: managePurchaseSlice.reducer,
