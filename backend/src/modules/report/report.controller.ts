@@ -1,8 +1,8 @@
 import { Response } from 'express'
 import { ReportService } from './report.service'
 import { SalesReportDto } from './dto/sales-report.dto'
-import { ApiTags, ApiQuery, ApiBearerAuth } from '@nestjs/swagger'
-import { Controller, Get, Query, Res } from '@nestjs/common'
+import { ApiTags, ApiQuery, ApiBearerAuth, ApiParam } from '@nestjs/swagger'
+import { Controller, Get, Query, Res, Param, NotFoundException } from '@nestjs/common'
 
 @ApiTags('Reports')
 @ApiBearerAuth()
@@ -23,5 +23,23 @@ export class ReportController {
     })
 
     res.end(pdfBuffer)
+  }
+
+  @Get('sale/:id')
+  @ApiParam({ name: 'id', type: Number, description: 'ID de la factura' })
+  async getSingleSaleReport(@Param('id') id: number, @Res() res: Response) {
+    try {
+      const pdfBuffer = await this.reportsService.generateSingleSaleReport(Number(id))
+
+      res.set({
+        'Content-Type': 'application/pdf',
+        'Content-Disposition': `inline; filename="invoice-${id}.pdf"`,
+        'Content-Length': pdfBuffer.length,
+      })
+
+      res.end(pdfBuffer)
+    } catch (error) {
+      throw new NotFoundException(error.message)
+    }
   }
 }
