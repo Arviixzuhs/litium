@@ -1,19 +1,22 @@
 import React from 'react'
 import toast from 'react-hot-toast'
+import { socket } from '@/api/socket'
+import { RootState } from '@/store'
 import { useParams } from 'react-router-dom'
-import { useDispatch } from 'react-redux'
 import { updateStatus } from '@/modules/purchases/slices/purchaseSlice'
 import { reqGetShoppingCartById } from '@/api/requests'
+import { useDispatch, useSelector } from 'react-redux'
+import { CheckPermissionByComponent } from '@/components/CheckPermissionByComponent'
 import { ShoppingCartModel, ShoppingCartStatus } from '@/types/shoppingCartModel'
 import { Button, Card, CardBody, CardHeader, Image, Spinner } from '@heroui/react'
 import { reqConfirmShoppingCart, reqUpdateShoppingCartStatus } from '../../services'
-import { CheckPermissionByComponent } from '@/components/CheckPermissionByComponent'
 
 export const Shopping = () => {
   const dispatch = useDispatch()
   const params = useParams<{ cartId: string }>()
   const [isLoading, setIsLoading] = React.useState<boolean>(true)
   const [shoppingCart, setShoppingCart] = React.useState<ShoppingCartModel | null>(null)
+  const chat = useSelector((state: RootState) => state.chat)
 
   React.useEffect(() => {
     if (!params.cartId) return
@@ -36,7 +39,8 @@ export const Shopping = () => {
   const handleConfirm = async () => {
     try {
       if (!shoppingCart) return
-      await reqConfirmShoppingCart(shoppingCart?.id)
+      const response = await reqConfirmShoppingCart(shoppingCart?.id)
+      socket.emit('confirm', { invoiceId: response.data.id, cartId: Number(params.cartId) })
       dispatch(updateStatus({ id: shoppingCart.id, status: ShoppingCartStatus.PAID }))
       updateLocalPurchaseStatus(ShoppingCartStatus.PAID)
       toast.success('Carrito confirmado correctamente')
@@ -50,7 +54,7 @@ export const Shopping = () => {
       if (!shoppingCart) return
       await reqUpdateShoppingCartStatus(shoppingCart?.id, ShoppingCartStatus.CANCELED)
       dispatch(updateStatus({ id: shoppingCart.id, status: ShoppingCartStatus.CANCELED }))
-      updateLocalPurchaseStatus(ShoppingCartStatus.CANCELED)
+
       toast.success('Carrito cancelado correctamente')
     } catch (error) {
       console.log(error)
@@ -87,7 +91,7 @@ export const Shopping = () => {
             ))}
         </CardBody>
       </Card>
-      {shoppingCart?.status === ShoppingCartStatus.PENDING && (
+      {shoppingCart?.status === ShoppingCartStatus.PENDING && !chat.invoiceId && (
         <div className='flex w-full gap-2'>
           <Button size='sm' color='danger' variant='flat' onPress={handleCancel}>
             Cancelar compra
