@@ -123,7 +123,7 @@ export class ReportService {
 
     // Tabla
     let y = 100
-    this.drawTableHeader(doc, ['ID', 'Cliente', 'Vendedor', 'Total'], y)
+    this.drawTableHeader(doc, ['Código', 'Cliente', 'Vendedor', 'Total'], y)
     y += 10
     let alternate = false
 
@@ -131,7 +131,7 @@ export class ReportService {
       if (y > 270) {
         doc.addPage()
         y = 20
-        this.drawTableHeader(doc, ['ID', 'Cliente', 'Vendedor', 'Total'], y)
+        this.drawTableHeader(doc, ['Código', 'Cliente', 'Vendedor', 'Total'], y)
         y += 10
       }
 
@@ -142,7 +142,7 @@ export class ReportService {
       this.drawTableRow(
         doc,
         [
-          `#${invoice.id}`,
+          `#${invoice.invoiceCode}`,
           cart.user.name + ' ' + cart.user.lastName || '--',
           invoice.seller?.name || '--',
           `$${invoice.total?.toFixed(2)}`,
@@ -178,7 +178,7 @@ export class ReportService {
       : invoice.shoppingCart
 
     const doc = new jsPDF()
-    this.drawHeader(doc, `Factura #${invoice.id}`)
+    this.drawHeader(doc, `Código de factura: ${invoice.invoiceCode}`)
 
     doc.setFontSize(12)
     doc.text(`Fecha: ${new Date(invoice.createdAt).toLocaleDateString()}`, 15, 60)

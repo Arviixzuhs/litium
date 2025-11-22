@@ -19,6 +19,9 @@ export class InvoiceSpecificationBuilder {
     if (search && search.trim() !== '') {
       this.where.OR = [
         {
+          invoiceCode: { equals: search }
+        },
+        {
           seller: {
             name: { contains: search },
           },
@@ -61,6 +64,13 @@ export class InvoiceSpecificationBuilder {
           },
         },
       ]
+    }
+    return this
+  }
+
+  withInvoiceCode(invoiceCode?: string) {
+    if (invoiceCode !== undefined && invoiceCode.trim() !== "") {
+      this.where.invoiceCode = invoiceCode
     }
     return this
   }

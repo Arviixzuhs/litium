@@ -78,7 +78,7 @@ export const AdminInvoicePage = () => {
         filterByDate
         dropdownItems={dropdownItems}
         topContentExtension={<TopContentExtension />}
-        searchbarPlaceholder='Buscar venta por comprador o vendedor (nombre o email)...'
+        searchbarPlaceholder='Buscar venta por código, comprador o empleado...'
       />
       <ViewPurchaseModal purchaseProducts={purchaseProducts || []} />
     </>

@@ -31,10 +31,10 @@ model User {
 }
 
 model Role {
-  id          Int               @id @default(autoincrement())
-  name        String            @db.VarChar(50)
+  id          Int              @id @default(autoincrement())
+  name        String           @db.VarChar(50)
   users       RoleUser[]
-  createdAt   DateTime          @default(now())
+  createdAt   DateTime         @default(now())
   permissions RolePermission[]
 }
 
@@ -251,13 +251,14 @@ model ShoppingCartProduct {
 }
 
 model Invoice {
-  id       Int     @id @default(autoincrement())
-  rif      String? @db.VarChar(20)
-  name     String  @db.VarChar(50)
-  phone    String? @db.VarChar(50)
-  total    Float?
-  address  String? @db.VarChar(200)
-  sellerId Int
+  id          Int     @id @default(autoincrement())
+  rif         String? @db.VarChar(20)
+  name        String  @db.VarChar(50)
+  phone       String? @db.VarChar(50)
+  total       Float?
+  address     String? @db.VarChar(200)
+  sellerId    Int
+  invoiceCode String  @unique @db.VarChar(20) @default("")
 
   seller       User           @relation("SellerInvoices", fields: [sellerId], references: [id], onDelete: Cascade)
   isDeleted    Boolean?       @default(false)

@@ -4,6 +4,9 @@ import { ShoppingCartProduct } from '@prisma/client'
 export class InvoiceResponseDto {
   @ApiProperty({ example: 1, description: 'Unique identifier of the invoice' })
   id: number
+  
+  @ApiProperty({ example: "LT-1763783398122", description: 'Unique invoice code' })
+  invoiceCode: string
 
   @ApiProperty({ example: 'J-12345678-9', description: 'Customer RIF (tax ID)', nullable: true })
   rif?: string

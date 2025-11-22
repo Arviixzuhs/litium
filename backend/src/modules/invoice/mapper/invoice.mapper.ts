@@ -41,6 +41,7 @@ export class InvoiceMapper extends BaseMapper<Invoice | InvoiceWithRelations, In
       sellerId: model.sellerId,
       sellerName,
       buyerName,
+      invoiceCode: model.invoiceCode,
       address: model.address ?? null,
       products: firstCart ? firstCart.products : [],
       createdAt: model.createdAt,

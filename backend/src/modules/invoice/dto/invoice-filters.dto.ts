@@ -51,6 +51,11 @@ export class InvoiceFilterDto extends PaginationDto {
   @IsNumber()
   maxTotal?: number
 
+  @ApiPropertyOptional({ description: 'Filtra facturas por código de factura' })
+  @IsOptional()
+  @Transform(({ value }) => (value === '' ? undefined : value))
+  invoiceCode?: string
+
   @ApiPropertyOptional({ description: 'Filtra facturas creadas desde esta fecha (YYYY-MM-DD)' })
   @IsOptional()
   @IsDateString()

@@ -2,6 +2,10 @@ import { TableColumnInterface } from '@/features/appTableSlice'
 
 export const tableColumns: TableColumnInterface[] = [
   {
+    name: 'Código',
+    uid: 'invoiceCode',
+  },
+  {
     name: 'Vendedor',
     uid: 'sellerName',
   },

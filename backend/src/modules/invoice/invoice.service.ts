@@ -51,11 +51,13 @@ export class InvoiceService {
   }
 
   create(dto: CreateInvoiceDto) {
+    const todayTimestamp = new Date().getTime().toString()
     return this.prisma.invoice.create({
       data: {
-        name: dto.name ?? new Date().getTime().toString(),
+        name: dto.name ?? todayTimestamp,
         sellerId: dto.sellerId,
         total: dto.total ?? 0,
+        invoiceCode: `LT-${todayTimestamp}`,
         rif: dto.rif ?? null,
         phone: dto.phone ?? null,
         address: dto.address ?? null,

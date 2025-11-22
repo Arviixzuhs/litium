@@ -9,7 +9,7 @@ export interface InvoiceModel {
   total?: number
   address?: string
   sellerId: number
-
+  invoiceCode: string
   seller: UserModel
   isDeleted?: boolean
   deletedAt?: Date
