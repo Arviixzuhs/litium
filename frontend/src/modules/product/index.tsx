@@ -5,13 +5,14 @@ import { useParams } from 'react-router-dom'
 import { StarRating } from './components/starRating'
 import { useDispatch } from 'react-redux'
 import { ProductSpecs } from './components/productSpecs'
+import { ShareDropdown } from './components/shareDropdown'
 import { addItemToCart } from '@/features/shoppingCartSlice'
 import { ProductComment } from './components/productComment'
 import { reqGetProductById } from '../admin/pages/product/services'
 import type { ProductModel } from '@/types/productModel'
 import { ProductImageGallery } from './components/productGallery'
+import { Button, Divider, Spinner } from '@heroui/react'
 import { ShieldCheck, ShoppingCart, Truck } from 'lucide-react'
-import { Button, Divider, Snippet, Spinner } from '@heroui/react'
 
 export const ProductPage = () => {
   const params = useParams<{ productId: string }>()
@@ -96,17 +97,7 @@ export const ProductPage = () => {
                   <ShoppingCart className='h-5 w-5' />
                   Agregar al carrito
                 </Button>
-
-                <Snippet
-                  symbol=''
-                  radius='sm'
-                  size='lg'
-                  color='danger'
-                  variant='solid'
-                  codeString={window.location.href}
-                >
-                  Compartir
-                </Snippet>
+                <ShareDropdown />
               </div>
             </div>
             <Divider />
