@@ -67,28 +67,31 @@ export const Shopping = () => {
         <CardHeader className='font-bold'>Compras</CardHeader>
         <CardBody>
           {isLoading && <Spinner />}
-          {!isLoading &&
-            shoppingCart?.products?.map((item, index) => (
-              <li key={index} className='justify-between flex gap-2 items-center'>
-                <div className='flex gap-2 items-center'>
-                  <div className='bg-muted-2 rounded-sm'>
-                    <Image
-                      src={item.product?.images?.[0]?.imageURL || ''}
-                      alt={item.product?.name}
-                      radius='sm'
-                      className='object-cover max-w-25 transition-transform duration-300 group-hover:scale-105'
-                    />
+          {!isLoading && (
+            <div className='flex flex-col gap-2'>
+              {shoppingCart?.products?.map((item, index) => (
+                <li key={index} className='justify-between flex gap-2 items-center'>
+                  <div className='flex gap-2 items-center'>
+                    <div className='bg-muted-2 rounded-sm'>
+                      <Image
+                        src={item.product?.images?.[0]?.imageURL || ''}
+                        alt={item.product?.name}
+                        radius='sm'
+                        className='object-cover w-25 h-20 transition-transform duration-300 group-hover:scale-105'
+                      />
+                    </div>
+                    <div>
+                      <h3 className='font-semibold'>{item.product?.name}</h3>
+                      <p className='text-gray-500 dark:text-gray-400'>${item.product?.price}</p>
+                      <p className='font-bold dark:text-gray-200'>
+                        ${item.product?.price * item.quantity} ({item.quantity})
+                      </p>
+                    </div>
                   </div>
-                  <div>
-                    <h3 className='font-semibold'>{item.product?.name}</h3>
-                    <p className='text-gray-500 dark:text-gray-400'>${item.product?.price}</p>
-                    <p className='font-bold dark:text-gray-200'>
-                      ${item.product?.price * item.quantity} ({item.quantity})
-                    </p>
-                  </div>
-                </div>
-              </li>
-            ))}
+                </li>
+              ))}
+            </div>
+          )}
         </CardBody>
       </Card>
       {shoppingCart?.status === ShoppingCartStatus.PENDING && !chat.invoiceId && (
