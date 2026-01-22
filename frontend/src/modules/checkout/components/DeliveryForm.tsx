@@ -81,7 +81,7 @@ export function DeliveryForm({ data, onChange }: DeliveryFormProps) {
               type='button'
               onClick={() => handleMethodChange(method.value)}
               className={cn(
-                'flex flex-col items-center gap-2 rounded-lg border-2 p-4 text-center transition-all',
+                'flex flex-col items-center gap-2 rounded-lg border-2 p-4 text-center transition-all cursor-pointer',
                 data.method === method.value
                   ? 'border-primary bg-primary/10'
                   : 'border-foreground/20 bg-card hover:border-primary/50',
@@ -114,7 +114,7 @@ export function DeliveryForm({ data, onChange }: DeliveryFormProps) {
                 type='button'
                 onClick={() => handleAgencyChange(agency.value)}
                 className={cn(
-                  'flex items-center gap-2 rounded-lg border-1 px-6 py-3 font-semibold transition-all',
+                  'flex items-center gap-2 rounded-lg border-1 px-6 py-3 font-semibold transition-all cursor-pointer',
                   data.agency === agency.value
                     ? 'border-primary text-primary-foreground'
                     : 'border-foreground/20 bg-card hover:border-primary/50',
@@ -139,6 +139,7 @@ export function DeliveryForm({ data, onChange }: DeliveryFormProps) {
               label='Estado'
               value={data.address.state}
               radius='sm'
+              isRequired
               onChange={(e) => handleAddressChange('state', e.target.value)}
               placeholder='Carabobo'
               labelPlacement='outside'
@@ -148,6 +149,7 @@ export function DeliveryForm({ data, onChange }: DeliveryFormProps) {
               label='Ciudad'
               value={data.address.city}
               radius='sm'
+              isRequired
               onChange={(e) => handleAddressChange('city', e.target.value)}
               labelPlacement='outside'
               placeholder='Valencia'
@@ -158,6 +160,7 @@ export function DeliveryForm({ data, onChange }: DeliveryFormProps) {
             label='Dirección'
             value={data.address.addressLine}
             radius='sm'
+            isRequired
             onChange={(e) => handleAddressChange('addressLine', e.target.value)}
             placeholder='Av. Principal, Edificio ABC, Piso 2, Apto 21'
             labelPlacement='outside'
@@ -167,6 +170,7 @@ export function DeliveryForm({ data, onChange }: DeliveryFormProps) {
             label='Punto de Referencia'
             value={data.address.referencePoint}
             radius='sm'
+            isRequired
             placeholder='Frente al Centro Comercial, cerca de la farmacia'
             onChange={(e) => handleAddressChange('referencePoint', e.target.value)}
             labelPlacement='outside'

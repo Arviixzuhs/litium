@@ -26,6 +26,7 @@ export function RecipientForm({ data, onChange }: RecipientFormProps) {
           label='Nombre'
           labelPlacement='outside'
           radius='sm'
+          isRequired
           placeholder='Juan'
           value={data.firstName}
           onChange={(e) => handleChange('firstName', e.target.value)}
@@ -36,6 +37,7 @@ export function RecipientForm({ data, onChange }: RecipientFormProps) {
           label='Apellido'
           labelPlacement='outside'
           radius='sm'
+          isRequired
           placeholder='Pérez'
           value={data.lastName}
           onChange={(e) => handleChange('lastName', e.target.value)}
@@ -48,6 +50,7 @@ export function RecipientForm({ data, onChange }: RecipientFormProps) {
           label='Teléfono'
           labelPlacement='outside'
           radius='sm'
+          isRequired
           placeholder='0414-1234567'
           value={data.phone}
           onChange={(e) => handleChange('phone', e.target.value)}
@@ -58,6 +61,7 @@ export function RecipientForm({ data, onChange }: RecipientFormProps) {
           label='Cédula / RIF'
           labelPlacement='outside'
           radius='sm'
+          isRequired
           placeholder='V-12345678'
           value={data.documentId}
           onChange={(e) => handleChange('documentId', e.target.value)}

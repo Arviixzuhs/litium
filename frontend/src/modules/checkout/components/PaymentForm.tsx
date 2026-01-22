@@ -123,6 +123,7 @@ export function PaymentForm({ data, onChange }: PaymentFormProps) {
             label='Número de Referencia'
             value={data.reference}
             radius='sm'
+            isRequired
             placeholder='123456789'
             onChange={(e) => handleChange('reference', e.target.value)}
             labelPlacement='outside'
@@ -134,6 +135,7 @@ export function PaymentForm({ data, onChange }: PaymentFormProps) {
             label='Monto (Bs.)'
             value={data.amount}
             radius='sm'
+            isRequired
             onChange={(e) => handleChange('amount', e.target.value)}
             placeholder='150.00'
             labelPlacement='outside'
@@ -144,6 +146,7 @@ export function PaymentForm({ data, onChange }: PaymentFormProps) {
           type='date'
           label='Fecha de Pago'
           radius='sm'
+          isRequired
           value={data.paymentDate}
           onChange={(e) => handleChange('paymentDate', e.target.value)}
           labelPlacement='outside'
