@@ -57,7 +57,7 @@ export function PaymentForm({ data, onChange }: PaymentFormProps) {
               type='button'
               onClick={() => handleMethodChange(method.value)}
               className={cn(
-                'flex items-center gap-4 rounded-lg border-2 p-4 text-left transition-all',
+                'flex items-center gap-4 rounded-lg border-2 p-4 text-left transition-all cursor-pointer',
                 data.method === method.value
                   ? 'border-primary bg-primary/10'
                   : 'border-foreground/20 bg-card hover:border-primary/50',
