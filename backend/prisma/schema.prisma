@@ -271,15 +271,15 @@ model DeliveryAddress {
 }
 
 model Delivery {
-  id     Int            @id @default(autoincrement())
+  id     Int             @id @default(autoincrement())
   method DeliveryMethod
-  agency DeliveryAgency
+  agency DeliveryAgency?
 
-  addressId   Int
+  addressId   Int?
   recipientId Int
 
-  address   DeliveryAddress @relation(fields: [addressId], references: [id])
-  recipient Recipient       @relation(fields: [recipientId], references: [id])
+  address   DeliveryAddress? @relation(fields: [addressId], references: [id])
+  recipient Recipient        @relation(fields: [recipientId], references: [id])
 
   createdAt     DateTime       @default(now())
   shoppingCarts ShoppingCart[]
