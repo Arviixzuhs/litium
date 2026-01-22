@@ -5,6 +5,7 @@ import { HomePage } from '@/modules/home'
 import { Messages } from '@/modules/messages'
 import { ProductPage } from '@/modules/product'
 import { AdminLayout } from '@/modules/admin/layout'
+import { CheckoutPage } from '@/modules/checkout'
 import { Route, Routes } from 'react-router-dom'
 import { DashboardPage } from '@/modules/admin/pages/dashboard'
 import { PurchasesPage } from '@/modules/purchases'
@@ -18,11 +19,16 @@ import { MessagesAdminPage } from '@/modules/admin/pages/messages'
 import { ProtectedRouteAuth } from './middlewares/ProtectedRouteAuth'
 import { ProtectedRouteSession } from './middlewares/ProtectedRouteSession'
 import { CheckPermissionByComponent } from '@/components/CheckPermissionByComponent'
+import { ValidateCheckoutMiddleware } from '@/modules/checkout/middlewares/ValidateCheckoutMiddleware'
 
 export const Router = () => {
   return (
     <Routes>
       <Route element={<ProtectedRouteSession />}>
+        <Route element={<ValidateCheckoutMiddleware />}>
+          <Route element={<CheckoutPage />} path='/checkout/:cartId' />
+        </Route>
+
         <Route element={<Layout />}>
           <Route element={<HomePage />} path='/' />
           <Route element={<MessagesLayout />}>

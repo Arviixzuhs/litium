@@ -75,7 +75,7 @@ export const ChatSidebar = () => {
                       <div className='flex items-center justify-between gap-2'>
                         <h3 className='truncate text-sm font-medium text-sidebar-foreground'>
                           {chat.user?.name} {chat.user?.lastName} •{' '}
-                          {chat?.products?.[0].product.name}
+                          {chat?.products?.[0]?.product?.name}
                         </h3>
                         {/* {chat.unread && (
                           <span className='h-2 w-2 shrink-0 rounded-full bg-blue-500' />

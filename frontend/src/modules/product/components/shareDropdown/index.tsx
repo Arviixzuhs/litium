@@ -46,14 +46,7 @@ export const ShareDropdown = () => {
   return (
     <Dropdown>
       <DropdownTrigger>
-        <Button
-       
-          size='lg'
-          color='danger'
-          radius='sm'
-    
-          startContent={<BsShare className='w-5 h-5' />}
-        >
+        <Button size='lg' color='danger' radius='sm' startContent={<BsShare className='w-5 h-5' />}>
           Compartir
         </Button>
       </DropdownTrigger>

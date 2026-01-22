@@ -37,7 +37,7 @@ export const ShoppingCartSidebar = () => {
       })
       handleClose()
       dispatch(resetShoppingCart(null))
-      navigate(`/messages/${response.data.id}`)
+      navigate(`/checkout/${response.data.id}`)
     } catch (error) {
       console.log(error)
     }
@@ -127,8 +127,13 @@ export const ShoppingCartSidebar = () => {
         <p className='font-bold dark:text-white'>Total: ${totalPrice.toLocaleString()}</p>
         <p className='text-gray-500 dark:text-gray-300'>Artículos: {totalQuantity}</p>
       </div>
-      <Button color='primary' radius='sm' onPress={onConfirm}>
-        {user ? 'Confirmar' : 'Iniciar sesión'}
+      <Button
+        color='primary'
+        radius='sm'
+        onPress={onConfirm}
+        isDisabled={user !== null && cartItems.length == 0}
+      >
+        {user ? 'Iniciar compra' : 'Iniciar sesión'}
       </Button>
     </div>
   )

@@ -7,16 +7,24 @@ import { CreateShoppingCartDto } from './dto/create-shoppingcart.dto'
 import { ShoppingCartFiltersDto } from './dto/shoppingcart-filters.dto'
 import { ShoppingCartProductDto } from './dto/shoppingcart-product.dto'
 import { ShoppingCart, ShoppingCartStatus } from '@prisma/client'
-import { ConflictException, Injectable, NotFoundException } from '@nestjs/common'
+import {
+  BadRequestException,
+  ConflictException,
+  Injectable,
+  NotFoundException,
+} from '@nestjs/common'
 import {
   ShoppingCartSpecificationBuild,
   ShoppingCartSpecificationBuilder,
 } from './repositories/shoppingCart.specificationBuilder'
+import { CheckoutDto } from './dto/checkout.dto'
+import { FileService } from '../file/file.service'
 
 @Injectable()
 export class ShoppingCartService {
   constructor(
     private readonly prisma: PrismaService,
+    private readonly fileService: FileService,
     private readonly productService: ProductsService,
     private readonly invoiceService: InvoiceService,
   ) {}
@@ -64,6 +72,13 @@ export class ShoppingCartService {
       },
       include: {
         invoice: true,
+        payment: true,
+        delivery: {
+          include: {
+            address: true,
+            recipient: true,
+          },
+        },
         products: {
           include: {
             product: {
@@ -112,7 +127,66 @@ export class ShoppingCartService {
     })
   }
 
+  async checkoutCart(shoppingCartId: number, dto: CheckoutDto, image?: Express.Multer.File) {
+    const cart = await this.prisma.shoppingCart.findFirst({
+      where: {
+        id: shoppingCartId,
+        isDeleted: false,
+      },
+    })
+
+    if (!cart) {
+      throw new NotFoundException('Carrito no encontrado')
+    }
+
+    let imageUrl = ''
+    if (image) {
+      this.fileService.validateFileType(image, ['image/jpeg', 'image/png', 'image/webp'])
+      imageUrl = this.fileService.generateFileUrl(image.filename)
+    }
+
+    return this.prisma.$transaction(async (tx) => {
+      const recipient = await tx.recipient.create({
+        data: dto.recipient,
+      })
+
+      const address = await tx.deliveryAddress.create({
+        data: dto.delivery.address,
+      })
+
+      const delivery = await tx.delivery.create({
+        data: {
+          method: dto.delivery.method,
+          agency: dto.delivery.agency,
+          recipientId: recipient.id,
+          addressId: address.id,
+        },
+      })
+
+      const payment = await tx.payment.create({
+        data: {
+          method: dto.payment.method,
+          amount: dto.payment.amount,
+          imageUrl,
+          reference: dto.payment.reference,
+          paymentDate: new Date(dto.payment.paymentDate),
+        },
+      })
+
+      return tx.shoppingCart.update({
+        where: { id: shoppingCartId },
+        data: {
+          deliveryId: delivery.id,
+          paymentId: payment.id,
+        },
+      })
+    })
+  }
+
   async create(dto: CreateShoppingCartDto, userId: number) {
+    if (dto.products.length === 0)
+      throw new BadRequestException('Debes agregar productos al carrito')
+
     const shoppingCart = await this.prisma.shoppingCart.create({
       data: {
         name: dto.name,

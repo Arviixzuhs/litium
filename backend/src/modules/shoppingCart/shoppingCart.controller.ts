@@ -1,11 +1,6 @@
-import { Request } from 'express'
-import { PermissionGuard } from '@/guards/permission.guard'
 import { Permissions, perm } from '@/common/decorators/permissions.decorator'
-import { ShoppingCartStatus } from '@prisma/client'
-import { ShoppingCartService } from './shoppingCart.service'
-import { CreateShoppingCartDto } from './dto/create-shoppingcart.dto'
-import { ShoppingCartFiltersDto } from './dto/shoppingcart-filters.dto'
-import { ApiBearerAuth, ApiOperation, ApiResponse, ApiTags } from '@nestjs/swagger'
+import { extname } from 'path'
+import { PermissionGuard } from '@/guards/permission.guard'
 import {
   Body,
   Controller,
@@ -14,10 +9,24 @@ import {
   Param,
   Patch,
   Post,
+  Put,
   Query,
   Req,
+  UseInterceptors,
   UseGuards,
+  UploadedFile,
+  BadRequestException,
 } from '@nestjs/common'
+import { ApiBearerAuth, ApiOperation, ApiResponse, ApiTags } from '@nestjs/swagger'
+import { ShoppingCartStatus } from '@prisma/client'
+import { Request } from 'express'
+import { diskStorage } from 'multer'
+import { CheckoutDto } from './dto/checkout.dto'
+import { CreateShoppingCartDto } from './dto/create-shoppingcart.dto'
+import { ShoppingCartFiltersDto } from './dto/shoppingcart-filters.dto'
+import { ShoppingCartService } from './shoppingCart.service'
+
+import { FileInterceptor } from '@nestjs/platform-express'
 
 @ApiTags('Shopping Cart')
 @ApiBearerAuth()
@@ -44,6 +53,42 @@ export class ShoppingCartController {
   @ApiOperation({ summary: 'Obtener un carrito de compras por id' })
   findById(@Param('shoppingCartId') shoppingCartId: number) {
     return this.shoppingCartService.findBy(shoppingCartId)
+  }
+
+  @Put(':shoppingCartId/checkout')
+  @ApiOperation({ summary: 'Confirmar checkout del carrito' })
+  @UseInterceptors(
+    FileInterceptor('image', {
+      storage: diskStorage({
+        destination: './uploads',
+        filename: (_req, file, callback) => {
+          const name = file.originalname.split('.')[0]
+          const fileExtName = extname(file.originalname)
+          const randomName = Array(4)
+            .fill(null)
+            .map(() => Math.random().toString(36).substring(2, 15))
+            .join('')
+          callback(null, `${name}-${randomName}${fileExtName}`)
+        },
+      }),
+    }),
+  )
+  async checkoutCart(
+    @Param('shoppingCartId') shoppingCartId: number,
+    @Body() body: any,
+    @UploadedFile() image: Express.Multer.File,
+  ) {
+    if (!body.recipient || !body.delivery || !body.payment) {
+      throw new BadRequestException('Faltan campos obligatorios')
+    }
+
+    const dto: CheckoutDto = {
+      recipient: JSON.parse(body.recipient),
+      delivery: JSON.parse(body.delivery),
+      payment: JSON.parse(body.payment),
+    }
+
+    return this.shoppingCartService.checkoutCart(shoppingCartId, dto, image)
   }
 
   @Get()

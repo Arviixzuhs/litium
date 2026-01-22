@@ -223,6 +223,68 @@ enum ShoppingCartStatus {
   CANCELED // Carrito cancelado
 }
 
+enum PaymentMethod {
+  TRANSFER
+  MOBILE_PAYMENT
+}
+
+model Payment {
+  id            Int            @id @default(autoincrement())
+  imageUrl      String         @db.VarChar(250)
+  method        PaymentMethod
+  reference     String         @db.VarChar(50)
+  amount        Decimal        @db.Decimal(10, 2)
+  paymentDate   DateTime
+  createdAt     DateTime       @default(now())
+  shoppingCarts ShoppingCart[]
+}
+
+model Recipient {
+  id         Int    @id @default(autoincrement())
+  firstName  String @db.VarChar(50)
+  lastName   String @db.VarChar(50)
+  phone      String @db.VarChar(20)
+  documentId String @db.VarChar(20)
+
+  deliveries Delivery[]
+}
+
+enum DeliveryMethod {
+  AGENCY_PICKUP
+  HOME_DELIVERY
+  STORE_PICKUP
+}
+
+enum DeliveryAgency {
+  MRW
+  ZOOM
+}
+
+model DeliveryAddress {
+  id             Int    @id @default(autoincrement())
+  state          String @db.VarChar(50)
+  city           String @db.VarChar(50)
+  addressLine    String @db.VarChar(250)
+  referencePoint String @db.VarChar(250)
+
+  deliveries Delivery[]
+}
+
+model Delivery {
+  id     Int            @id @default(autoincrement())
+  method DeliveryMethod
+  agency DeliveryAgency
+
+  addressId   Int
+  recipientId Int
+
+  address   DeliveryAddress @relation(fields: [addressId], references: [id])
+  recipient Recipient       @relation(fields: [recipientId], references: [id])
+
+  createdAt     DateTime       @default(now())
+  shoppingCarts ShoppingCart[]
+}
+
 model ShoppingCart {
   id        Int                   @id @default(autoincrement())
   user      User                  @relation(fields: [userId], references: [id], onDelete: Cascade)
@@ -237,6 +299,12 @@ model ShoppingCart {
 
   invoiceId Int?
   invoice   Invoice? @relation(fields: [invoiceId], references: [id])
+
+  deliveryId Int?
+  delivery   Delivery? @relation(fields: [deliveryId], references: [id])
+
+  paymentId Int?
+  payment   Payment? @relation(fields: [paymentId], references: [id])
 }
 
 model ShoppingCartProduct {
@@ -258,7 +326,7 @@ model Invoice {
   total       Float?
   address     String? @db.VarChar(200)
   sellerId    Int
-  invoiceCode String  @unique @db.VarChar(20) @default("")
+  invoiceCode String  @unique @default("") @db.VarChar(20)
 
   seller       User           @relation("SellerInvoices", fields: [sellerId], references: [id], onDelete: Cascade)
   isDeleted    Boolean?       @default(false)
