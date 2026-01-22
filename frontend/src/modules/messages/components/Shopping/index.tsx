@@ -2,20 +2,20 @@ import React from 'react'
 import toast from 'react-hot-toast'
 import { socket } from '@/api/socket'
 import { RootState } from '@/store'
-import { Link, useParams } from 'react-router-dom'
 import { updateStatus } from '@/modules/purchases/slices/purchaseSlice'
+import { formatCurrency } from '@/utils/formatCurrency'
+import { Link, useParams } from 'react-router-dom'
 import { reqGetShoppingCartById } from '@/api/requests'
 import { useDispatch, useSelector } from 'react-redux'
 import { CheckPermissionByComponent } from '@/components/CheckPermissionByComponent'
 import {
-  DeliveryMethodModel,
-  PaymentMethodModel,
   ShoppingCartModel,
   ShoppingCartStatus,
+  PaymentMethodModel,
+  DeliveryMethodModel,
 } from '@/types/shoppingCartModel'
 import { Button, Card, CardBody, Divider, Image, Spinner } from '@heroui/react'
 import { reqConfirmShoppingCart, reqUpdateShoppingCartStatus } from '../../services'
-import { formatCurrency } from '@/utils/formatCurrency'
 
 interface ShoppingInterface {
   hiddeActios?: boolean
@@ -81,6 +81,7 @@ export const Shopping = ({
       if (!shoppingCart) return
       await reqUpdateShoppingCartStatus(shoppingCart?.id, ShoppingCartStatus.CANCELED)
       dispatch(updateStatus({ id: shoppingCart.id, status: ShoppingCartStatus.CANCELED }))
+      updateLocalPurchaseStatus(ShoppingCartStatus.CANCELED)
       toast.success('Carrito cancelado correctamente')
     } catch (error) {
       console.log(error)
@@ -90,7 +91,9 @@ export const Shopping = ({
   const ShoppingCartDetails = () => {
     if (!shoppingCart) return
 
-    if (!shoppingCart.delivery?.recipient || !shoppingCart.delivery || !shoppingCart.payment)
+    if (!shoppingCart.delivery?.recipient || !shoppingCart.delivery || !shoppingCart.payment) {
+      if (shoppingCart.status !== ShoppingCartStatus.PENDING) return
+
       return (
         <div>
           <h3>
@@ -104,6 +107,7 @@ export const Shopping = ({
           </h3>
         </div>
       )
+    }
 
     return (
       <div className='flex flex-col gap-2'>
@@ -117,14 +121,12 @@ export const Shopping = ({
             <p>Cédula: {shoppingCart.delivery.recipient.documentId}</p>
           </CardBody>
         </Card>
-
         <Divider />
-
         <Card shadow='none'>
           <CardBody>
-            <h3 className='font-semibold mb-2'>Envio</h3>
+            <h3 className='font-semibold mb-2'>Envío</h3>
             <p>Método: {DeliveryMethodLabels[shoppingCart.delivery.method]}</p>
-            <p>Agencia: {shoppingCart.delivery.agency}</p>
+            {shoppingCart.delivery.agency && <p>Agencia: {shoppingCart.delivery.agency}</p>}
             {shoppingCart.delivery.address && (
               <>
                 <p>Estado: {shoppingCart.delivery.address.state}</p>
@@ -135,13 +137,11 @@ export const Shopping = ({
             )}
           </CardBody>
         </Card>
-
         <Divider />
-
         <Card shadow='none'>
           <CardBody>
             <h3 className='font-semibold mb-2'>Pago</h3>
-            <p>Metodo: {PaymentMethodLabels[shoppingCart.payment.method]}</p>
+            <p>Método: {PaymentMethodLabels[shoppingCart.payment.method]}</p>
             <p>Referencia: {shoppingCart.payment.reference}</p>
             <p>Monto: {formatCurrency(Number(shoppingCart.payment.amount))}</p>
             <p>Fecha: {new Date(shoppingCart.payment.paymentDate).toLocaleString()}</p>
@@ -160,7 +160,6 @@ export const Shopping = ({
   }
 
   const ShoppingAmounts = () => {
-    // Usamos 0 como valor inicial para que 'acc' siempre sea un número
     const total = shoppingCart?.products?.reduce((acc, curr) => {
       const subtotalProducto = curr.product.price * curr.quantity
       return acc + subtotalProducto
@@ -215,7 +214,6 @@ export const Shopping = ({
           )}
         </CardBody>
       </Card>
-
       {shoppingCart?.status === ShoppingCartStatus.PENDING && !chat.invoiceId && !hiddeActios && (
         <div className='flex w-full gap-2'>
           <Button size='sm' color='danger' variant='flat' onPress={handleCancel}>
