@@ -135,7 +135,7 @@ export const Messages = () => {
                 description='Aquí estarán los mensajes'
               />
             )}
-            <Shopping showDetails />
+            <Shopping showDetails showAmounts />
             {messages.map((msg) => (
               <div
                 key={msg.id}
