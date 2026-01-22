@@ -128,7 +128,7 @@ export function CheckoutPage() {
           </div>
         </div>
         <div className='flex flex-col gap-6 lg:flex-row lg:items-start'>
-          <Card className='w-full lg:max-w-4xl' shadow='none'>
+          <Card className={`w-full ${currentStep !== 4 && 'lg:max-w-4xl'}`} shadow='none'>
             <CardBody className='p-4 sm:p-6 md:p-8'>
               {currentStep === 1 && (
                 <RecipientForm
