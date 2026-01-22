@@ -1,6 +1,6 @@
+import React from 'react'
 import { useState } from 'react'
-import { Shopping } from '../messages/components/Shopping'
-import { useNavigate, useParams } from 'react-router-dom'
+import { Shopping } from '@/modules/messages/components/Shopping'
 import { PaymentForm } from './components/PaymentForm'
 import { DeliveryForm } from './components/DeliveryForm'
 import { CheckoutData } from '@/types/checkoutModel'
@@ -8,6 +8,7 @@ import { StepIndicator } from './components/StepIndicator'
 import { RecipientForm } from './components/RecipientForm'
 import { useImageUpload } from '@/components/ImageUploader/providers/ImageUploaderProvider'
 import { ConfirmationStep } from './components/ConfirmationStep'
+import { useNavigate, useParams } from 'react-router-dom'
 import { Button, Card, CardBody } from '@heroui/react'
 import { reqCheckoutShoppingCart } from './services'
 import { ArrowLeft, ArrowRight, User2, Truck, CreditCard, CheckCircle } from 'lucide-react'
@@ -64,7 +65,8 @@ export function CheckoutPage() {
   const params = useParams<{ cartId: string }>()
   const [currentStep, setCurrentStep] = useState(1)
   const [checkoutData, setCheckoutData] = useState<CheckoutData>(initialData)
-  const { images } = useImageUpload()
+  const { images, resetFormData } = useImageUpload()
+  const [isLoading, setIsLoading] = React.useState(false)
   const navigate = useNavigate()
 
   const canGoNext = () => {
@@ -86,6 +88,10 @@ export function CheckoutPage() {
     }
   }
 
+  React.useEffect(() => {
+    window.scrollTo(0, 0)
+  }, [currentStep])
+
   const handleNext = async () => {
     if (currentStep < 4 && canGoNext()) {
       setCurrentStep(currentStep + 1)
@@ -93,14 +99,13 @@ export function CheckoutPage() {
 
     try {
       if (!params.cartId || currentStep !== 3 || !images[0].file) return
-      const response = await reqCheckoutShoppingCart(
-        Number(params.cartId),
-        checkoutData,
-        images[0].file,
-      )
-      console.log(response.data)
+      setIsLoading(true)
+      await reqCheckoutShoppingCart(Number(params.cartId), checkoutData, images[0].file)
+      resetFormData()
     } catch (error) {
       console.log(error)
+    } finally {
+      setIsLoading(false)
     }
   }
 
@@ -115,14 +120,16 @@ export function CheckoutPage() {
   }
 
   return (
-    <main className='min-h-screen w-full bg-background py-8 px-4'>
-      <div className='mb-8 flex flex-col items-center justify-center gap-3'>
-        <div className='mb-8'>
-          <StepIndicator currentStep={currentStep} steps={STEPS} />
+    <main className='min-h-screen w-full bg-background px-4 py-6 md:py-10'>
+      <div className='mx-auto w-full max-w-7xl'>
+        <div className='mb-6 flex justify-center'>
+          <div className='w-full '>
+            <StepIndicator currentStep={currentStep} steps={STEPS} />
+          </div>
         </div>
-        <div className='flex gap-2'>
-          <Card className='w-4xl' shadow='none'>
-            <CardBody className='p-6 md:p-8'>
+        <div className='flex flex-col gap-6 lg:flex-row lg:items-start'>
+          <Card className='w-full lg:max-w-4xl' shadow='none'>
+            <CardBody className='p-4 sm:p-6 md:p-8'>
               {currentStep === 1 && (
                 <RecipientForm
                   data={checkoutData.recipient}
@@ -146,7 +153,7 @@ export function CheckoutPage() {
 
               {currentStep === 4 && <ConfirmationStep />}
 
-              <div className='mt-8 flex items-center justify-between pt-6'>
+              <div className='mt-8 flex flex-col-reverse gap-3 sm:flex-row sm:items-center sm:justify-between'>
                 {currentStep > 1 && currentStep < 4 ? (
                   <Button
                     radius='sm'
@@ -165,8 +172,10 @@ export function CheckoutPage() {
                     color='primary'
                     radius='sm'
                     onPress={handleNext}
+                    isLoading={isLoading}
                     disabled={!canGoNext()}
                     endContent={<ArrowRight className='h-4 w-4' />}
+                    className='w-full sm:w-auto'
                   >
                     {currentStep === 3 ? 'Confirmar Pedido' : 'Siguiente'}
                   </Button>
@@ -176,6 +185,7 @@ export function CheckoutPage() {
                     color='primary'
                     radius='sm'
                     endContent={<ArrowRight className='h-4 w-4' />}
+                    className='w-full sm:w-auto'
                   >
                     Ver mensajes
                   </Button>
@@ -183,7 +193,12 @@ export function CheckoutPage() {
               </div>
             </CardBody>
           </Card>
-          {currentStep !== 4 && <Shopping hiddeActios />}
+
+          {currentStep !== 4 && (
+            <div className='w-full lg:max-w-sm'>
+              <Shopping hiddeActios showAmounts />
+            </div>
+          )}
         </div>
       </div>
     </main>
