@@ -8,7 +8,7 @@ import { ProductsService } from '@/modules/product/product.service'
 import { CreateShoppingCartDto } from './dto/create-shoppingcart.dto'
 import { ShoppingCartFiltersDto } from './dto/shoppingcart-filters.dto'
 import { ShoppingCartProductDto } from './dto/shoppingcart-product.dto'
-import { ShoppingCart, ShoppingCartStatus } from '@prisma/client'
+import { DeliveryAddress, DeliveryMethod, ShoppingCart, ShoppingCartStatus } from '@prisma/client'
 import {
   Injectable,
   ConflictException,
@@ -145,21 +145,27 @@ export class ShoppingCartService {
       imageUrl = this.fileService.generateFileUrl(image.filename)
     }
 
+    const isDeliveryMethodStorePickUp = dto.delivery.method === DeliveryMethod.STORE_PICKUP
+
     return this.prisma.$transaction(async (tx) => {
       const recipient = await tx.recipient.create({
         data: dto.recipient,
       })
 
-      const address = await tx.deliveryAddress.create({
-        data: dto.delivery.address,
-      })
+      let address: DeliveryAddress | null = null
+
+      if (!isDeliveryMethodStorePickUp) {
+        address = await tx.deliveryAddress.create({
+          data: dto.delivery.address,
+        })
+      }
 
       const delivery = await tx.delivery.create({
         data: {
           method: dto.delivery.method,
-          agency: dto.delivery.agency,
+          agency: isDeliveryMethodStorePickUp ? null : dto.delivery.agency,
           recipientId: recipient.id,
-          addressId: address.id,
+          ...(!isDeliveryMethodStorePickUp && address !== null && { addressId: address.id }),
         },
       })
 
