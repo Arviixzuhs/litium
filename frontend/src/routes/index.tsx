@@ -20,42 +20,45 @@ import { ProtectedRouteAuth } from './middlewares/ProtectedRouteAuth'
 import { ProtectedRouteSession } from './middlewares/ProtectedRouteSession'
 import { CheckPermissionByComponent } from '@/components/CheckPermissionByComponent'
 import { ValidateCheckoutMiddleware } from '@/modules/checkout/middlewares/ValidateCheckoutMiddleware'
+import { ScrollToTop } from '@/components/ScrollTop'
 
 export const Router = () => {
   return (
     <Routes>
-      <Route element={<ProtectedRouteSession />}>
-        <Route element={<ValidateCheckoutMiddleware />}>
-          <Route element={<CheckoutPage />} path='/checkout/:cartId' />
-        </Route>
-
-        <Route element={<Layout />}>
-          <Route element={<HomePage />} path='/' />
-          <Route element={<MessagesLayout />}>
-            <Route element={<Messages />} path='/messages/:cartId' />
+      <Route element={<ScrollToTop />}>
+        <Route element={<ProtectedRouteSession />}>
+          <Route element={<ValidateCheckoutMiddleware />}>
+            <Route element={<CheckoutPage />} path='/checkout/:cartId' />
           </Route>
-          <Route element={<ProductPage />} path='/product/:productId' />
-          <Route element={<PurchasesPage />} path='/purchases' />
+
+          <Route element={<Layout />}>
+            <Route element={<HomePage />} path='/' />
+            <Route element={<MessagesLayout />}>
+              <Route element={<Messages />} path='/messages/:cartId' />
+            </Route>
+            <Route element={<ProductPage />} path='/product/:productId' />
+            <Route element={<PurchasesPage />} path='/purchases' />
+          </Route>
+          <Route
+            element={
+              <CheckPermissionByComponent permission={'*'} mode='remove'>
+                <AdminLayout />
+              </CheckPermissionByComponent>
+            }
+          >
+            <Route element={<DashboardPage />} path='/dashboard' />
+            <Route element={<MessagesAdminPage />} path='/messages/cart/:cartId?' />
+            <Route element={<AdminProductPage />} path='/productos' />
+            <Route element={<AdminSupplierPage />} path='/proveedores' />
+            <Route element={<AdminCategoryPage />} path='/categorias' />
+            <Route element={<AdminCatalogPage />} path='/catalogos' />
+            <Route element={<AdminInvoicePage />} path='/ventas' />
+          </Route>
         </Route>
-        <Route
-          element={
-            <CheckPermissionByComponent permission={'*'} mode='remove'>
-              <AdminLayout />
-            </CheckPermissionByComponent>
-          }
-        >
-          <Route element={<DashboardPage />} path='/dashboard' />
-          <Route element={<MessagesAdminPage />} path='/messages/cart/:cartId?' />
-          <Route element={<AdminProductPage />} path='/productos' />
-          <Route element={<AdminSupplierPage />} path='/proveedores' />
-          <Route element={<AdminCategoryPage />} path='/categorias' />
-          <Route element={<AdminCatalogPage />} path='/catalogos' />
-          <Route element={<AdminInvoicePage />} path='/ventas' />
+        <Route element={<ProtectedRouteAuth />}>
+          <Route element={<Login />} path='/login' />
+          <Route element={<Register />} path='/register' />
         </Route>
-      </Route>
-      <Route element={<ProtectedRouteAuth />}>
-        <Route element={<Login />} path='/login' />
-        <Route element={<Register />} path='/register' />
       </Route>
     </Routes>
   )
