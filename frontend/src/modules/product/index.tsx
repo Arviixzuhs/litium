@@ -13,6 +13,7 @@ import type { ProductModel } from '@/types/productModel'
 import { ProductImageGallery } from './components/productGallery'
 import { Button, Divider, Spinner } from '@heroui/react'
 import { ShieldCheck, ShoppingCart, Truck } from 'lucide-react'
+import { RelatedProducts } from './components/relatedProducts'
 
 export const ProductPage = () => {
   const params = useParams<{ productId: string }>()
@@ -47,7 +48,7 @@ export const ProductPage = () => {
   if (!product || isLoading) return <Spinner />
 
   return (
-    <div className='min-h-screen px-4 py-8'>
+    <div className='min-h-screen px-4 py-8 flex flex-col gap-12 w-full'>
       <div className='mx-auto max-w-7xl'>
         <Back />
         <div className='grid gap-8 lg:grid-cols-2'>
@@ -123,6 +124,7 @@ export const ProductPage = () => {
         </div>
       </div>
       <ProductComment />
+      <RelatedProducts productCategories={product.categories} />
     </div>
   )
 }

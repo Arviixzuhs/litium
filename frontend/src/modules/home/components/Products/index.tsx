@@ -1,12 +1,12 @@
-import { SearchInput } from '@/components/SearchInput'
-import { reqGetProducts } from '@/modules/admin/pages/product/services'
-import { ProductCategories } from '@/modules/product/components/productCategories'
-import { ProductModel } from '@/types/productModel'
 import React from 'react'
+import { RootState } from '@/store'
+import { SearchInput } from '@/components/SearchInput'
 import { useDebounce } from 'use-debounce'
 import { ProductGrid } from './components/ProductGrid'
 import { useSelector } from 'react-redux'
-import { RootState } from '@/store'
+import { ProductModel } from '@/types/productModel'
+import { reqGetProducts } from '@/modules/admin/pages/product/services'
+import { ProductCategories } from '@/modules/product/components/productCategories'
 
 export const Products = () => {
   const [products, setProducts] = React.useState<ProductModel[]>([])

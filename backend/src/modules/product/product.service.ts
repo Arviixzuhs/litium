@@ -22,7 +22,7 @@ export class ProductsService {
     private readonly fileService: FileService,
     @Inject(forwardRef(() => ProductCommentService))
     private readonly productCommentService: ProductCommentService,
-  ) {}
+  ) { }
 
   private productMapper = new ProductMapper()
 
@@ -123,6 +123,11 @@ export class ProductsService {
       },
       include: {
         images: true,
+        categories: {
+          include: {
+            category: true
+          }
+        },
         specifications: true,
         _count: {
           select: {

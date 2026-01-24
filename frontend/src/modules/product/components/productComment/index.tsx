@@ -74,7 +74,7 @@ export const ProductComment = () => {
   }
 
   return (
-    <div className='mx-auto max-w-7xl space-y-8 px-4 py-8'>
+    <div className='mx-auto max-w-7xl w-full space-y-8 px-4'>
       <div>
         <h2 className='mb-2 text-2xl font-bold'>Comentarios del producto</h2>
         <p className='text-muted-foreground'>

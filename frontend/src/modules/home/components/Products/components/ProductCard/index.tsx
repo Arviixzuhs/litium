@@ -13,7 +13,6 @@ interface ProductCardProps {
 export const ProductCard = ({ product }: ProductCardProps) => {
   const dispatch = useDispatch()
 
-  console.log(product.images?.[0]?.imageURL)
   const handleAddToCart = () => {
     dispatch(
       addItemToCart({
@@ -38,7 +37,7 @@ export const ProductCard = ({ product }: ProductCardProps) => {
             alt={product.name}
             radius='none'
             width={300}
-            className='object-cover transition-transform duration-300 group-hover:scale-105'
+            className='object-contain transition-transform duration-300 group-hover:scale-105'
           />
           {product.stock === 0 && (
             <Badge className='absolute right-2 top-2 bg-destructive text-destructive-foreground'>
