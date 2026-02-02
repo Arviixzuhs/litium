@@ -2,13 +2,14 @@ import React from 'react'
 import { useState } from 'react'
 import { Shopping } from '@/modules/messages/components/Shopping'
 import { PaymentForm } from './components/PaymentForm'
+import { useNavigate } from 'react-router-dom'
 import { DeliveryForm } from './components/DeliveryForm'
 import { CheckoutData } from '@/types/checkoutModel'
 import { StepIndicator } from './components/StepIndicator'
 import { RecipientForm } from './components/RecipientForm'
 import { useImageUpload } from '@/components/ImageUploader/providers/ImageUploaderProvider'
 import { ConfirmationStep } from './components/ConfirmationStep'
-import { useNavigate, useParams } from 'react-router-dom'
+import { useNumericParamGuard } from '@/hooks/useNumericParam'
 import { Button, Card, CardBody } from '@heroui/react'
 import { reqCheckoutShoppingCart } from './services'
 import { ArrowLeft, ArrowRight, User2, Truck, CreditCard, CheckCircle } from 'lucide-react'
@@ -62,7 +63,8 @@ const initialData: CheckoutData = {
 }
 
 export function CheckoutPage() {
-  const params = useParams<{ cartId: string }>()
+  const cartId = useNumericParamGuard('cartId')
+
   const [currentStep, setCurrentStep] = useState(1)
   const [checkoutData, setCheckoutData] = useState<CheckoutData>(initialData)
   const { images, resetFormData } = useImageUpload()
@@ -98,9 +100,9 @@ export function CheckoutPage() {
     }
 
     try {
-      if (!params.cartId || currentStep !== 3 || !images[0].file) return
+      if (!cartId || currentStep !== 3 || !images[0].file) return
       setIsLoading(true)
-      await reqCheckoutShoppingCart(Number(params.cartId), checkoutData, images[0].file)
+      await reqCheckoutShoppingCart(Number(cartId), checkoutData, images[0].file)
       resetFormData()
     } catch (error) {
       console.log(error)
@@ -116,7 +118,7 @@ export function CheckoutPage() {
   }
 
   const handleNavigate = () => {
-    navigate(`/messages/${params.cartId}`)
+    navigate(`/messages/${cartId}`)
   }
 
   return (
