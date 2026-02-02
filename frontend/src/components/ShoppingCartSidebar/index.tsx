@@ -45,7 +45,7 @@ export const ShoppingCartSidebar = () => {
 
   return (
     <div
-      className={`flex flex-col gap-3 p-4 fixed top-0 right-0 w-[500px] h-full bg-opacity-90 bg-white/50 dark:bg-black/20 backdrop-blur-md shadow-lg z-50 transform transition-transform duration-300 ${
+      className={`flex flex-col gap-3 p-4 fixed top-0 right-0 sm:max-w-[500px] w-full h-full bg-white/80 dark:bg-black/20 backdrop-blur-md shadow-lg z-50 transform transition-transform duration-300 ${
         isOpen ? 'translate-x-0' : 'translate-x-full'
       }`}
     >
@@ -65,16 +65,16 @@ export const ShoppingCartSidebar = () => {
       ) : (
         <ul className='flex flex-col gap-2  max-h-96 overflow-y-auto hoverScrollbar'>
           {cartItems.map((item, index) => (
-            <li key={index} className='justify-between flex gap-2  items-center'>
+            <li key={index} className='justify-between flex gap-2 items-center'>
               <div className='flex gap-2 items-center'>
-                <div className='bg-muted-2 max-w-25 rounded-sm'>
+                <div className='bg-muted p-2 rounded-sm'>
                   <Image
-                    src={item.image}
                     alt={item.name}
+                    src={item.image}
+                    width={90}
                     radius='sm'
                     height={70}
-                    width={90}
-                    className='object-cover max-w-25 transition-transform duration-300 group-hover:scale-105'
+                    className='object-contain transition-transform duration-300 group-hover:scale-105'
                   />
                 </div>
                 <div>
