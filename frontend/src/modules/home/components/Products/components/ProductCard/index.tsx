@@ -4,7 +4,8 @@ import { useDispatch } from 'react-redux'
 import { ShoppingCart } from 'lucide-react'
 import { ProductModel } from '@/types/productModel'
 import { addItemToCart } from '@/features/shoppingCartSlice'
-import { Badge, Button, Card, CardBody, Image } from '@heroui/react'
+import { Button, Card, CardBody, Divider, Image } from '@heroui/react'
+import { ProductStock } from './components/ProductStock'
 
 interface ProductCardProps {
   product: ProductModel
@@ -28,9 +29,9 @@ export const ProductCard = ({ product }: ProductCardProps) => {
   }
 
   return (
-    <Card className='group h-full overflow-hidden transition-all hover:shadow-lg' radius='none'>
-      <CardBody className='p-0'>
-        <div className='relative  overflow-hidden bg-muted'>
+    <Card className='group h-full overflow-hidden transition-all' radius='lg' shadow='none'>
+      <CardBody className='p-0 '>
+        <div className='flex justify-center items-center p-4 overflow-hidden bg-card'>
           <Image
             height={300}
             src={product.images?.[0]?.imageURL}
@@ -39,12 +40,8 @@ export const ProductCard = ({ product }: ProductCardProps) => {
             width={300}
             className='object-contain transition-transform duration-300 group-hover:scale-105'
           />
-          {product.stock === 0 && (
-            <Badge className='absolute right-2 top-2 bg-destructive text-destructive-foreground'>
-              Agotado
-            </Badge>
-          )}
         </div>
+        <Divider></Divider>
         <div className='p-4 flex flex-col gap-4'>
           <div className='flex flex-col gap-1'>
             <Link to={`/product/${product.id}`}>
@@ -54,7 +51,10 @@ export const ProductCard = ({ product }: ProductCardProps) => {
             </Link>
           </div>
           <div className='flex items-center justify-between gap-2'>
-            <span className='text-2xl font-bold'>${product.price.toLocaleString()}</span>
+            <div className='flex flex-col gap-2'>
+              <span className='text-2xl font-bold'>${product.price.toLocaleString()}</span>
+              <ProductStock stock={product.stock} />
+            </div>
             <Button
               size='sm'
               radius='sm'

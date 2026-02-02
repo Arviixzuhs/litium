@@ -17,8 +17,8 @@ export const PurchaseProductItem = ({
   quantity,
 }: PurchaseProductItemProps) => (
   <div className='flex items-center gap-4'>
-    <div className='relative w-16 h-16 overflow-hidden rounded-md border border-divider bg-default-100'>
-      <Image src={image || '/placeholder.svg'} className='object-cover' />
+    <div className='h-15 w-15 p-2 flex justify-center items-center'>
+      <Image radius='none' src={image} className='object-cover' />
     </div>
     <div className='flex flex-1 flex-col'>
       <Link to={`/product/${id}`}>

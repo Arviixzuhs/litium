@@ -3,6 +3,7 @@ import { ProductGrid } from '@/modules/home/components/Products/components/Produ
 import { ProductModel } from '@/types/productModel'
 import { reqGetProducts } from '@/modules/admin/pages/product/services'
 import { CategoryModel } from '@/types/categoryModel'
+import { SectionTitle } from '@/components/SectionTitle'
 
 interface RelatedProductsInterface {
   productCategories: CategoryModel[]
@@ -20,7 +21,7 @@ export const RelatedProducts = ({ productCategories }: RelatedProductsInterface)
           size: 6,
           categoryIds: productCategories.map((item) => item.id),
         })
-        console.log(response.data)
+
         setProducts(response.data.content)
       } catch (error) {
         console.error(error)
@@ -31,7 +32,14 @@ export const RelatedProducts = ({ productCategories }: RelatedProductsInterface)
 
   return (
     <div className='flex flex-col gap-4'>
-      <h2 className='mb-2 text-2xl font-bold'>Quienes compraron este producto también compraron</h2>
+      <SectionTitle
+        title={
+          <>
+            Productos <span className='text-primary'>relacionados</span>
+          </>
+        }
+        description={'Explora productos relacionados y encuentra exactamente lo que buscas'}
+      />
       <ProductGrid products={products} />
     </div>
   )

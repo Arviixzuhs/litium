@@ -3,7 +3,7 @@ import { PurchaseProductItem } from '../PurchaseProductItem'
 import { modalTypes, useModal } from '@/hooks/useModal'
 import { ShoppingCartProductModel } from '@/types/shoppingCartModel'
 import { calcTotalByPurchaseProducts } from '@/modules/purchases/utils/calcTotalByPurchaseProducts'
-import { Modal, Button, ModalBody, ModalFooter, ModalHeader, ModalContent } from '@heroui/react'
+import { Modal, ModalBody, ModalFooter, ModalHeader, ModalContent } from '@heroui/react'
 
 interface ViewPurchaseModalProps {
   purchaseProducts: ShoppingCartProductModel[]
@@ -28,11 +28,7 @@ export const ViewPurchaseModal = ({ purchaseProducts }: ViewPurchaseModalProps) 
           ))}
           <PurchaseSummary total={calcTotalByPurchaseProducts(purchaseProducts)} />
         </ModalBody>
-        <ModalFooter>
-          <Button variant='light' onPress={toggleOpen} color='danger' radius='sm'>
-            Cerrar
-          </Button>
-        </ModalFooter>
+        <ModalFooter />
       </ModalContent>
     </Modal>
   )

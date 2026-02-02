@@ -1,5 +1,4 @@
 import React from 'react'
-import { Back } from '@/components/Back'
 import { Spinner } from '@heroui/react'
 import { SearchInput } from '@/components/SearchInput'
 import { PurchaseCard } from './components/PurchaseCard'
@@ -13,10 +12,9 @@ export const PurchasesPage = () => {
   const currentPurchase = purchases.find((item) => item.id === currentIdToView)
 
   return (
-    <div className='mx-auto max-w-5xl px-4 py-6 md:px-6 md:py-8'>
-      <div className='mb-6'>
-        <Back />
-        <h1 className='text-3xl font-semibold tracking-tight'>Compras</h1>
+    <section className='flex gap-4 flex-col'>
+      <div>
+        <h1 className='text-3xl font-semibold tracking-tight'>Mis Compras</h1>
       </div>
       <div className='mb-6 md:items-center md:justify-between'>
         <SearchInput onChange={setSearchQuery} searchValue={searchQuery} />
@@ -30,6 +28,6 @@ export const PurchasesPage = () => {
           ))}
       </div>
       <ViewPurchaseModal purchaseProducts={currentPurchase?.products || []} />
-    </div>
+    </section>
   )
 }

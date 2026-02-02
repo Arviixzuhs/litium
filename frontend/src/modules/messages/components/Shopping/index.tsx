@@ -1,10 +1,10 @@
 import React from 'react'
 import toast from 'react-hot-toast'
+import { Link, useParams } from 'react-router-dom'
 import { socket } from '@/api/socket'
 import { RootState } from '@/store'
 import { updateStatus } from '@/modules/purchases/slices/purchaseSlice'
 import { formatCurrency } from '@/utils/formatCurrency'
-import { Link, useParams } from 'react-router-dom'
 import { reqGetShoppingCartById } from '@/api/requests'
 import { useDispatch, useSelector } from 'react-redux'
 import { CheckPermissionByComponent } from '@/components/CheckPermissionByComponent'
@@ -40,20 +40,21 @@ export const Shopping = ({
   showDetails = false,
 }: ShoppingInterface) => {
   const dispatch = useDispatch()
-  const params = useParams<{ cartId: string }>()
+  const params = useParams<{ cartId?: string }>()
+  const cartId = params.cartId
   const [isLoading, setIsLoading] = React.useState<boolean>(true)
   const [shoppingCart, setShoppingCart] = React.useState<ShoppingCartModel | null>(null)
   const chat = useSelector((state: RootState) => state.chat)
 
   React.useEffect(() => {
-    if (!params.cartId) return
-    reqGetShoppingCartById(Number(params.cartId))
+    if (!cartId) return
+    reqGetShoppingCartById(Number(cartId))
       .then((res) => setShoppingCart(res.data))
       .catch(console.log)
       .finally(() => setIsLoading(false))
-  }, [params.cartId])
+  }, [cartId])
 
-  if (!params.cartId) return
+  if (!cartId) return
 
   const updateLocalPurchaseStatus = (status: ShoppingCartStatus) => {
     if (!shoppingCart) return
@@ -67,7 +68,7 @@ export const Shopping = ({
     try {
       if (!shoppingCart) return
       const response = await reqConfirmShoppingCart(shoppingCart?.id)
-      socket.emit('confirm', { invoiceId: response.data.id, cartId: Number(params.cartId) })
+      socket.emit('confirm', { invoiceId: response.data.id, cartId: Number(cartId) })
       dispatch(updateStatus({ id: shoppingCart.id, status: ShoppingCartStatus.PAID }))
       updateLocalPurchaseStatus(ShoppingCartStatus.PAID)
       toast.success('Carrito confirmado correctamente')
@@ -184,12 +185,14 @@ export const Shopping = ({
               {shoppingCart?.products?.map((item, index) => (
                 <li key={index} className='justify-between flex gap-2 items-center'>
                   <div className='flex gap-2 items-center'>
-                    <div className='bg-muted-2 rounded-sm'>
+                    <div className='bg-card p-2 rounded-sm'>
                       <Image
                         src={item.product?.images?.[0]?.imageURL || ''}
                         alt={item.product?.name}
+                        width={90}
                         radius='sm'
-                        className='object-contain max-w-24 h-20 transition-transform duration-300 group-hover:scale-105'
+                        height={70}
+                        className='object-contain transition-transform duration-300 group-hover:scale-105'
                       />
                     </div>
                     <div>

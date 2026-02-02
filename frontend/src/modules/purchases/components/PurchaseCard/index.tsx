@@ -30,8 +30,9 @@ export function PurchaseCard({ purchase, setCurrentIdToView }: PurchaseCardProps
         <CardBody>
           <div className='flex flex-col gap-4 md:flex-row md:items-center md:justify-between'>
             <div className='flex flex-1 gap-4'>
-              <div className='relative size-20 shrink-0 overflow-hidden rounded-md border border-divider bg-default-100'>
+              <div className='h-15 w-15 p-2 flex justify-center items-center'>
                 <Image
+                  radius='none'
                   src={purchase.products?.[0].product.images?.[0]?.imageURL}
                   className='object-cover'
                 />
