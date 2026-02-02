@@ -8,7 +8,7 @@ export interface ReqGetProductParams extends QueryParams {
   maxPrice?: string
   category?: string
   fromDate?: string
-  catalogId?: string
+  catalogId?: number
   categoryIds?: number[]
   excludeCatalogId?: string
 }
