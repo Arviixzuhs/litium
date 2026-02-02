@@ -1,7 +1,9 @@
 import { logOut } from '@/utils/logOut'
 import { RootState } from '@/store'
 import { useSelector } from 'react-redux'
-import { Avatar, Dropdown, DropdownMenu, DropdownItem, DropdownTrigger } from '@heroui/react'
+import { ExternalLink } from 'lucide-react'
+import { CheckPermissionByComponent } from '@/components/CheckPermissionByComponent'
+import { Avatar, Dropdown, DropdownMenu, DropdownItem, DropdownTrigger, Link } from '@heroui/react'
 
 export const NavbarUserOptions = () => {
   const user = useSelector((state: RootState) => state.user)
@@ -25,6 +27,16 @@ export const NavbarUserOptions = () => {
             <p className='font-semibold'>Registrado como</p>
             <p className='font-semibold'>{user?.email}</p>
           </DropdownItem>
+          {user && (
+            <DropdownItem key='dashboard'>
+              <CheckPermissionByComponent permission={'*'} mode='remove'>
+                <Link href='/dashboard' target='_blank' className='flex gap-2'>
+                  Dasboard
+                  <ExternalLink size={15} />
+                </Link>
+              </CheckPermissionByComponent>
+            </DropdownItem>
+          )}
           <DropdownItem
             key='logout'
             className='text-danger'
