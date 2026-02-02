@@ -1,6 +1,5 @@
 import React from 'react'
 import toast from 'react-hot-toast'
-import { useParams } from 'react-router-dom'
 import { RootState } from '@/store'
 import { useSelector } from 'react-redux'
 import { CommentModel } from '@/types/productCommentModel'
@@ -9,6 +8,7 @@ import { PaginatedResponse } from '@/types/paginatedResponse'
 import { MessageCircle, Star } from 'lucide-react'
 import { Button, Textarea, Avatar, Divider } from '@heroui/react'
 import { reqCreateComment, reqGetProductComments } from '../../services'
+import { useNumericParamGuard } from '@/hooks/useNumericParam'
 
 export const ProductComment = () => {
   const user = useSelector((state: RootState) => state.user)
@@ -18,14 +18,14 @@ export const ProductComment = () => {
   const [replyText, setReplyText] = React.useState('')
   const [replyingTo, setReplyingTo] = React.useState<number | null>(null)
   const [hoveredRating, setHoveredRating] = React.useState(0)
-  const params = useParams<{ productId: string }>()
+  const productId = useNumericParamGuard('productId')
 
   const loadData = () => {
-    if (!params.productId) return
+    if (!productId) return
     reqGetProductComments({
       page: 0,
       size: 50,
-      productId: Number(params.productId),
+      productId: Number(productId),
     })
       .then((res) => setResponse(res.data))
       .catch(console.log)
@@ -33,15 +33,15 @@ export const ProductComment = () => {
 
   React.useEffect(() => {
     loadData()
-  }, [params.productId])
+  }, [productId])
 
   const handleSubmitReview = async (e: React.FormEvent) => {
     e.preventDefault()
     try {
-      if (!params.productId) return
+      if (!productId) return
       await reqCreateComment({
         comment: newReview,
-        productId: Number(params.productId),
+        productId: Number(productId),
         qualification: rating,
       })
       loadData()
@@ -74,7 +74,7 @@ export const ProductComment = () => {
   }
 
   return (
-    <div className='mx-auto max-w-7xl w-full space-y-8 px-4'>
+    <div className='mx-auto max-w-7xl w-full space-y-8'>
       <div>
         <h2 className='mb-2 text-2xl font-bold'>Comentarios del producto</h2>
         <p className='text-muted-foreground'>
