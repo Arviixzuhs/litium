@@ -3,6 +3,7 @@ export interface CatalogModel {
   name: string
   createdAt?: string
   updatedAt?: string
+  productCount: number
   description?: string | null
 }
 
