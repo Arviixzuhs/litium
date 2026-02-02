@@ -39,6 +39,16 @@ export class ProductCatalogController {
     return this.productCatalogService.findAll(filters)
   }
 
+  @Get(':catalogId')
+  @ApiOperation({ summary: 'Obtener catálogo por id' })
+  @ApiResponse({
+    status: 200,
+    type: CatalogPageResponseDto,
+  })
+  findById(@Param('catalogId', ParseIntPipe) catalogId: number): Promise<CatalogResponseDto> {
+    return this.productCatalogService.findBy(catalogId)
+  }
+
   @Post()
   @ApiOperation({ summary: 'Crear un nuevo catálogo' })
   @ApiResponse({

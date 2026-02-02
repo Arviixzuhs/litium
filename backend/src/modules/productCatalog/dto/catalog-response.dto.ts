@@ -10,4 +10,7 @@ export class CatalogResponseDto extends CreateCatalogDto {
 
   @ApiProperty({ description: 'Fecha de última actualización', required: false })
   updatedAt?: Date
+
+  @ApiProperty({ description: 'Cantidad de productos en el catálogo', required: false })
+  productCount: number
 }

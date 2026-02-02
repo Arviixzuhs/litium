@@ -23,6 +23,13 @@ export class ProductCatalogService {
       .withIsDeleted(false)
       .withPagination(filters.page, filters.size)
       .withOrderBy({ createdAt: 'desc' })
+      .withInclude({
+        _count: {
+          select: {
+            product_x_catalog: true,
+          },
+        },
+      })
       .build()
 
     return this.page(query)
