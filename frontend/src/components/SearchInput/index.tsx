@@ -11,13 +11,15 @@ export const SearchInput = ({ onChange, searchValue, placeholder }: SearchInputP
   return (
     <Input
       type='search'
+      variant='flat'
       value={searchValue}
       onChange={(e) => onChange(e.target.value)}
       placeholder={placeholder || 'Buscar...'}
-      startContent={<Search />}
+      endContent={<Search />}
+      className='shadow-none'
       classNames={{
-        input: 'bg-card',
-        inputWrapper: 'bg-card',
+        input: 'bg-card shadow-none',
+        inputWrapper: 'bg-card shadow-none',
       }}
     />
   )
