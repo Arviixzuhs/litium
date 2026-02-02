@@ -9,3 +9,4 @@ export const reqCreateCatalog = (data: CatalogDto) => api.post('/catalog', data)
 export const reqUpdateCatalog = (id: number, data: Partial<CatalogDto>) =>
   api.patch(`/catalog/${id}`, data)
 export const reqDeleteCatalog = (id: number) => api.delete(`/catalog/${id}`)
+export const reqGetCatalogById = (id: number) => api.get(`/catalog/${id}`)
