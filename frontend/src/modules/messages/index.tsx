@@ -2,7 +2,6 @@ import React from 'react'
 import { cn } from '@heroui/theme'
 import { socket } from '@/api/socket'
 import { Shopping } from './components/Shopping'
-import { useParams } from 'react-router-dom'
 import { RootState } from '@/store'
 import { MessageModel } from '@/types/messageModal'
 import { setInvoiceId } from './slices/chatSlice'
@@ -21,11 +20,13 @@ import {
   DropdownMenu,
   DropdownTrigger,
 } from '@heroui/react'
+import { useParams } from 'react-router-dom'
 import { updateStatus } from '../purchases/slices/purchaseSlice'
 import { ShoppingCartStatus } from '@/types/shoppingCartModel'
 
 export const Messages = () => {
-  const params = useParams<{ cartId: string }>()
+  const params = useParams<{ cartId?: string }>()
+  const cartId = params.cartId
   const dispatch = useDispatch()
   const user = useSelector((state: RootState) => state.user)
   const [input, setInput] = React.useState('')
@@ -34,17 +35,16 @@ export const Messages = () => {
   const scrollRef = React.useRef<HTMLDivElement>(null)
 
   React.useEffect(() => {
-    if (!params.cartId) return
+    if (!cartId) return
     const loadShoppingCart = async () => {
-      const response = await reqGetShoppingCartById(Number(params.cartId))
-      console.log(response.data)
+      const response = await reqGetShoppingCartById(Number(cartId))
       dispatch(setInvoiceId(response?.data?.invoice?.id))
     }
     loadShoppingCart()
-  }, [params.cartId])
+  }, [cartId])
 
   React.useEffect(() => {
-    if (!params.cartId) {
+    if (!cartId) {
       if (messages.length > 0) {
         setMessages([])
       }
@@ -52,7 +52,7 @@ export const Messages = () => {
     }
     const fetchMessages = async () => {
       try {
-        const { data } = await reqGetMessagesByCartId(Number(params.cartId))
+        const { data } = await reqGetMessagesByCartId(Number(cartId))
         setMessages(data)
       } catch (error) {
         console.error('Error al cargar mensajes:', error)
@@ -61,10 +61,10 @@ export const Messages = () => {
     }
 
     fetchMessages()
-  }, [params.cartId])
+  }, [cartId])
 
   React.useEffect(() => {
-    socket.emit('joinCart', params.cartId)
+    socket.emit('joinCart', cartId)
 
     socket.on('newMessage', (message) => setMessages((prev) => [...prev, message]))
     socket.on('messageEdited', (updated) =>
@@ -75,17 +75,17 @@ export const Messages = () => {
     )
     socket.on('orderConfirmed', (invoiceId: number) => {
       dispatch(setInvoiceId(invoiceId))
-      dispatch(updateStatus({ id: Number(params.cartId), status: ShoppingCartStatus.PAID }))
+      dispatch(updateStatus({ id: Number(cartId), status: ShoppingCartStatus.PAID }))
     })
 
     return () => {
-      socket.emit('leaveCart', params.cartId)
+      socket.emit('leaveCart', cartId)
       socket.off('newMessage')
       socket.off('messageEdited')
       socket.off('messageDeleted')
       socket.off('orderConfirmed')
     }
-  }, [params.cartId])
+  }, [cartId])
 
   React.useEffect(() => {
     scrollRef.current?.scrollTo({
@@ -106,7 +106,7 @@ export const Messages = () => {
 
     const messageData = {
       message: input.trim(),
-      shoppingCartId: params.cartId,
+      shoppingCartId: cartId,
       userId: user?.id,
       senderId: user?.id,
     }
@@ -129,7 +129,7 @@ export const Messages = () => {
       <div className='flex flex-col md:flex-row h-full w-full gap-4 bg-card rounded-2xl p-4'>
         <div className='flex-1 flex flex-col h-full'>
           <div ref={scrollRef} className='flex-1 overflow-y-auto space-y-4 pr-2 hoverScrollbar'>
-            {messages.length === 0 && !params.cartId && (
+            {messages.length === 0 && !cartId && (
               <EmptyContent
                 title={`Bienvenido al chat, ${user?.name}`}
                 description='Aquí estarán los mensajes'
@@ -209,7 +209,7 @@ export const Messages = () => {
               </div>
             ))}
           </div>
-          {params.cartId && (
+          {cartId && (
             <div className='mt-4 flex flex-wrap gap-2 flex-col'>
               <DownaloadInvoice />
               <div className='flex flex-wrap gap-2'>
