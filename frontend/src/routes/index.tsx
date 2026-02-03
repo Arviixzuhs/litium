@@ -32,8 +32,8 @@ export const Router = () => {
           <Route element={<ValidateCheckoutMiddleware />}>
             <Route element={<CheckoutPage />} path='/checkout/:cartId' />
           </Route>
+          <Route element={<HomePage />} path='/' />
           <Route element={<Layout />}>
-            <Route element={<HomePage />} path='/' />
             <Route element={<CatalogPage />} path='/catalog/:catalogId' />
             <Route element={<NotFoundPage />} path='*' />
             <Route element={<MessagesLayout />}>

@@ -35,10 +35,12 @@ export const Products = () => {
       <SectionTitle
         title={
           <>
-            Productos <span className='text-primary'>destacados</span>
+            Últimos <span className='text-primary'>productos</span>
           </>
         }
-        description={'Explora nuestros productos destacados y encuentra exactamente lo que buscas'}
+        description={
+          'Explora nuestros productos más recientes y encuentra exactamente lo que búscas'
+        }
       />
       <ProductGrid products={products} />
     </section>

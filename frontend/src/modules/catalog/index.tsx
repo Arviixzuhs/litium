@@ -1,16 +1,16 @@
 import React from 'react'
-import { ProductGrid } from '../home/components/Products/components/ProductGrid'
+import { Spinner } from '@heroui/react'
+import { ProductGrid } from '@/modules/home/components/Products/components/ProductGrid'
 import { CatalogModel } from '@/types/catalogModel'
 import { ProductModel } from '@/types/productModel'
 import { SectionTitle } from '@/components/SectionTitle'
 import { reqGetProducts } from '@/modules/admin/pages/product/services'
-import { reqGetCatalogById } from '../admin/pages/catalog/services'
+import { reqGetCatalogById } from '@/modules/admin/pages/catalog/services'
 import { useNumericParamGuard } from '@/hooks/useNumericParam'
-import { Spinner } from '@heroui/react'
 
 export const CatalogPage = () => {
-  const [products, setProducts] = React.useState<ProductModel[]>([])
   const [catalog, setCatalog] = React.useState<CatalogModel | null>(null)
+  const [products, setProducts] = React.useState<ProductModel[]>([])
   const [isLoading, setIsLoading] = React.useState<boolean>(false)
   const catalogId = useNumericParamGuard('catalogId')
 
