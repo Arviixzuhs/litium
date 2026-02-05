@@ -6,6 +6,13 @@ export interface TableColumnInterface {
   sortable?: boolean
 }
 
+export enum DateFilterPeriod {
+  TODAY = 'TODAY',
+  YEARLY = 'YEARLY',
+  MONTHLY = 'MONTHLY',
+  LAST_MONTH = 'LAST_MONTH',
+}
+
 export interface DateFilter {
   end: string
   start: string
@@ -28,6 +35,7 @@ export interface AppTableInterface<T> {
   totalPages: number
   currentPage: number
   rowsPerPage: number
+  dateFilterPeriod: DateFilterPeriod | null
   modalInputs: ModalInput[]
   isAddItemModalOpen: boolean
   isEditItemModalOpen: boolean
@@ -51,6 +59,7 @@ export const manageAppTableSlice = createSlice({
     isEditItemModalOpen: false,
     currentItemToDelete: -1,
     currentItemToUpdate: -1,
+    dateFilterPeriod: null,
     isConfirmDeleteModalOpen: false,
     dateFilter: {
       end: '',
@@ -134,6 +143,10 @@ export const manageAppTableSlice = createSlice({
       state.dateFilter.end = end?.toString() || ''
       state.dateFilter.start = start?.toString() || ''
     },
+    setDateFilterPeriod: (state, action: PayloadAction<{ period: DateFilterPeriod | null }>) => {
+      const { period } = action.payload
+      state.dateFilterPeriod = period
+    },
   },
 })
 
@@ -152,6 +165,7 @@ export const {
   clearFormData,
   addItem,
   deleteItem,
+  setDateFilterPeriod,
   updateItem,
   toggleConfirmDeleteModal,
   setCurrentItemToUpdate,
