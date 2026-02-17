@@ -1,6 +1,8 @@
-# 🌙 Litium
-
 <div align="center">
+
+<h1>
+  🛍️ Litium Shop
+</h1>
 
 [![GitHub stars](https://img.shields.io/github/stars/Arviixzuhs/litium?style=for-the-badge)](https://github.com/Arviixzuhs/litium/stargazers)
 [![GitHub forks](https://img.shields.io/github/forks/Arviixzuhs/litium?style=for-the-badge)](https://github.com/Arviixzuhs/litium/network)
